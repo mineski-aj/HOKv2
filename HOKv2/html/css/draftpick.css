@@ -50,6 +50,10 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
 .player-photo { position: absolute; width: 297px; height: 297px; left: 50%; transform: translateX(-50%); top: 0; z-index: 1; }
 .hero-pick { position: absolute; width: 165px; height: 364px; left: 50%; top: 0; transform: translateX(-50%) translateY(225px); z-index: 2; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); opacity: 0; }
 .hero-pick.picked { transform: translateX(-50%) translateY(0); opacity: 1; }
+.hero-pick-img, .hero-pick-vid { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.hero-pick-img:not([src]) { visibility: hidden; }
+.hero-pick-vid { object-fit: cover; opacity: 0; }
+.hero-pick-vid.ready { opacity: 1; }
 
 /* Hero stats slide-up (name, ban/pick/win rate from the CSV) */
 .stats-box {

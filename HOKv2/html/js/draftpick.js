@@ -100,6 +100,25 @@
   var playedHeroAudio = {};
 
   var heroImg = function (id) { return hokAsset('images/hero-draftpick/' + id + '_TINGGI.png'); };
+  var heroVid = function (id) { return hokAsset('webm/heroes/' + id + '.webm'); };
+
+  // Picked hero = looping webm (assets/webm/heroes/<id>.webm, 202x450, opaque) over the
+  // static _TINGGI.png, which stays underneath as the fallback for heroes with no video.
+  // The video only shows once it has a frame (.ready), so a missing file never blanks the slot.
+  function setHeroVideo(vid, src) {
+    if (!vid || (vid.dataset.src || '') === src) return;
+    vid.dataset.src = src;
+    vid.classList.remove('ready');
+    if (src) {
+      vid.src = src;
+      var p = vid.play();
+      if (p && p.catch) p.catch(function () {});
+    } else {
+      vid.pause();
+      vid.removeAttribute('src');
+      vid.load();
+    }
+  }
 
   hokCsv.onChange(function (text) {
     var lines = text.split(/\r?\n/);
@@ -120,7 +139,10 @@
   function playerBox(i, side) {
     return '<div class="player-box" id="' + side + '-box-' + i + '">' +
       '<img class="player-photo" id="' + side + '-photo-' + i + '" src="' + HOK_DEFAULT_PHOTO + '">' +
-      '<img class="hero-pick" id="' + side + '-hero-' + i + '">' +
+      '<div class="hero-pick" id="' + side + '-hero-' + i + '">' +
+        '<img class="hero-pick-img" id="' + side + '-heroimg-' + i + '">' +
+        '<video class="hero-pick-vid" id="' + side + '-herovid-' + i + '" muted loop playsinline autoplay></video>' +
+      '</div>' +
       '<div class="stats-box" id="' + side + '-statsbox-' + i + '">' +
         '<div class="stats-hero-name" id="' + side + '-sname-' + i + '">HERO</div>' +
         '<div class="stats-rates-container">' +
@@ -149,6 +171,11 @@
       $('hr-icon-' + i).src = '/assets/images/role/' + ROLE_ICONS[i] + '.png';
       $('ar-icon-' + i).src = '/assets/images/role/' + ROLE_ICONS[i] + '.png';
     }
+
+    document.querySelectorAll('.hero-pick-vid').forEach(function (vid) {
+      vid.addEventListener('loadeddata', function () { if (vid.dataset.src) vid.classList.add('ready'); });
+      vid.addEventListener('error', function () { vid.classList.remove('ready'); });
+    });
 
     // Photo fallback for every slot
     document.querySelectorAll('.player-photo').forEach(function (img) {
@@ -261,13 +288,15 @@
             voice.play().catch(function () {});
           }
         }
-        hokSetSrc(heroEl, heroImg(show));
+        hokSetSrc($(side + '-heroimg-' + pIdx), heroImg(show));
+        setHeroVideo($(side + '-herovid-' + pIdx), heroVid(show));
         heroEl.classList.add('picked');
       } else {
         revealedHeroes[key] = 0;
         playedHeroAudio[key] = 0;
         heroEl.classList.remove('picked');
-        hokSetSrc(heroEl, '');
+        hokSetSrc($(side + '-heroimg-' + pIdx), '');
+        setHeroVideo($(side + '-herovid-' + pIdx), '');
       }
     }
 
