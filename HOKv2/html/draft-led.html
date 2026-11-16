@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK Draft LED</title>
+  <!-- 1764x1024 LED wall source. Live control:
+         Whole scene       GET /overlay/draftled/show | hide      (SSE 'draftled', default shown)
+         Pick boxes/photos GET /overlay/led_pickbox/show | hide   (hide = POV cam mode, bans only)
+       ?preview=1 starts hidden and follows only window.previewTrigger(event, action). -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/draft-led.css">
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="canvas">
+    <div id="home-bans" class="ban-container"></div>
+    <div id="away-bans" class="ban-container"></div>
+    <div id="home-picks" class="pick-container"></div>
+    <div id="away-picks" class="pick-container"></div>
+  </div>
+
+  <script src="/html/js/draft-led.js"></script>
+  <script>
+  (function () {
+    var canvas = document.getElementById('canvas');
+    function applyCheck(key, shown) {
+      if (key === 'draftled') canvas.classList.toggle('scene-hidden', !shown);
+      else if (key === 'led_pickbox') canvas.classList.toggle('hide-pov-bg', !shown);
+    }
+
+    var sse = createOverlaySSE();
+    sse.addEventListener('reload', function () { location.reload(); });
+    sse.addEventListener('appstate', function () { HokPoll.now(); });
+
+    if (HOK_PREVIEW) {
+      applyCheck('draftled', false);
+    } else {
+      fetch('/overlay/check-overlays', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        applyCheck('draftled', d.draftled !== false);
+        applyCheck('led_pickbox', d.led_pickbox !== false);
+      }).catch(function () {});
+      ['draftled', 'led_pickbox'].forEach(function (key) {
+        sse.addEventListener(key, function (e) {
+          try { applyCheck(key, JSON.parse(e.data).action === 'show'); } catch (err) {}
+        });
+      });
+    }
+
+    window.previewTrigger = function (event, action) {
+      if (event === 'draftled' || event === 'led_pickbox') applyCheck(event, action === 'show');
+    };
+
+    HokStyles.load('draftled');
+    HokPoll.start({ sources: ['state', 'draft'], interval: 500 });
+  })();
+  </script>
+</body>
+</html>

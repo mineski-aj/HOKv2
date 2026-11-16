@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK Fullscreen</title>
+  <!-- 1920x1080 browser source for full-screen scenes. One container per
+       scene (#<scene>-page.fs-scene), shown/hidden over SSE (checkOverlays
+       pattern, see CLAUDE.md). Scenes are mutually exclusive server-side.
+       ?preview=1 (dashboard iframes) ignores real show/hide and follows only
+       window.previewTrigger(event, action).
+
+       SHARED layer (background video, match header, stand-in ticker) is NOT
+       part of any scene: it stays up while switching scenes, so only each
+       scene's own elements fade. See FsShared below.
+
+       Scenes:
+         Post Hexagon  GET /overlay/posthexagon/show | hide
+                       GET /overlay/posthexagon/role/<clash|jungler|mid|farm|roamer>
+                       GET /overlay/posthexagon/<role>/show   (pick role + show)
+         Post Stats    GET /overlay/poststats/show | hide
+         Post Gold Graph GET /overlay/postgoldgraph/show | hide
+         Post Items    GET /overlay/postitems/show | hide
+         Versus Slide  GET /overlay/versusslide/show | hide   (own header; shared one hidden)
+         Head to Head  GET /overlay/headtohead/show | hide     (own header; shared one hidden)
+                       GET /overlay/headtohead/role/<clash|jungler|mid|farm|roamer>
+                       GET /overlay/headtohead/<role>/show    (pick role + show)
+       Background      GET /overlay/fsbg/show | hide   (looping video; persisted) -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/fs-shared.css">
+  <link rel="stylesheet" href="/html/css/fs-posthexagon.css">
+  <link rel="stylesheet" href="/html/css/fs-poststats.css">
+  <link rel="stylesheet" href="/html/css/fs-postgoldgraph.css">
+  <link rel="stylesheet" href="/html/css/fs-postitems.css">
+  <link rel="stylesheet" href="/html/css/fs-versusslide.css">
+  <link rel="stylesheet" href="/html/css/fs-headtohead.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+    #canvas { position: relative; width: 1920px; height: 1080px; }
+  </style>
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="canvas">
+    <!-- ═══ SHARED: background ═══ -->
+    <video id="fs-bg-video" muted loop playsinline preload="none"></video>
+
+    <!-- ═══ POST HEXAGON ═══ -->
+    <div id="phx-page" class="fs-scene">
+
+      <div id="phx-panel"></div>
+      <svg id="phx-radar" class="phx-dyn" viewBox="0 0 420 420"></svg>
+      <div class="phx-stat phx-dyn" id="phx-stat-0"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-1"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-2"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-3"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-4"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-5"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-6"></div>
+      <div class="phx-stat phx-dyn" id="phx-stat-7"></div>
+
+      <!-- Left (HOME) player -->
+      <div class="phx-herocard phx-dyn" id="phx-hero-l"><img id="phx-hero-l-img" alt=""></div>
+      <img class="phx-photo phx-dyn" id="phx-photo-l" alt="">
+      <div class="phx-items phx-dyn" id="phx-items-l"><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div></div>
+      <div class="phx-plate" id="phx-plate-l"></div>
+      <img class="phx-roleicon phx-dyn" id="phx-roleicon-l" alt="">
+      <div class="phx-name phx-dyn" id="phx-name-l"></div>
+      <div class="phx-herolbl" id="phx-herolbl-l">HERO USED</div>
+      <div class="phx-heroname phx-dyn" id="phx-heroname-l"></div>
+
+      <!-- Right (AWAY) player -->
+      <div class="phx-herocard phx-dyn" id="phx-hero-r"><img id="phx-hero-r-img" alt=""></div>
+      <img class="phx-photo phx-dyn" id="phx-photo-r" alt="">
+      <div class="phx-items phx-dyn" id="phx-items-r"><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div><div class="phx-item"><img alt=""></div></div>
+      <div class="phx-plate" id="phx-plate-r"></div>
+      <img class="phx-roleicon phx-dyn" id="phx-roleicon-r" alt="">
+      <div class="phx-name phx-dyn" id="phx-name-r"></div>
+      <div class="phx-herolbl" id="phx-herolbl-r">HERO USED</div>
+      <div class="phx-heroname phx-dyn" id="phx-heroname-r"></div>
+    </div>
+
+    <!-- ═══ POST STATS ═══ -->
+    <div id="pst-page" class="fs-scene">
+      <div class="pst-banner" id="pst-banner-h"></div>
+      <img class="pst-blogo" id="pst-blogo-h" alt="">
+      <div class="pst-tname" id="pst-tname-h"></div>
+      <div class="pst-colhdr" id="pst-colhdr-h"></div>
+      <div class="pst-rows" id="pst-rows-h"></div>
+
+      <div class="pst-banner" id="pst-banner-a"></div>
+      <img class="pst-blogo" id="pst-blogo-a" alt="">
+      <div class="pst-tname" id="pst-tname-a"></div>
+      <div class="pst-colhdr" id="pst-colhdr-a"></div>
+      <div class="pst-rows" id="pst-rows-a"></div>
+    </div>
+
+    <!-- ═══ POST GOLD GRAPH ═══ -->
+    <div id="pgg-page" class="fs-scene">
+      <div id="pgg-panel"></div>
+      <img class="pgg-logo" id="pgg-logo-h" alt="">
+      <img class="pgg-logo" id="pgg-logo-a" alt="">
+      <div class="pgg-stats" id="pgg-stats-h"></div>
+      <svg id="pgg-graph"></svg>
+      <div class="pgg-labels" id="pgg-times"></div>
+      <div class="pgg-labels" id="pgg-ylabels"></div>
+      <div class="pgg-stats" id="pgg-stats-a"></div>
+    </div>
+
+    <!-- ═══ POST ITEMS ═══ -->
+    <div id="pit-page" class="fs-scene">
+      <div class="pit-row" id="pit-cards-h"></div>
+      <img id="pit-vs" src="/assets/images/versus_slide/VS_middle.png" alt="VS">
+      <div class="pit-row" id="pit-cards-a"></div>
+    </div>
+
+    <!-- ═══ VERSUS SLIDE ═══ (own header: the shared #fs-header is hidden while it's up, except the year) -->
+    <div id="vsl-page" class="fs-scene">
+      <img class="vsl-flag vsl-hdr" id="vsl-flag-h" alt="">
+      <img class="vsl-logo vsl-hdr" id="vsl-logo-h" alt="">
+      <div class="vsl-abbr vsl-hdr" id="vsl-abbr-h"></div>
+      <div class="vsl-score vsl-hdr" id="vsl-score-h">0</div>
+      <img class="vsl-hdr" id="vsl-event-logo" src="/assets/images/knc_logo.png" alt="" onerror="this.style.visibility='hidden'">
+      <div class="vsl-hdr" id="vsl-stage"></div>
+      <div class="vsl-hdr" id="vsl-series"></div>
+      <div class="vsl-score vsl-hdr" id="vsl-score-a">0</div>
+      <div class="vsl-abbr vsl-hdr" id="vsl-abbr-a"></div>
+      <img class="vsl-logo vsl-hdr" id="vsl-logo-a" alt="">
+      <img class="vsl-flag vsl-hdr" id="vsl-flag-a" alt="">
+      <div id="vsl-vtag"><span class="vsl-vtext">HONOR OF KINGS NATION CLASH</span><span class="vsl-chevs"><i style="--n:0"></i><i style="--n:0"></i><i style="--n:1"></i><i style="--n:1"></i><i style="--n:2"></i><i style="--n:2"></i></span></div>
+      <div class="vsl-team" id="vsl-team-h"></div>
+      <img id="vsl-vs" src="/assets/images/versus_slide/VS_middle.png" alt="VS">
+      <div class="vsl-team" id="vsl-team-a"></div>
+    </div>
+
+    <!-- ═══ HEAD TO HEAD (own header) — js/fs-headtohead.js ═══ -->
+    <div id="h2h-page" class="fs-scene">
+      <img class="h2h-photo" id="h2h-photo-h" alt="">
+      <img class="h2h-photo" id="h2h-photo-a" alt="">
+      <div id="h2h-title">HEAD TO HEAD</div>
+      <div id="h2h-role"><i id="h2h-role-icon"></i><span id="h2h-role-text"></span></div>
+      <div id="h2h-box"></div>
+      <div class="h2h-plate" id="h2h-plate-h"><img class="h2h-flag" id="h2h-flag-h" alt=""><img class="h2h-logo" id="h2h-logo-h" alt=""><div class="h2h-pname"><span id="h2h-name-h"></span></div></div>
+      <div class="h2h-plate" id="h2h-plate-a"><img class="h2h-flag" id="h2h-flag-a" alt=""><img class="h2h-logo" id="h2h-logo-a" alt=""><div class="h2h-pname"><span id="h2h-name-a"></span></div></div>
+      <div id="h2h-vtag"><span class="vsl-vtext">HONOR OF KINGS NATION CLASH</span><span class="vsl-chevs"><i style="--n:0"></i><i style="--n:0"></i><i style="--n:1"></i><i style="--n:1"></i><i style="--n:2"></i><i style="--n:2"></i></span></div>
+    </div>
+
+    <!-- ═══ SHARED: match header, game info, stand-in ticker (above the scenes) ═══ -->
+    <div id="fs-header">
+      <div class="fs-result" id="fs-result-l"></div>
+      <img class="fs-flag" id="fs-flag-l" alt="">
+      <img class="fs-logo" id="fs-logo-l" alt="">
+      <div class="fs-abbr" id="fs-abbr-l"></div>
+      <div class="fs-score" id="fs-score-l">0</div>
+      <img id="fs-event-logo" src="/assets/images/knc_logo.png" alt="" onerror="this.style.visibility='hidden'">
+      <div class="fs-score" id="fs-score-r">0</div>
+      <div class="fs-abbr" id="fs-abbr-r"></div>
+      <img class="fs-logo" id="fs-logo-r" alt="">
+      <img class="fs-flag" id="fs-flag-r" alt="">
+      <div class="fs-result" id="fs-result-r"></div>
+      <div id="fs-fins"><i class="fs-fin" style="--c:0;--r:0"></i><i class="fs-fin" style="--c:1;--r:0"></i><i class="fs-fin" style="--c:2;--r:0"></i><i class="fs-fin" style="--c:3;--r:0"></i><i class="fs-fin" style="--c:4;--r:0"></i><i class="fs-fin" style="--c:5;--r:0"></i><i class="fs-fin" style="--c:0;--r:1"></i><i class="fs-fin" style="--c:1;--r:1"></i><i class="fs-fin" style="--c:2;--r:1"></i><i class="fs-fin" style="--c:3;--r:1"></i><i class="fs-fin" style="--c:4;--r:1"></i><i class="fs-fin" style="--c:5;--r:1"></i><i class="fs-fin" style="--c:0;--r:2"></i><i class="fs-fin" style="--c:1;--r:2"></i><i class="fs-fin" style="--c:2;--r:2"></i><i class="fs-fin" style="--c:3;--r:2"></i><i class="fs-fin" style="--c:4;--r:2"></i><i class="fs-fin" style="--c:5;--r:2"></i></div>
+      <div id="fs-year">2026</div>
+    </div>
+    <div id="fs-gameinfo">
+      <div class="fs-sans" id="fs-gtime-lbl">GAME TIME</div>
+      <div class="fs-sans" id="fs-gtime">00:00</div>
+      <div id="fs-gdivider"></div>
+      <div class="fs-sans" id="fs-game"></div>
+      <div class="fs-sans" id="fs-gseries"></div>
+    </div>
+    <div id="fs-matchinfo">
+      <div id="fs-match"></div>
+      <div id="fs-mseries"></div>
+    </div>
+    <div id="fs-ticker"><div id="fs-ticker-track"></div></div>
+  </div>
+
+  <script>
+  /* FsShared — the layer every scene shares (background video, match header,
+     stand-in ticker). Seamless scene changes:
+       scene.show(): FsShared.claim(name) right away (cancels a pending
+                     release, so nothing shared fades), then
+                     FsShared.reveal(name, data) once its content is ready
+                     (updates the header in place — unchanged values don't flicker).
+       scene.hide(): FsShared.release(name). The shared layer only fades out if
+                     no other scene claims it within RELEASE_MS — a switch is
+                     hide(A)+show(B) back to back, so B's claim keeps it up and
+                     the video never restarts or dips.
+     Background on/off: Control → Fullscreen → Options (GET /overlay/fsbg/show|hide). */
+  var FsShared = (function () {
+    var SRC = '/assets/webm/FHD_BG_LOOP_RT.webm';
+    var RELEASE_MS = 300;
+    var TICKER_TEXT = 'HONOR OF KINGS <b>NATION CLASH</b> 2026 &nbsp;///';
+    var $ = function (id) { return document.getElementById(id); };
+    var v = $('fs-bg-video'), header = $('fs-header'), ticker = $('fs-ticker'), gameinfo = $('fs-gameinfo'), matchinfo = $('fs-matchinfo');
+    var enabled = true, visible = false, claims = {}, releaseTimer = null, pauseTimer = null;
+
+    var spans = '';
+    for (var n = 0; n < 8; n++) spans += '<span>' + TICKER_TEXT + '</span>';
+    $('fs-ticker-track').innerHTML = spans + spans; // two copies → seamless -50% loop
+
+    function render() {
+      document.documentElement.classList.toggle('fs-bg-on', enabled);
+      header.classList.toggle('on', visible);
+      var wants = function (opt) { return Object.keys(claims).some(function (k) { return claims[k] && claims[k][opt]; }); };
+      header.classList.toggle('fs-own', wants('ownHeader'));   // scene draws its own header (year stays)
+      gameinfo.classList.toggle('on', visible && wants('gameInfo'));
+      matchinfo.classList.toggle('on', visible && wants('matchInfo'));
+      ticker.classList.toggle('on', visible && !enabled);
+      clearTimeout(pauseTimer);
+      if (visible && enabled) {
+        if (!v.getAttribute('src')) v.src = SRC;
+        v.classList.add('on');
+        if (v.paused) v.play().catch(function () {});   // already playing → untouched (no restart)
+      } else {
+        v.classList.remove('on');
+        pauseTimer = setTimeout(function () { if (!v.classList.contains('on')) v.pause(); }, 450);
+      }
+    }
+    function anyClaim() { return Object.keys(claims).some(function (k) { return !!claims[k]; }); }
+    function fmtTime(s) { s = Math.max(0, Math.round(s || 0)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+
+    function setLogo(img, url) {
+      if (img.dataset.chain === url) return;
+      img.dataset.chain = url;
+      img.style.visibility = '';
+      img.onerror = function () { img.onerror = null; img.style.visibility = 'hidden'; };
+      img.src = url;
+    }
+    function applyHeader(data) {
+      [['l', data.home || {}], ['r', data.away || {}]].forEach(function (t) {
+        var s = t[0], team = t[1];
+        hokSetText($('fs-result-' + s), team.result || '');
+        $('fs-result-' + s).classList.toggle('defeat', team.result === 'DEFEAT');
+        if (team.abbr) setLogo($('fs-logo-' + s), hokLogo(team.abbr));
+        if (team.abbr) setLogo($('fs-flag-' + s), hokAsset('images/flags/' + team.abbr + '.png'));   // hidden until flag art exists
+        hokSetText($('fs-abbr-' + s), team.abbr || '');
+        hokSetText($('fs-score-' + s), team.score || 0);
+      });
+      hokSetText($('fs-gtime'), fmtTime(data.gameTime));
+      // Match Board → Match Info (lib/matchInfo.js, in the scene payload)
+      var mi = data.matchInfo || {};
+      hokSetText($('fs-game'), mi.gameText || 'GAME ' + (data.gameNumber || 1));   // GAME TIME | GAME 3 / MATCH 1
+      hokSetText($('fs-gseries'), mi.matchText || '');
+      // Big line must fit between Post Items' card rows (x 838–1081) → MATCH 1 / GAME 3 · BEST OF 5
+      hokSetText($('fs-match'), mi.matchText || '');
+      hokSetText($('fs-mseries'), mi.gameBestOfText || '');
+    }
+
+    render();
+    return {
+      // opts: { gameInfo: true }  = this scene also uses the GAME TIME | GAME n block
+      //       { matchInfo: true } = this scene also uses the MATCH n / series block
+      //       { ownHeader: true } = this scene has its own header: hide the shared one (except the year)
+      claim: function (name, opts) { claims[name] = opts || {}; clearTimeout(releaseTimer); },
+      reveal: function (name, data, opts) {
+        claims[name] = opts || claims[name] || {};
+        clearTimeout(releaseTimer);
+        if (data) applyHeader(data);
+        visible = true;
+        render();
+      },
+      release: function (name) {
+        claims[name] = false;
+        clearTimeout(releaseTimer);
+        releaseTimer = setTimeout(function () { if (!anyClaim()) { visible = false; render(); } }, RELEASE_MS);
+      },
+      setEnabled: function (b) { enabled = !!b; render(); },
+    };
+  })();
+  </script>
+  <script src="/html/js/fs-posthexagon.js"></script>
+  <script src="/html/js/fs-poststats.js"></script>
+  <script src="/html/js/fs-postgoldgraph.js"></script>
+  <script src="/html/js/fs-postitems.js"></script>
+  <script src="/html/js/fs-versusslide.js"></script>
+  <script src="/html/js/fs-headtohead.js"></script>
+  <script>
+  (function () {
+    var SCENES = { posthexagon: PostHexagon, poststats: PostStats, postgoldgraph: PostGoldGraph, postitems: PostItems, versusslide: VersusSlide, headtohead: HeadToHead };
+    var sse = createOverlaySSE();
+    sse.addEventListener('reload', function () { location.reload(); });
+    sse.addEventListener('csv', function () { hokCsv.reload(); });
+    sse.addEventListener('appstate', function () { VersusSlide.refresh(); HeadToHead.refresh(); });   // Match Board / draft saved
+
+    // Background on/off is a look option, so preview frames follow it too.
+    fetch('/overlay/check-overlays', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      FsShared.setEnabled(d.fsbg !== false);
+      if (!HOK_PREVIEW && d.poststats) PostStats.show();
+      if (!HOK_PREVIEW && d.postgoldgraph) PostGoldGraph.show();
+      if (!HOK_PREVIEW && d.postitems) PostItems.show();
+      if (!HOK_PREVIEW && d.versusslide) VersusSlide.show();
+    }).catch(function () {});
+    sse.addEventListener('fsbg', function (e) {
+      try { var d = JSON.parse(e.data); if (d.action === 'show' || d.action === 'hide') FsShared.setEnabled(d.action === 'show'); } catch (err) {}
+    });
+
+    // Always know the current Head to Head role (read-only — fine in preview frames).
+    fetch('/overlay/headtohead-state', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      HeadToHead.setRole(d.role);
+      if (!HOK_PREVIEW && d.shown) HeadToHead.show();
+    }).catch(function () {});
+
+    // Always know the current Post Hexagon role (read-only — also fine in preview frames).
+    fetch('/overlay/posthexagon-state', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      PostHexagon.setRole(d.role);
+      if (!HOK_PREVIEW && d.shown) PostHexagon.show(d.role);
+    }).catch(function () {});
+
+    if (!HOK_PREVIEW) {
+      Object.keys(SCENES).forEach(function (key) {
+        sse.addEventListener(key, function (e) {
+          var d; try { d = JSON.parse(e.data); } catch (err) { return; }
+          if (d.action === 'show') SCENES[key].show();
+          else if (d.action === 'hide') SCENES[key].hide();
+          else if (d.action === 'role' && key === 'posthexagon') PostHexagon.setRole(d.role);
+          else if (d.action === 'role' && key === 'headtohead') HeadToHead.setRole(d.role);
+          // unknown actions: ignore
+        });
+      });
+    }
+
+    /* Dashboard preview — local only. Scenes are exclusive here too.
+         previewTrigger('posthexagon' | 'poststats' | 'postgoldgraph' | 'postitems' | 'versusslide' | 'headtohead', 'show'|'hide')
+         previewTrigger('posthexagon_role', '<role>')   previewTrigger('headtohead_role', '<role>')
+         previewTrigger('fsbg', 'show'|'hide') */
+    window.previewTrigger = function (event, action) {
+      if (SCENES[event]) {
+        if (action === 'show') {
+          Object.keys(SCENES).forEach(function (k) { if (k !== event && SCENES[k].isActive()) SCENES[k].hide(); });
+          SCENES[event].show();
+        } else SCENES[event].hide();
+      }
+      else if (event === 'fsbg') FsShared.setEnabled(action === 'show');
+      else if (event === 'posthexagon_role') PostHexagon.setRole(action);
+      else if (event === 'headtohead_role') HeadToHead.setRole(action);
+    };
+
+    HokStyles.load('fullscreen');
+  })();
+  </script>
+</body>
+</html>

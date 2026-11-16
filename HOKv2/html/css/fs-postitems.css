@@ -1,0 +1,69 @@
+/* fullscreen.html — Post Items scene (1920x1080). Background video, match
+   header, MATCH n / series block and ticker come from the shared layer
+   (fs-shared.css). Edit-tab elements = the two card rows + VS (dashboard.html
+   PIT_DEFAULTS — keep in sync); card internals are positioned by class. */
+
+#pit-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1036px; display: none; overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+#pit-page.pit-on { display: block; }
+#pit-page.pit-visible { opacity: 1; }
+#pit-page > * { position: absolute; }
+
+/* VS mark — assets/images/versus_slide/VS_middle.png (99x146, shown at native size) */
+#pit-vs { left: 911px; top: 519px; width: 99px; height: 146px; object-fit: contain; }
+
+/* Card rows: 5 cards x 153 px, 158.25 px pitch (template-matched against
+   post_items/postitems_reference.jpg: x 52/211/369/528/685 and 1081…1714, y 239) */
+.pit-row { display: flex; gap: 5.25px; }
+#pit-cards-h { left: 52px;   top: 239px; }
+#pit-cards-a { left: 1081px; top: 239px; }
+
+/* Card = official art post_items/postitems_heroback.jpg (150x764 — trimmed by the operator so no white edge shows;
+   stretched to the 153x765 card): blue hero
+   window (trapezoid) on top, orange side edges, orange glow fading into blue. */
+.pit-card { position: relative; width: 153px; height: 765px; overflow: hidden;
+  background: url('/assets/images/post_items/postitems_heroback.jpg') 0 0 / 100% 100% no-repeat; }
+/* Hero splash clipped to the art's hero window: full width at the top,
+   narrowing to x 22–130 at y ~300, shallow V bottom (measured from the asset). */
+.pit-hero { position: absolute; left: 0; top: 0; width: 153px; height: 308px; object-fit: cover; object-position: 50% 20%;
+  clip-path: polygon(0 0, 153px 0, 130.5px 298px, 76.5px 307px, 20.5px 300px); }   /* measured on the 150x764 art, scaled to 153x765 */
+/* Player cutout over the hero, fading out downward */
+.pit-photo { position: absolute; left: -115px; top: 98px; width: 380px; height: 380px; object-fit: contain;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 80%); mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 80%); }
+.pit-spell { position: absolute; left: 53px; top: 330px; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgba(255, 200, 60, 0.9); }
+.pit-role { position: absolute; left: 54px; top: 389px; width: 46px; height: 46px;   /* role PNG as a mask, filled white → light cyan like the reference */
+  background: linear-gradient(180deg, #ffffff 0%, #8fe3fb 100%);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.pit-name { position: absolute; left: 4px; top: 447px; width: 145px; text-align: center; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 18px; line-height: 1; color: #ffffff; text-transform: uppercase; white-space: nowrap; transform-origin: left center; }
+.pit-kda { position: absolute; left: 0; top: 483px; width: 153px; text-align: center; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 25px; line-height: 1; color: #ffffff; white-space: nowrap; }
+.pit-gold { position: absolute; left: 0; top: 523px; width: 153px; display: flex; justify-content: center; align-items: center; gap: 7px; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 25px; line-height: 1; color: #ffffff; white-space: nowrap; }
+.pit-coin { width: 22px; height: 22px; border-radius: 50%; background: #ffffff; color: #1f47c8; font-family: Arial, sans-serif; font-weight: 700; font-size: 15px; line-height: 22px; text-align: center; }
+.pit-items { position: absolute; left: 18px; top: 563px; display: grid; grid-template-columns: 54px 54px; grid-auto-rows: 54px; column-gap: 10px; row-gap: 10px; }
+.pit-item { width: 54px; height: 54px; border-radius: 50%; overflow: hidden; background: #24140f; }
+.pit-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Empty slot = official art post_items/postitems_emptyicon.jpg (54x54, clipped round) */
+.pit-item.empty { background: url('/assets/images/post_items/postitems_emptyicon.jpg') 0 0 / 100% 100% no-repeat; }
+
+/* ── Entry animation (transform/opacity only — cheap in OBS/vMix) ──────────
+   Added by fs-postitems.js as #pit-page.pit-enter right after the scene
+   becomes visible; removed on hide so every show replays it.
+   Order: cards rise in from the centre outward (--d per card, set in JS);
+   inside each card the cutout drifts up, then name/KDA/gold, then the six
+   items pop one by one; the VS punches in. */
+.pit-card { opacity: 0; transform: translateY(70px); }
+.pit-photo { opacity: 0; translate: 0 26px; }
+.pit-spell, .pit-role, .pit-name, .pit-kda, .pit-gold { opacity: 0; translate: 0 12px; }
+.pit-item { opacity: 0; scale: 0.4; }
+#pit-vs { opacity: 0; scale: 1.8; }
+
+#pit-page.pit-enter .pit-card { opacity: 1; transform: none;
+  transition: transform 650ms cubic-bezier(0.2, 0.9, 0.25, 1) var(--d), opacity 350ms ease var(--d); }
+#pit-page.pit-enter .pit-photo { opacity: 1; translate: 0 0;
+  transition: translate 700ms cubic-bezier(0.2, 0.9, 0.25, 1) calc(var(--d) + 180ms), opacity 500ms ease calc(var(--d) + 180ms); }
+#pit-page.pit-enter .pit-spell, #pit-page.pit-enter .pit-role { opacity: 1; translate: 0 0;
+  transition: translate 400ms ease-out calc(var(--d) + 320ms), opacity 400ms ease calc(var(--d) + 320ms); }
+#pit-page.pit-enter .pit-name, #pit-page.pit-enter .pit-kda, #pit-page.pit-enter .pit-gold { opacity: 1; translate: 0 0;
+  transition: translate 400ms ease-out calc(var(--d) + 400ms), opacity 400ms ease calc(var(--d) + 400ms); }
+#pit-page.pit-enter .pit-item { opacity: 1; scale: 1;
+  transition: scale 380ms cubic-bezier(0.3, 1.6, 0.5, 1) calc(var(--d) + 520ms + var(--i) * 55ms), opacity 200ms ease calc(var(--d) + 520ms + var(--i) * 55ms); }
+#pit-page.pit-enter #pit-vs { opacity: 1; scale: 1;
+  transition: scale 550ms cubic-bezier(0.25, 1.5, 0.45, 1) 150ms, opacity 250ms ease 150ms; }

@@ -1,0 +1,43 @@
+/* In-Game Overlay — Item Check (BOTTOM quadrant). Panel = itemcheck_bg.png
+   (892x207) at the bottom centre; five rows in role order (Clash → Roam),
+   HOME on the left, AWAY on the right mirrored. Positions measured against
+   assets/images/itemcheck/itemcheck_guide.png. Only #ic-panel is an Edit-tab
+   element (dashboard.html IC_DEFAULTS — keep in sync); rows are built in JS
+   and positioned by class inside the panel. */
+
+/* Show/hide: slides up from below the frame (HokQuadrants toggles .show) */
+#ic-panel { position: absolute; left: 515px; top: 873px; width: 893px; height: 207px; overflow: hidden;
+  background: url('/assets/images/itemcheck/itemcheck_bg.png') 0 0 / 100% 100% no-repeat;
+  transform: translateY(230px); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
+#ic-panel.show { transform: translateY(0); }
+
+.ic-row { position: absolute; left: 0; width: 893px; height: 41px; }   /* top = i * 41 (JS) */
+.ic-row > * { position: absolute; }
+
+/* Hero portraits: full-height columns at both ends, 1px dark gap between rows */
+.ic-hero { top: 0; width: 55px; height: 40px; object-fit: cover; object-position: 50% 22%; background: #1b1424; }
+.ic-hero.h { left: 0; }
+.ic-hero.a { left: 838px; }
+
+/* Gold: coin + value (HOME coin left of value, AWAY value then coin) */
+.ic-coin { top: 14px; width: 14px; height: 14px; border-radius: 50%; background: #ffe14a; color: #1648d3;
+  display: flex; align-items: center; justify-content: center; font: 700 10px/1 Arial, sans-serif; }
+.ic-coin.h { left: 73px; }
+.ic-coin.a { left: 803px; }
+.ic-gold { top: 15px; width: 60px; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 14.5px; line-height: 14px; color: #ffffff; white-space: nowrap; }
+.ic-gold.h { left: 91px; text-align: left; }
+.ic-gold.a { left: 740px; text-align: right; }
+
+/* Items: 32px squares with an orange edge; empty = itemcheck_empty.png */
+.ic-item { top: 6px; width: 32px; height: 32px; box-sizing: border-box; border: 1px solid #ff8d0b; background: #24140f; overflow: hidden; }
+.ic-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ic-item.empty { border: 0; background: url('/assets/images/itemcheck/itemcheck_empty.png') 0 0 / 100% 100% no-repeat; }
+.ic-item.empty img { display: none; }
+
+/* K/D/A either side of the role icon */
+.ic-kda { top: 15px; width: 81px; text-align: center; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 14.5px; line-height: 14px; color: #ffffff; white-space: nowrap; }
+.ic-kda.h { left: 344px; }
+.ic-kda.a { left: 464px; }
+.ic-role { left: 430px; top: 8px; width: 29px; height: 29px;   /* role icon used as a mask, filled white → light cyan like the template */
+  background: linear-gradient(180deg, #ffffff 0%, #a7f4fc 100%);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }

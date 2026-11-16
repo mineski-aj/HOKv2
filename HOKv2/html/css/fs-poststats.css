@@ -1,0 +1,51 @@
+/* fullscreen.html — Post Stats scene (1920x1080). Background video, match
+   header and ticker come from the shared layer (fs-shared.css). Every id rule
+   here is mirrored in dashboard.html PST_DEFAULTS (keep in sync). */
+
+#pst-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: none; overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+#pst-page.pst-on { display: block; }
+#pst-page.pst-visible { opacity: 1; }
+#pst-page > * { position: absolute; }
+
+/* GAME TIME / GAME n: shared layer (#fs-gameinfo in fs-shared.css). */
+
+/* ── Team banner + column header strip = ONE official art piece:
+      assets/images/post_stats/poststats_bar.png (1703x86: blue team banner with
+      flame edge + orange header bar). Placed by template match against
+      poststats_reference.jpg (97/304 and 97/647). Text sits on top of it. ── */
+.pst-banner { background: url('/assets/images/post_stats/poststats_bar.png') 0 0 / 100% 100% no-repeat; }
+#pst-banner-h { left: 97px; top: 304px; width: 1703px; height: 86px; }
+#pst-banner-a { left: 97px; top: 647px; width: 1703px; height: 86px; }
+.pst-blogo { object-fit: contain; }
+#pst-blogo-h { left: 142px; top: 325px; width: 52px; height: 52px; }
+#pst-blogo-a { left: 142px; top: 668px; width: 52px; height: 52px; }
+.pst-tname { font-family: 'KIC2025', sans-serif; font-weight: 700; color: #ffffff; white-space: nowrap; line-height: 1; transform-origin: left center; }
+#pst-tname-h { left: 208px; top: 336px; width: 240px; height: 40px; font-size: 39px; }
+#pst-tname-a { left: 208px; top: 679px; width: 240px; height: 40px; font-size: 39px; }
+
+/* ── Column header labels (the orange bar itself is in poststats_bar.png) ── */
+.pst-colhdr { display: flex; }
+.pst-colhdr span { flex: 1; text-align: center; font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 39px; line-height: 56px; color: #1b1b1b; white-space: nowrap; }
+#pst-colhdr-h { left: 450px; top: 329px; width: 1348px; height: 56px; }
+#pst-colhdr-a { left: 450px; top: 672px; width: 1348px; height: 56px; }
+
+/* ── Player rows (5 per team, role order) ── */
+.pst-rows { display: flex; flex-direction: column; gap: 2px; }
+#pst-rows-h { left: 108px; top: 385px; width: 1690px; }
+#pst-rows-a { left: 108px; top: 728px; width: 1690px; }
+.pst-row { display: flex; height: 50px; gap: 2px; }
+.pst-hero { clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%);   /* slanted left edge like the reference */
+  width: 120px; height: 50px; overflow: hidden; background: #ff8a1a; margin-right: -1px; }   /* name plate starts at x 229 */
+.pst-hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; display: block; }
+.pst-namecell { position: relative; width: 219px; height: 50px; background: url('/assets/images/post_stats/poststats_nameback.png') 0 0 / 100% 100% no-repeat; }   /* official 219x50 plate */
+.pst-role { position: absolute; left: 12px; top: 10px; width: 30px; height: 30px; object-fit: contain; filter: brightness(0) invert(1); }
+.pst-pname { position: absolute; left: 56px; top: 0; width: 156px; line-height: 50px; font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 18px; color: #1b1b1b; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pst-cell { position: relative; width: 335px; height: 50px; background: rgba(62, 72, 96, 0.92); }
+.pst-val { position: absolute; left: 9px; top: 3px; width: 64px; line-height: 50px; font-family: 'Radikal', sans-serif; font-weight: 300; font-size: 17.5px; color: #ffffff; white-space: nowrap; }
+.pst-track { position: absolute; left: 75px; top: 19px; width: 246px; height: 12px; background: #2a0b0b; overflow: hidden; }
+.pst-fill { height: 100%; width: 0; transform: scaleX(0); transform-origin: left center; transition: transform 800ms cubic-bezier(0.2, 0.9, 0.3, 1); }
+#pst-page.pst-grown .pst-fill { transform: scaleX(1); }
+.pst-c0 .pst-fill { background: #e8361c; }  /* damage dealt */
+.pst-c1 .pst-fill { background: #22c55e; }  /* damage taken */
+.pst-c2 .pst-fill { background: #ffa51c; }  /* total gold */
+.pst-c3 .pst-fill { background: #6d28d9; }  /* teamfight rate */

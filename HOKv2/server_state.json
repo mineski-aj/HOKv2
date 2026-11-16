@@ -1,0 +1,121 @@
+{
+    "app_id": "hok_met_ph_tournament",
+    "app_secret": "mdaRyVtFemRYafsyUMmqcPQsPvhZkLgH",
+    "base_url": "https://hok-sg-match.playerinfinite.com",
+    "battle_id": "1793546455_252_169279768",
+    "ob_open_id": "14721625020824982866",
+    "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJRHnuFOLhp3Mtdn39WTnt5kdgtK3V0eIANo1-FQtRgauqwr7ucDj16NLctODpDLNS6WEDnODnsW_B/pub?output=csv",
+    "team_1_abbr": "KAGE",
+    "team_1_score": 2,
+    "team_1_players": [
+        "KAGE.Saule",
+        "KAGE.Fei",
+        "KAGE.Senkooo",
+        "KAGE.Zaan",
+        "KAGE.Lu"
+    ],
+    "team_2_abbr": "DMT",
+    "team_2_score": 1,
+    "team_2_players": [
+        "DMT.Tufz",
+        "DMT.Cy",
+        "DMT.JerL",
+        "DMT.Clean",
+        "DMT.eL"
+    ],
+    "draft_phase_text": "PLAYOFF",
+    "draft_match_text": "BEST OF 7",
+    "draft_mode": "MANUAL",
+    "home_ban_override": [
+        105,
+        0,
+        0,
+        0
+    ],
+    "away_ban_override": [
+        0,
+        0,
+        0,
+        0
+    ],
+    "home_role_swap": [
+        124,
+        0,
+        0,
+        0,
+        0
+    ],
+    "away_role_swap": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "team_1_uids": [
+        "15386513400443639771",
+        "571451020912618902",
+        "17145562027324768716",
+        "13473981453798442148",
+        "10028229355941122752"
+    ],
+    "team_2_uids": [
+        "17350073008320665752",
+        "12650574915437443102",
+        "6889871781961395133",
+        "17952029454513194406",
+        "5919703914464565561"
+    ],
+    "last_updated": 1794831692259,
+    "draft_hide_pick": true,
+    "comp_url": "",
+    "draft_first_pick": "AWAY",
+    "draft_led_home": "OG",
+    "draft_led_away": "DMT",
+    "h_fb": "",
+    "h_dk": "",
+    "h_tk": "",
+    "h_qk": "",
+    "h_pk": "",
+    "h_1t": "",
+    "h_1o": "",
+    "h_ty": "",
+    "h_ov": "",
+    "h_st": "",
+    "h_so": "",
+    "h_td": "",
+    "a_fb": "",
+    "a_dk": "",
+    "a_tk": "",
+    "a_qk": "",
+    "a_pk": "",
+    "a_1t": "",
+    "a_1o": "",
+    "a_ty": "",
+    "a_ov": "",
+    "a_st": "",
+    "a_so": "",
+    "a_td": "",
+    "led_home_players": [
+        "OG.iHanss",
+        "OG.DaoDao",
+        "OG.FlyArthur",
+        "OG.Ahem",
+        "OG.663"
+    ],
+    "led_away_players": [
+        "DMT.Tufz",
+        "DMT.Cy",
+        "DMT.JerL",
+        "DMT.Clean",
+        "DMT.eL"
+    ],
+    "season_ids": "MKL2026Spring",
+    "datacenter_url": "https://hok-esports.playerinfinite.com",
+    "dc_app_id": "hok-thirdparty-met",
+    "dc_app_secret": "12b9233212fb476b4b6b438343a9d5d2234baddc",
+    "fullscreen_bg_off": false,
+    "match_best_of": 3,
+    "match_stage": "GROUP STAGE",
+    "match_day": 1
+}

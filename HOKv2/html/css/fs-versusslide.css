@@ -1,0 +1,92 @@
+/* fullscreen.html — Versus Slide scene (1920x1080). Pre-game line-up: own
+   header (flags, logos, team codes, series scores, event logo, stage + series
+   text) and two framed rows of five player cards (hero art + half-body photo
+   + name). The shared header is hidden while this scene is up
+   (FsShared ownHeader) — only the shared year, background video and ticker
+   stay. Edit-tab elements = every id below (dashboard.html VSL_DEFAULTS —
+   keep in sync); card internals are positioned by class. */
+
+#vsl-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1036px; display: none; overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+#vsl-page.vsl-on { display: block; }
+#vsl-page.vsl-visible { opacity: 1; }
+#vsl-page > * { position: absolute; }
+
+/* ── Header ── */
+.vsl-flag { object-fit: contain; }
+#vsl-flag-h { left: 210px;  top: 154px; width: 58px; height: 30px; }
+#vsl-flag-a { left: 1637px; top: 154px; width: 58px; height: 30px; }
+
+.vsl-logo { object-fit: contain; }
+#vsl-logo-h { left: 286px;  top: 106px; width: 136px; height: 124px; }
+#vsl-logo-a { left: 1486px; top: 106px; width: 136px; height: 124px; }
+
+.vsl-abbr { font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 84px; line-height: 1; color: #ffffff; white-space: nowrap; }
+#vsl-abbr-h { left: 440px;  top: 129px; width: 180px; text-align: left; }
+#vsl-abbr-a { left: 1286px; top: 129px; width: 180px; text-align: right; }
+
+/* Score box: same look as the shared header's (.fs-score in fs-shared.css) */
+.vsl-score { display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #ff9d1f 0%, #ff6e0a 100%);
+  box-shadow: inset 4px 0 0 #36d6ff, inset -4px 0 0 #36d6ff;
+  font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 110px; line-height: 1; color: #ffffff; }
+#vsl-score-h { left: 640px;  top: 100px; width: 80px; height: 131px; }
+#vsl-score-a { left: 1205px; top: 100px; width: 80px; height: 131px; }
+
+#vsl-event-logo { left: 905px; top: 70px; width: 110px; height: 104px; object-fit: contain; }
+#vsl-stage  { left: 710px; top: 181px; width: 500px; text-align: center; white-space: nowrap; line-height: 1;
+  font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 72px; text-transform: uppercase;
+  background: linear-gradient(180deg, #fff27a 0%, #ffd21f 60%, #f2b800 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+#vsl-series { left: 760px; top: 252px; width: 400px; text-align: center; white-space: nowrap; line-height: 1;
+  font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 31px; letter-spacing: 1px; color: #d8f1ff; text-transform: uppercase; }
+
+/* ── Team frames: versus_background.png (803x618, inner black area x 24–779,
+      y 21–597, gold dividers between five ~150px columns). AWAY = mirrored. ── */
+.vsl-team { width: 803px; height: 618px; }
+#vsl-team-h { left: 80px;   top: 332px; }
+#vsl-team-a { left: 1040px; top: 332px; }
+.vsl-frame { position: absolute; left: 0; top: 0; width: 803px; height: 618px; }
+#vsl-team-a .vsl-frame { transform: scaleX(-1); }
+
+/* Cards sit inside the frame's black area, between its dividers (left/width
+   per card are set in JS so the gold lines stay visible). */
+.vsl-card { position: absolute; top: 21px; height: 577px; overflow: hidden; background: #000; }
+/* No hero picked yet (or its art is missing): the frame's own orange instead of black */
+.vsl-card.vsl-empty { background: #fe6001; }
+.vsl-hero { position: absolute; left: 0; top: 0; width: 100%; height: 380px; object-fit: cover; object-position: 50% 18%;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); }
+.vsl-photo { position: absolute; left: 50%; top: 160px; width: 475px; height: 475px; margin-left: -237px; object-fit: contain; }
+.vsl-shade { position: absolute; left: 0; bottom: 0; width: 100%; height: 130px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 70%, rgba(0,0,0,0.85) 100%); }
+.vsl-name { position: absolute; left: 4px; right: 4px; bottom: 11px; text-align: center; white-space: nowrap; line-height: 1;
+  font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 19px; letter-spacing: 0.5px; color: #ffffff; text-transform: uppercase; transform-origin: left center; } /* overflowing text starts at the left edge, so squeeze from there */
+
+/* VS mark — assets/images/versus_slide/VS_middle.png (99x146, native size; same art as Post Items) */
+#vsl-vs { left: 912px; top: 535px; width: 99px; height: 146px; object-fit: contain; }
+
+/* Vertical tag bottom-left: rotated text + three pairs of chevron fins
+   (pure CSS) that idle-pulse downward one pair after another. */
+#vsl-vtag { left: 25px; top: 626px; width: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.vsl-vtext { writing-mode: vertical-rl; font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 31px; line-height: 24px; letter-spacing: 1.1px; color: #ffffff; white-space: nowrap; }
+.vsl-chevs { display: grid; grid-template-columns: 11px 11px; column-gap: 2px; row-gap: 7px; }
+.vsl-chevs i { width: 11px; height: 16px; background: #ffffff; clip-path: polygon(0 0, 100% 100%, 42% 72%, 0 82%);
+  animation: vslChev 1.8s ease-in-out infinite; animation-delay: calc(var(--n) * 0.22s); }
+.vsl-chevs i:nth-child(even) { transform: rotate(180deg); }
+@keyframes vslChev { 0%, 100% { opacity: 0.3; translate: 0 -2px; } 35% { opacity: 1; translate: 0 2px; } 70% { opacity: 0.3; translate: 0 -2px; } }
+
+/* ── Entry animation (transform/opacity only) ─────────────────────────────
+   #vsl-page.vsl-enter is added right after the scene becomes visible and
+   removed on hide, so every show replays it: header drops in, frames slide in
+   from their outer side, cards reveal centre-out (--d per card, set in JS)
+   with the photo rising a little, VS punches in. */
+.vsl-hdr { opacity: 0; translate: 0 -24px; }
+#vsl-team-h { opacity: 0; translate: -80px 0; }
+#vsl-team-a { opacity: 0; translate: 80px 0; }
+.vsl-card { opacity: 0; }
+.vsl-photo { translate: 0 30px; }
+#vsl-vs { opacity: 0; scale: 1.8; }
+
+#vsl-page.vsl-enter .vsl-hdr { opacity: 1; translate: 0 0; transition: translate 500ms cubic-bezier(0.2, 0.9, 0.25, 1), opacity 400ms ease; }
+#vsl-page.vsl-enter #vsl-team-h, #vsl-page.vsl-enter #vsl-team-a { opacity: 1; translate: 0 0;
+  transition: translate 650ms cubic-bezier(0.2, 0.9, 0.25, 1) 100ms, opacity 400ms ease 100ms; }
+#vsl-page.vsl-enter .vsl-card { opacity: 1; transition: opacity 450ms ease calc(350ms + var(--d)); }
+#vsl-page.vsl-enter .vsl-photo { translate: 0 0; transition: translate 700ms cubic-bezier(0.2, 0.9, 0.25, 1) calc(350ms + var(--d)); }
+#vsl-page.vsl-enter #vsl-vs { opacity: 1; scale: 1; transition: scale 550ms cubic-bezier(0.25, 1.5, 0.45, 1) 450ms, opacity 250ms ease 450ms; }

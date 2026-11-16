@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK In-Game Overlay</title>
+  <!-- 1920x1080 transparent browser source. Live control:
+       QUADRANTS (js/overlay-quadrants.js): top / bottom / left / right. Panels in
+       different quadrants can be live together; a panel replaces whatever is up
+       in its own quadrant (out first, then in).
+         Top Bar     (top)    GET /overlay/topbar/show | hide     (SSE 'topbar')
+         Item Check  (bottom) GET /overlay/itemcheck/show | hide  (SSE 'itemcheck')
+         Damage Rank (right)  GET /overlay/damagerank/show | hide (SSE 'damagerank')
+         Gold Rank   (right)  GET /overlay/goldrank/show | hide   (SSE 'goldrank')
+                              GET /overlay/<damagerank|goldrank>/debug/shuffle|climb|auto|live  (fake rank changes)
+         Test background  GET /overlay/testbg/show | hide        (SSE 'testbg')
+         Kill events      GET /overlay/feature/killevents/enable | disable
+         Objectives       GET /overlay/feature/objectives/enable | disable
+         Test an event    GET /overlay/debugevent/kp|obj/<TYPE>  (SSE 'debugevent')
+       ?preview=1 (dashboard iframes) ignores all of the above and is driven
+       only by window.previewTrigger(event, action). -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/overlay-topbar.css">
+  <link rel="stylesheet" href="/html/css/overlay-events.css">
+  <link rel="stylesheet" href="/html/css/overlay-itemcheck.css">
+  <link rel="stylesheet" href="/html/css/overlay-rank.css">
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="canvas">
+    <!-- TOP BAR -->
+    <div id="top-bar">
+      <img id="tb-bg" src="/assets/images/1-ingame-overlay/ingame_knc.png" alt="">
+
+      <div class="tb-text tb-score" id="home-score">0</div>
+      <img class="tb-flag" id="home-flag" alt="">
+      <img class="tb-logo" id="home-logo" alt="">
+      <div class="tb-abbr" id="home-abbr-ingame"></div>
+      <div class="tb-text tb-stats" id="home-dragon">0</div>
+      <div class="tb-text tb-stats" id="home-tower">0</div>
+      <div class="tb-text tb-stats" id="home-gold">0</div>
+      <div class="tb-diff" id="home-diff">+0</div>
+      <div class="tb-text tb-kill" id="home-kill">0</div>
+
+      <img id="tb-event-logo" src="/assets/images/knc_logo.png" alt="" onerror="this.style.visibility='hidden'">
+      <div class="tb-text tb-timer" id="timer">00:00</div>
+
+      <div class="tb-text tb-kill" id="away-kill">0</div>
+      <div class="tb-text tb-stats" id="away-gold">0</div>
+      <div class="tb-diff" id="away-diff">+0</div>
+      <div class="tb-text tb-stats" id="away-tower">0</div>
+      <div class="tb-text tb-stats" id="away-dragon">0</div>
+      <div class="tb-abbr" id="away-abbr-ingame"></div>
+      <img class="tb-logo" id="away-logo" alt="">
+      <img class="tb-flag" id="away-flag" alt="">
+      <div class="tb-text tb-score" id="away-score">0</div>
+
+      <!-- Sponsor logo slot: assets/images/1-ingame-overlay/sponsor.png (hidden while missing) -->
+      <img id="tb-sponsor" src="/assets/images/1-ingame-overlay/sponsor.png" alt="" onerror="this.style.visibility='hidden'">
+      <div class="tb-stage" id="tb-stage"></div>
+      <div class="tb-sub" id="tb-game"></div>
+      <div class="tb-sub" id="tb-series"></div>
+    </div>
+
+    <!-- ITEM CHECK (BOTTOM quadrant) — rows built by js/overlay-itemcheck.js -->
+    <div id="ic-panel"></div>
+
+    <!-- DAMAGE RANK / GOLD RANK (RIGHT quadrant) — title + rows built by js/overlay-rank.js -->
+    <div id="dr-panel"></div>
+    <div id="gr-panel"></div>
+
+    <!-- KILL & OBJECTIVE EVENTS (knckill videos; slots filled per event by js/overlay-knc.js) -->
+    <div id="knc-container">
+      <video id="knc-vid" muted playsinline></video>
+      <div id="knc-square"><img id="knc-photo" alt=""><img id="knc-sqlogo" alt=""></div>
+      <div id="knc-name"></div>
+      <img id="knc-tablogo" alt="">
+    </div>
+  </div>
+
+  <script>
+    // Armed auto-trigger features. Preview iframes never auto-fire (baseline only).
+    var HokFeatures = { killevents: !HOK_PREVIEW, objectives: !HOK_PREVIEW };
+  </script>
+  <script src="/html/js/overlay-quadrants.js"></script>
+  <script src="/html/js/overlay-itemcheck.js"></script>
+  <script src="/html/js/overlay-rank.js"></script>
+  <script src="/html/js/overlay-eventqueue.js"></script>
+  <script src="/html/js/overlay-knc.js"></script>
+  <script src="/html/js/overlay-topbar.js"></script>
+  <script src="/html/js/overlay-killevents.js"></script>
+  <script src="/html/js/overlay-objectives.js"></script>
+  <script>
+  (function () {
+    // Quadrant panels (keep in sync with INGAME_QUADRANTS in routes/overlay.js)
+    HokQuadrants.register('topbar', 'top', document.getElementById('top-bar'), { outMs: 600 });
+    HokQuadrants.register('itemcheck', 'bottom', document.getElementById('ic-panel'), { outMs: 500, onShow: HokItemCheck.refresh });
+    HokQuadrants.register('damagerank', 'right', document.getElementById('dr-panel'), { outMs: 500, onShow: HokDamageRank.refresh });
+    HokQuadrants.register('goldrank', 'right', document.getElementById('gr-panel'), { outMs: 500, onShow: HokGoldRank.refresh });
+    var QUAD_KEYS = ['topbar', 'itemcheck', 'damagerank', 'goldrank'];
+    var RANK_PANELS = { damagerank: HokDamageRank, goldrank: HokGoldRank };
+
+    function applyCheck(key, shown) {
+      if (HokQuadrants.has(key)) HokQuadrants.set(key, shown);
+      else if (key === 'testbg') document.body.classList.toggle('test-bg', shown);
+    }
+
+    // Same mock payload the server's /overlay/debugevent builds.
+    function mockEvent(category, type) {
+      var s = window.hokLastState || {};
+      var abbr = s.team_1_abbr || 'TEAM';
+      var name = (s.team_1_abbr || 'PLAYER') + '.Player1';
+      if (type === 'ACE') name = window.hokTeamFullName(abbr) || abbr + ' ESPORTS';
+      return { category: category, type: type, name: name, logo: abbr, photo: 'default' };
+    }
+    var KILL_TYPES = ['FIRST BLOOD', 'DOUBLE KILL', 'TRIPLE KILL', 'QUADRA KILL', 'PENTA KILL', 'ACE'];
+
+    var sse = createOverlaySSE();
+    sse.addEventListener('reload', function () { location.reload(); });
+    sse.addEventListener('csv', function () { hokCsv.reload(); });
+    sse.addEventListener('appstate', function () { HokPoll.now(); });
+
+    if (!HOK_PREVIEW) {
+      // Restore real broadcast state, then follow it live.
+      fetch('/overlay/check-overlays', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        QUAD_KEYS.concat('testbg').forEach(function (k) { applyCheck(k, !!d[k]); });
+      }).catch(function () {});
+      fetch('/overlay/features', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        HokFeatures.killevents = d.killevents !== false;
+        HokFeatures.objectives = d.objectives !== false;
+      }).catch(function () {});
+
+      QUAD_KEYS.concat('testbg').forEach(function (key) {
+        sse.addEventListener(key, function (e) {
+          try {
+            var d = JSON.parse(e.data);
+            if (d.action === 'show' || d.action === 'hide') applyCheck(key, d.action === 'show');
+            else if (RANK_PANELS[key] && d.action === 'debug') RANK_PANELS[key].debug(d.mode, d.seed);
+          } catch (err) {}
+        });
+      });
+      sse.addEventListener('featuretoggle', function (e) {
+        try { var d = JSON.parse(e.data); if (d.feature in HokFeatures) HokFeatures[d.feature] = !!d.enabled; } catch (err) {}
+      });
+      // Test events fire regardless of the arm toggles (same as v1).
+      sse.addEventListener('debugevent', function (e) {
+        try { HokEvents.push(JSON.parse(e.data)); } catch (err) {}
+      });
+    }
+
+    /* Dashboard preview — local to this iframe only, never touches the server.
+         previewTrigger('topbar'|'itemcheck'|'damagerank'|'goldrank'|'testbg', 'show'|'hide')   (quadrant rule applies here too)
+         previewTrigger('damagerank_debug'|'goldrank_debug', 'shuffle'|'climb'|'auto'|'live')   fake rank changes
+         previewTrigger('debugevent', '<TYPE>')   e.g. 'DOUBLE KILL', 'FIRST TYRANT' */
+    window.previewTrigger = function (event, action) {
+      if (HokQuadrants.has(event) || event === 'testbg') applyCheck(event, action === 'show');
+      else if (/_debug$/.test(event) && RANK_PANELS[event.replace(/_debug$/, '')]) RANK_PANELS[event.replace(/_debug$/, '')].debug(action);
+      else if (event === 'debugevent' && action && action !== 'hide') {
+        HokPoll.ready(function () { HokEvents.push(mockEvent(KILL_TYPES.indexOf(action) !== -1 ? 'kp' : 'obj', action)); });
+      }
+    };
+
+    // Edit tab: hold a kill/objective event on screen once data has arrived.
+    window.hokEditHold = function (category, type) {
+      HokPoll.ready(function () {
+        if (category === 'kp') window.hokHoldKillEvent(type);
+        else window.hokHoldObjectiveEvent(type);
+      });
+    };
+
+    HokStyles.load('overlay');
+    HokPoll.start({ sources: ['state', 'ingame', 'teams'], interval: 500 });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+/* fullscreen.html — Post Hexagon scene (1920x1080).
+   Every element is absolutely positioned in canvas coordinates with its own
+   id rule; defaults mirrored in dashboard.html PHX_DEFAULTS (keep in sync).
+   Colours: home series = light orange, away = deep orange. */
+:root {
+  --phx-home: #ffb43c;
+  --phx-away: #ff7417;
+  --phx-blue-dark: #0b2f9e;
+}
+
+/* Height stops at y 1036 = top of the ticker band (baked into the background
+   video, and the stand-in #fs-ticker): the player cutouts are cropped there
+   instead of running under the ticker. */
+#phx-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1036px; display: none; overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+#phx-page.phx-on { display: block; }
+#phx-page.phx-visible { opacity: 1; }
+#phx-page > * { position: absolute; }
+
+/* Role switch while on air (fs-posthexagon.js setRole): photos + radar shapes
+   fade out/in (.phx-out); everything else crossfades against a .phx-ghost copy
+   of its old look. Only elements whose content changes are touched. */
+#phx-page .phx-photo, #phx-page .phx-herocard img, #phx-page .phx-roleicon, #phx-page .phx-name, #phx-page .phx-heroname,
+#phx-page .phx-item, #phx-page .phx-stat .v, #phx-page .phx-stat .k { transition: opacity 360ms ease; }
+#phx-page .phx-photo { transition: opacity 240ms ease; }
+#phx-page .phx-out { opacity: 0 !important; }
+#phx-page .phx-instant { transition: none !important; }
+#phx-page .phx-ghost { transition: opacity 360ms ease !important; z-index: 5; }
+#phx-radar .phx-poly.phx-out { opacity: 0; }
+
+/* Background video, match header and ticker: shared layer (fs-shared.css). */
+
+/* MATCH n / series: shared layer (#fs-matchinfo in fs-shared.css). */
+
+/* ── Centre: radar ── */
+#phx-panel { left: 503px; top: 350px; width: 917px; height: 655px; background: rgba(120, 175, 255, 0.16); }
+#phx-radar { left: 752px; top: 430px; width: 420px; height: 420px; overflow: visible; }
+#phx-radar .phx-ring { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 1.2; }
+#phx-radar .phx-axis { stroke: rgba(255, 255, 255, 0.45); stroke-width: 1; }
+#phx-radar .phx-poly { transform-box: view-box; transform-origin: 210px 210px; transform: scale(0); transition: transform 900ms cubic-bezier(0.2, 0.9, 0.25, 1.15), opacity 240ms ease; }
+#phx-radar .phx-poly.home { fill: var(--phx-home); fill-opacity: 0.85; transition-delay: 150ms, 0ms; }  /* delay = grow only, not the swap fade */
+#phx-radar .phx-poly.away { fill: var(--phx-away); fill-opacity: 0.78; transition-delay: 350ms, 0ms; }
+#phx-page.phx-grown #phx-radar .phx-poly { transform: scale(1); }
+
+.phx-stat { width: 300px; height: 104px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; line-height: 1; }
+.phx-stat .vals { white-space: nowrap; flex-shrink: 0; }
+.phx-stat .v { font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 36px; display: inline-block; margin: 0 9px; }
+.phx-stat .v.home { color: var(--phx-home); }
+.phx-stat .v.away { color: var(--phx-away); }
+/* Labels are the role's stat names: wrapped into a narrow balanced block
+   (2-3 lines) instead of one long line. max-width sets where they break. */
+.phx-stat .k { max-width: 140px; flex-shrink: 0; font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.05; color: #ffffff; margin-top: 4px; text-wrap: balance;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+/* Slots 0 (top), 1 (top-right), 7 (top-left) are bottom-anchored so a 2-line label grows upward, away from the radar */
+#phx-stat-0, #phx-stat-1, #phx-stat-7 { justify-content: flex-end; }
+#phx-stat-0 { left: 812px;  top: 342px; }
+#phx-stat-1 { left: 1020px; top: 406px; }
+#phx-stat-2 { left: 1078px; top: 590px; }
+#phx-stat-3 { left: 1022px; top: 809px; }
+#phx-stat-4 { left: 812px;  top: 878px; }
+#phx-stat-5 { left: 608px;  top: 809px; }
+#phx-stat-6 { left: 548px;  top: 590px; }
+#phx-stat-7 { left: 613px;  top: 406px; }
+
+/* ── Player sides ── */
+.phx-herocard {
+  overflow: hidden;
+  background: url('/assets/images/versus_slide/hexagon_container.png') 0 0 / 100% 100% no-repeat;
+  -webkit-mask: url('/assets/images/versus_slide/hexagon_container.png') 0 0 / 100% 100% no-repeat;
+  mask: url('/assets/images/versus_slide/hexagon_container.png') 0 0 / 100% 100% no-repeat;
+}
+/* Hero splash clipped to the container shape, fading out downward so the container's orange/yellow shows below */
+.phx-herocard img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; display: block;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 50%, transparent 90%); mask-image: linear-gradient(180deg, #000 0%, #000 50%, transparent 90%); }
+#phx-hero-l { left: 41px;   top: 258px; width: 413px; height: 486px; }
+/* AWAY: container art (and its mask) mirrored; the hero splash is flipped back so it isn't mirrored */
+#phx-hero-r { left: 1464px; top: 254px; width: 413px; height: 486px; transform: scaleX(-1); }
+#phx-hero-r img { transform: scaleX(-1); }
+
+.phx-photo { object-fit: contain; }
+#phx-photo-l { left: 27px;   top: 294px; width: 760px; height: 760px; }
+#phx-photo-r { left: 1135px; top: 294px; width: 760px; height: 760px; }
+
+.phx-items { display: grid; grid-template-columns: 64px 64px; grid-auto-rows: 64px; gap: 10px 12px; }
+.phx-item { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: url('/assets/images/versus_slide/hexa_itemempty.png') center / 100% 100% no-repeat; box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
+/* Empty slot = the empty-item art alone (no ring). Also shown under an item whose icon file is missing. */
+.phx-item.empty { box-shadow: none; }
+.phx-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#phx-items-l { left: 22px;   top: 760px; width: 140px; height: 212px; }
+#phx-items-r { left: 1760px; top: 760px; width: 140px; height: 212px; }
+
+/* Name plate art (blue name band + yellow hero band in one): hexagon_playerinfo.png 481x127; AWAY mirrored */
+.phx-plate { background: url('/assets/images/versus_slide/hexagon_playerinfo.png') 0 0 / 100% 100% no-repeat; }
+#phx-plate-l { left: 165px;  top: 892px; width: 481px; height: 127px; }
+#phx-plate-r { left: 1276px; top: 894px; width: 481px; height: 127px; transform: scaleX(-1); }
+
+.phx-roleicon { object-fit: contain; filter: brightness(0) invert(1); opacity: 0.9; }
+#phx-roleicon-l { left: 240px;  top: 903px; width: 54px; height: 54px; }
+#phx-roleicon-r { left: 1631px; top: 903px; width: 54px; height: 54px; }
+
+.phx-name { font-family: 'KIC2025', sans-serif; font-weight: 700; color: #ffffff; white-space: nowrap; line-height: 1; text-align: center; transform-origin: center center; }
+#phx-name-l { left: 316px;  top: 905px; width: 330px; height: 60px; font-size: 53px; }
+#phx-name-r { left: 1274px; top: 907px; width: 330px; height: 60px; font-size: 53px; }
+
+/* Hero label + name are vertically centred on the plate art's yellow band (y 970–1012 left, 972–1014 right) */
+.phx-herolbl { font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 18px; color: #172866; white-space: nowrap; line-height: 1; text-align: center; }
+#phx-herolbl-l { left: 235px;  top: 985px; width: 160px; }
+#phx-herolbl-r { left: 1526px; top: 987px; width: 160px; }
+.phx-heroname { font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 23px; color: #172866; white-space: nowrap; line-height: 1; text-align: center; text-transform: uppercase; }
+#phx-heroname-l { left: 410px;  top: 983px; width: 200px; }
+#phx-heroname-r { left: 1312px; top: 985px; width: 200px; }
+

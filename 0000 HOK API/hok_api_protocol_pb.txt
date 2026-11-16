@@ -1,0 +1,255 @@
+Link: 
+https://hok-sg-match.playerinfinite.com/match_data/**
+example: https://hok-sg-match.playerinfinite.com/match_data/api/HOKBanPickList
+
+/api/HOKBanPickList
+req:
+message HOKBanPickListReq {
+  string ObOpenId = 1;
+}
+rsp:
+message HOKBanPickListRsp {
+  int32 ret = 1;
+  string msg = 2;
+  repeated BanPickItem BanPickList = 3;
+}
+message BanPickItem {
+  bool IsBan = 1;
+  string Dteventtime = 2;
+  string HeroID = 3;
+  string Camp = 4;
+}
+----------------------------------------------------------------------
+
+/api/HOKBattleDetail
+req:
+message HOKBattleDetailReq {
+  string BattleID = 1;
+}
+
+rsp:
+message HOKBattleDetailRsp {
+  int32 ret = 1;
+  string msg = 2;
+  HOKBattleItem BattleDetail = 3;
+}
+
+message HOKBattleItem {
+  string BattleID = 1;
+  string WinTeamId = 2;
+  uint32 LastEventTime = 3;
+  uint32 StartTime = 4;
+  uint32 EndTime = 5;
+  repeated BanPickItem BanPickList = 6;
+  repeated string PlayerOpenid = 7;
+  uint32 Status = 8; // 1 未开始 2 已取消 3 进行中 4 已结束
+  string BlueTId = 9;
+  uint32 GameDuration = 10;
+  string RedTId = 11;
+  repeated string Nicknames = 12;
+  string _id = 13;
+  string SeasonID = 14;
+  repeated string Observers = 15;
+  string ScheduleID = 16;
+int32 GameStatus = 17;  // 1:bp中 2:战斗中 3：战斗结束
+}
+
+----------------------------------------------------------------------
+
+/api/HOKBattleList
+
+message HOKBattleListReq {
+  string ObOpenId = 1;
+  int32 page_offset = 2;
+  int32 page_size = 3; // 单页数量上限30
+}
+
+message HOKBattleListRsp {
+  int32 ret = 1;
+  string msg = 2;
+  repeated HOKBattleItem BattleList = 3;
+  int32 total = 4;
+}
+
+message HOKBattleItem {
+  string BattleID = 1;
+  string WinTeamId = 2;
+  uint32 LastEventTime = 3;
+  uint32 StartTime = 4;
+  uint32 EndTime = 5;
+  repeated BanPickItem BanPickList = 6;
+  repeated string PlayerOpenid = 7;
+  uint32 Status = 8; // 1 未开始 2 已取消 3 进行中 4 已结束
+  string BlueTId = 9;
+  uint32 GameDuration = 10;
+  string RedTId = 11;
+  repeated string Nicknames = 12;
+  string _id = 13;
+  string SeasonID = 14;
+  repeated string Observers = 15;
+  string ScheduleID = 16;
+  int32 GameStatus = 17;  // 1:bp中 2:战斗中 3：战斗结束
+}
+
+----------------------------------------------------------------------
+
+/api/HOKEventList
+
+message HOKEventListReq {
+  string BattleID = 1;
+}
+
+message HOKEventListRsp {
+  int32 ret = 1;
+  string msg = 2;
+  repeated HOKEventItem HOKEventList = 3;
+}
+
+message HOKEventItem {
+  string ScheduleID = 1;
+  string _id = 2;
+  string BattleID = 3;
+  string SeasonID = 4;
+  uint32 CurrentTime = 5;
+  string KillerOpenID = 6; //击杀者openid
+  uint32 KillerCamp = 7; //击杀者阵营
+  string KillerTeamId = 8; //击杀者teamid，目前无意义
+  string DeathOpenid = 9; //死者openid，如果是野怪和塔为空
+  uint32 DeathCamp = 10; //死者阵营
+  string DeathTeamId = 11; //死者teamid，无意义
+  uint32 DeathTypeDef = 12; // 0: Hero; 英雄 1:Monster(Minion Wave, Monster, Dragon); 怪物(兵线、野怪、龙) 2: Mechanic(Tower, Crystal); 机关（防御塔、水晶）
+  uint32 DeathSubType = 13; // 11:Minion Wave; 兵线 12:Tryant; 暴君 13:Shadow Overlord; 大主宰 14:Blue Buff; 蓝爸爸 15:Red Buff; 红爸爸 16:Tyrant; 小暴君 17:Shadow Tyrant; 大暴君 18:Overlord; 小主宰 19:Tempest Dragon; 风暴龙王 21:Tower; 普通炮塔 22:High Ground Tower; 高地塔 23:Spring Tower; 泉水塔 24:Crystal; 基地水晶
+  uint32 KillerTypeDef = 14; // 0: Hero; 英雄 1:Monster(Minion Wave, Monster, Dragon); 怪物(兵线、野怪、龙) 2: Mechanic(Tower, Crystal); 机关（防御塔、水晶）
+  uint32 KillerSubType = 15; // 11:Minion Wave; 兵线 12:Tryant; 暴君 13:Shadow Overlord; 大主宰 14:Blue Buff; 蓝爸爸 15:Red Buff; 红爸爸 16:Tyrant; 小暴君 17:Shadow Tyrant; 大暴君 18:Overlord; 小主宰 19:Tempest Dragon; 风暴龙王 21:Tower; 普通炮塔 22:High Ground Tower; 高地塔 23:Spring Tower; 泉水塔 24:Crystal; 基地水晶
+  uint32 AssistNum = 16; // Assist Number; 助攻人数
+  uint32 Camp = 17; // 枚举值1， 2 表示阵营1 或者阵营2
+  string TeamId = 18; // Camp阵营对应的teamid 比如 KIC2023_ts 可以在管理段查看 队伍id 这里teamid暂时没有处理
+  string openid = 19; 
+}
+
+----------------------------------------------------------------------
+
+/api/HOKPlayerList
+
+message HOKPlayerListReq {
+  string BattleID = 1;
+}
+
+message HOKPlayerListRsp {
+  int32 ret = 1;
+  string msg = 2;
+  repeated HOKPlayerItem HOKPlayerList = 3;
+}
+
+message HOKPlayerItem {
+  uint32 KillBigDragonCnt = 1; //Total Tyrant Kills; 杀小暴君数量
+  uint32 KillDarkBigDragonCnt = 2; //Total Shadow Tyrant Kills; 杀大暴君数量
+  uint32 KillXiaoZhuzaiCnt = 3; //Total Overlord Kills; 杀小主宰数量
+  uint32 KillYuanGuBaoJunCnt = 4; //Total Tempest Dragon Kills; 杀风暴龙王数量
+  uint32 VSTAllDeadCnt = 5; //Number of Aces; 团灭数量
+  uint32 VSTDominateBattleCnt = 6; //Number of Dominates; 主宰战场数量
+  string NickName = 7; //Player Nickname; 选手昵称
+  repeated string Equips = 8; //Equipment; 装备
+  uint32 SkillID = 9; //Summoner Skill; 召唤师技能
+  uint32 VSTOdySseyCnt = 10; //Legendary; 天下无双
+  string openid = 11; //OpenID; 选手openid
+  uint32 VSTTotalAnnihilatCnt = 12; //Godlike; 横扫千军
+  uint32 VTDoubleKill = 13; //Double Kill; 双杀
+  uint32 VTPentaKill = 14; //Penta Kill; 五杀
+  uint32 VTQuataryKill = 15; //Quadra Kill; 四杀
+  uint32 VTSingleKill = 16; //Single Kill; 一杀
+  uint32 VTTripleKill = 17; //Triple Kill; 三杀
+  uint32 SelfKillDarkCnt = 18; //Total Shadow Tyrant Kills; 击杀黑暗暴君数
+  uint32 A = 19; //Assists; 助攻
+  uint32 Gold = 20; //Gold; 经济
+  string HeroName = 21; //Hero Name; 英雄名
+  map<string, RuneItem> Rune = 22; //Arcana; 铭文
+  uint32 D = 23; //Deaths; 死亡
+  uint32 VSTStopMultiKillCnt = 24; //Shutdown; 终结
+  uint32 VSTMonsterKillCnt = 25; //Killing Spree; 大杀特杀
+  string ScheduleID = 26; //Schedule ID; 赛程ID
+  uint32 VSTLegendaryCnt = 27; //Legendary; 超神
+  uint32 VSTFirstKillCnt = 28; //First Blood; 一血
+  string BattleID = 29; //Battle ID; 单场对战ID
+  uint32 Camp = 30; //1：Blue Team 2：Red Team; 1：蓝方 2：红方
+  uint32 TotalBeHurtByHero = 31; //Damage Taken; 承受英雄伤害
+  uint32 Exp = 32; //Experience; 经验
+  uint32 TotalHurt = 33; //Total Damage Dealt; 总输出
+  uint32 KillMonsterCnt = 34; //Monsters Kills; 击杀野怪数量
+  uint32 TotalRedBuff = 35; //Red Buff Kills； 击杀红爸爸数
+  uint32 TotalHurtToHero = 36; //Damage to Heroes； 对英雄伤害输出
+  uint32 K = 37; //Kills; 击杀
+  uint32 KillBaoJunCnt = 38; //Tyrant Kills; 击杀暴君数
+  uint32 KillBaronCnt = 39; //Shadow Overlord Kills; 击杀大主宰数
+  string ClubID = 40; //ClubID
+  string TeamId = 41; //Team ID; 战队ID
+  uint32 StealMonster = 42; //Counter Monster Quantity; 反野数量
+  uint32 StealRedBuff = 43; //Counter Red Buff Quantity; 偷取红buf
+  uint32 StealBlueBuff = 44; //Counter Blue Buff Quantity; 偷取蓝buf
+  string HeroID = 45; //HeroID
+  uint32 HealCnt = 46; //治疗数值，待做
+  uint32 SoftCtrlTime = 47; //软控时长，待做
+  uint32 HardCtrlTime = 48; //硬控时长，待做
+  string Location = 49; //地图位置坐标，待做
+  uint32 ReviveTime = 50; //revive time
+ 
+   // 在回包中但是不在文档中
+  uint32 SkinID = 51;
+  string SeasonID = 52;
+  string PlayerUID = 53;
+  uint32 LastHit = 54;
+  uint32 Level = 55;
+  uint32 HorizonValue = 56; // 视野价值(一定时间内自己首先发现敌方英雄视野的次数)
+  uint32 CurrentGameTime = 57;
+  uint32 FirstBloodTime = 58;
+  string PlayerID = 59;
+  uint32 TotalBlueBuff = 60;
+  string _id = 61; //该记录唯一标识
+}
+
+------------------------------------------------------------
+
+/api/HOKTeamList
+message HOKTeamListReq {
+  string BattleID = 1;
+}
+
+message HOKTeamListRsp {
+  int32 ret = 1;
+  string msg = 2;
+  repeated HOKTeamItem HOKTeamList = 3;
+}
+
+message HOKTeamItem {
+  string BattleID = 1; // Battle ID; 单场对战ID
+  string TeamId = 2; // Team ID; 战队ID
+  uint32 KillDragonNumber = 3; // Total Dragon Kills; 杀龙
+  uint32 Camp = 4; // 1：Blue Team 2：Red Team; 1：蓝方 2：红方
+  uint32 KillTowerNumber = 5; // Towers Destoryed; 杀塔
+  uint32 KillBigDragonCnt = 6; // Total Tyrant Kills; 累计击杀暴君数
+  uint32 KillXiaoZhuzaiCnt = 7; //Total Overlord Kills; 累计击杀主宰数
+  uint32 CurrentGameTime = 8; // Current Game Time; 当前游戏时长，单位秒
+  uint32 KillBaronCnt = 9; // Total Shadow Overlord Kills; 累计击杀暗影主宰数
+  uint32 TotalRedBuff = 10; // Total Red Buff; 红buf数
+  uint32 KillYuanGuBaoJunCnt = 11; // Total Tempest Dragon Kills; 累计击杀风暴龙王数
+  uint32 Exp = 12; // Experience; 经验
+  uint32 IsWin = 13; // 1:Victory 2：Defeat: 1:胜利 2：失败
+  uint32 TotalBlueBuff = 14; // Total Blue Buff; 蓝buf数
+  uint32 Gold = 15; // Total Gold; 经济
+  uint32 TotalHurt = 16; // Damage Dealt; 总输出
+  uint32 TotalHurtToHero = 17; // Damage to Heroes; 对英雄伤害输出
+  uint32 TotalBeHurtByHero = 18; // Damage Taken; 承受英雄伤害
+  string ScheduleID = 19; // Schedule ID; 赛程ID
+  uint32 KillDarkBigDragonCnt = 20; // 击杀暗影暴君数，和黑暗暴君是一个野怪
+  string _id = 21; // 该条数据唯一标识
+  uint32 A = 22; // 队伍总助攻数
+  string SeasonID = 23; //赛季ID
+  uint32 K = 24; // 队伍总击杀数
+  uint32 D = 25; // 队伍总死亡数
+  uint32 FirstTowerDesTime = 26; //首次破坏敌方防御塔时间
+  uint32 Score = 27; // TODO 待确认
+  uint32 KillDarDragonCnt = 28; //无数据，忽略即可
+  uint32 FirstBloodTime = 29; //一血时间点, 单位秒
+  uint32 KillBaoJunCnt = 30; //累计击杀暴君数
+
+}

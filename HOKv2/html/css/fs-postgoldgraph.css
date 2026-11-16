@@ -1,0 +1,44 @@
+/* fullscreen.html — Post Gold Graph scene (1920x1080). Background video,
+   match header, GAME TIME block and ticker come from the shared layer
+   (fs-shared.css). Every id rule here is mirrored in dashboard.html
+   PGG_DEFAULTS (keep in sync). HOME = top stat row + orange area (HOME ahead),
+   AWAY = bottom stat row + grey area (AWAY ahead). */
+:root { --pgg-home: #ff6a00; --pgg-away: #8e8e96; --pgg-line: #ff7a1a; }
+
+#pgg-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: none; overflow: hidden; opacity: 0; transition: opacity 400ms ease; }
+#pgg-page.pgg-on { display: block; }
+#pgg-page.pgg-visible { opacity: 1; }
+#pgg-page > * { position: absolute; }
+
+#pgg-panel { left: 0; top: 325px; width: 1920px; height: 710px; background: rgba(120, 175, 255, 0.12); }
+
+.pgg-logo { object-fit: contain; }
+#pgg-logo-h { left: 68px; top: 480px; width: 124px; height: 112px; }
+#pgg-logo-a { left: 68px; top: 670px; width: 124px; height: 112px; }
+
+/* Stat rows: 8 columns (icon / label / value), built by fs-postgoldgraph.js */
+.pgg-stats { width: 1580px; height: 140px; }
+#pgg-stats-h { left: 194px; top: 386px; }
+#pgg-stats-a { left: 194px; top: 806px; }
+.pgg-col { position: absolute; top: 0; width: 180px; height: 140px; text-align: center; }
+.pgg-col img { display: block; width: 34px; height: 34px; margin: 0 auto; object-fit: contain; }
+.pgg-col .k { margin-top: 6px; height: 50px; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 20px; line-height: 23px; color: #ffffff; text-transform: uppercase; }
+.pgg-col .v { margin-top: 6px; font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 40px; line-height: 1; color: #ffffff; white-space: nowrap; }
+
+/* Graph (SVG, built/drawn by JS). Centre line at canvas y = 635. */
+#pgg-graph { left: 210px; top: 515px; width: 1650px; height: 240px; overflow: visible; }
+#pgg-graph .pgg-base { stroke: var(--pgg-line); stroke-width: 2; }
+#pgg-graph .pgg-diamond { fill: var(--pgg-line); }
+#pgg-graph .pgg-tick { stroke: var(--pgg-line); stroke-width: 1.2; opacity: 0.85; }
+#pgg-graph .pgg-area-home { fill: var(--pgg-home); }
+#pgg-graph .pgg-area-away { fill: var(--pgg-away); }
+#pgg-graph .pgg-reveal { transform: scaleX(0); transform-origin: 0 0; transition: transform 1600ms cubic-bezier(0.35, 0.1, 0.25, 1); }
+#pgg-page.pgg-grown #pgg-graph .pgg-reveal { transform: scaleX(1); }
+
+/* Time labels under the ticks / scale labels on the right */
+.pgg-labels { pointer-events: none; }
+.pgg-labels span { position: absolute; font-family: 'Radikal', sans-serif; font-weight: 500; color: #ffffff; white-space: nowrap; line-height: 1; transform: translateX(-50%); }
+#pgg-times { left: 210px; top: 750px; width: 1650px; height: 34px; font-size: 26px; }
+#pgg-times span { top: 0; }
+#pgg-ylabels { left: 1765px; top: 515px; width: 90px; height: 240px; font-size: 26px; }
+#pgg-ylabels span { left: 45px; transform: translate(-50%, -50%); }

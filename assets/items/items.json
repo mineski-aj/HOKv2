@@ -1,0 +1,430 @@
+{
+  "1111": {
+    "name": "Iron Sword",
+    "type": "1"
+  },
+  "1112": {
+    "name": "Dagger",
+    "type": "1"
+  },
+  "1113": {
+    "name": "Pugilist's Gauntlet",
+    "type": "1"
+  },
+  "1114": {
+    "name": "Vampiric Scythe",
+    "type": "1"
+  },
+  "1116": {
+    "name": "Thunderclap Brand",
+    "type": "1"
+  },
+  "1121": {
+    "name": "Storm Sword",
+    "type": "1"
+  },
+  "1122": {
+    "name": "Sunglow Striker",
+    "type": "1"
+  },
+  "1123": {
+    "name": "Twinblades of Destruction",
+    "type": "1"
+  },
+  "1124": {
+    "name": "Meteor",
+    "type": "1"
+  },
+  "1125": {
+    "name": "Demonsbane",
+    "type": "1"
+  },
+  "1126": {
+    "name": "Doomsday",
+    "type": "1"
+  },
+  "1127": {
+    "name": "Destiny",
+    "type": "1"
+  },
+  "1128": {
+    "name": "Deepfrost Siege",
+    "type": "1"
+  },
+  "1129": {
+    "name": "Swiftstrike Lance",
+    "type": "1"
+  },
+  "1131": {
+    "name": "Starbreaker",
+    "type": "1"
+  },
+  "1132": {
+    "name": "Bloodweeper",
+    "type": "1"
+  },
+  "1133": {
+    "name": "Eternity Blade",
+    "type": "1"
+  },
+  "1134": {
+    "name": "Master Sword",
+    "type": "1"
+  },
+  "1135": {
+    "name": "Sparkforged Dagger",
+    "type": "1"
+  },
+  "1136": {
+    "name": "Shadow Ripper",
+    "type": "1"
+  },
+  "1137": {
+    "name": "Axe of Torment",
+    "type": "1"
+  },
+  "1138": {
+    "name": "Overlord's Might",
+    "type": "1"
+  },
+  "1141": {
+    "name": "Sunchaser",
+    "type": "1"
+  },
+  "1154": {
+    "name": "Cloud Piercer",
+    "type": "1"
+  },
+  "1155": {
+    "name": "Daybreaker's Virtue",
+    "type": "1"
+  },
+  "1156": {
+    "name": "Haste - Sunpool",
+    "type": "1"
+  },
+  "1157": {
+    "name": "Immovable - Sky Dome",
+    "type": "1"
+  },
+  "1158": {
+    "name": "Bloodsoul",
+    "type": "1"
+  },
+  "1159": {
+    "name": "Tempest",
+    "type": "1"
+  },
+  "1211": {
+    "name": "Spell Tome",
+    "type": "2"
+  },
+  "1214": {
+    "name": "Sage's Codex",
+    "type": "2"
+  },
+  "1217": {
+    "name": "Mystic Page",
+    "type": "2"
+  },
+  "1218": {
+    "name": "Primordial Crystal",
+    "type": "2"
+  },
+  "1221": {
+    "name": "Grand Staff",
+    "type": "2"
+  },
+  "1222": {
+    "name": "Blood Clan's Grimoire",
+    "type": "2"
+  },
+  "1224": {
+    "name": "Stone of Sorcery",
+    "type": "2"
+  },
+  "1226": {
+    "name": "Holy Grail",
+    "type": "2"
+  },
+  "1227": {
+    "name": "Ardent Dominion",
+    "type": "2"
+  },
+  "1231": {
+    "name": "Void Staff",
+    "type": "2"
+  },
+  "1232": {
+    "name": "Savant's Wrath",
+    "type": "2"
+  },
+  "1233": {
+    "name": "Scepter of Reverberation",
+    "type": "2"
+  },
+  "1234": {
+    "name": "Frozen Breath",
+    "type": "2"
+  },
+  "1235": {
+    "name": "Mask of Agony",
+    "type": "2"
+  },
+  "1236": {
+    "name": "Staves of Sorcery",
+    "type": "2"
+  },
+  "1237": {
+    "name": "Augur's Word",
+    "type": "2"
+  },
+  "1238": {
+    "name": "Sage's Tome",
+    "type": "2"
+  },
+  "1239": {
+    "name": "Splendor",
+    "type": "2"
+  },
+  "1240": {
+    "name": "Insatiable Tome",
+    "type": "2"
+  },
+  "1242": {
+    "name": "Enigma - Moon Goddess",
+    "type": "2"
+  },
+  "1243": {
+    "name": "Nebulon Wood",
+    "type": "2"
+  },
+  "1244": {
+    "name": "Breakthrough Robe",
+    "type": "2"
+  },
+  "1311": {
+    "name": "Resilient Agate",
+    "type": "3"
+  },
+  "1312": {
+    "name": "Cloth Jerkin",
+    "type": "3"
+  },
+  "1317": {
+    "name": "Cuirass of Swiftness",
+    "type": "3"
+  },
+  "1321": {
+    "name": "Belt of Might",
+    "type": "3"
+  },
+  "1323": {
+    "name": "Clandestine Cape",
+    "type": "3"
+  },
+  "1324": {
+    "name": "Frosthold Targe",
+    "type": "3"
+  },
+  "1325": {
+    "name": "Protector's Cuirass",
+    "type": "3"
+  },
+  "1327": {
+    "name": "Spikemail",
+    "type": "3"
+  },
+  "1328": {
+    "name": "Blood Rage",
+    "type": "3"
+  },
+  "1331": {
+    "name": "Blazing Cape",
+    "type": "3"
+  },
+  "1332": {
+    "name": "Overlord's Platemail",
+    "type": "3"
+  },
+  "1333": {
+    "name": "Ominous Premonition",
+    "type": "3"
+  },
+  "1334": {
+    "name": "Eye of the Phoenix",
+    "type": "3"
+  },
+  "1335": {
+    "name": "Succubus Cloak",
+    "type": "3"
+  },
+  "1336": {
+    "name": "Glacial Buckler",
+    "type": "3"
+  },
+  "1337": {
+    "name": "Sage's Sanctuary",
+    "type": "3"
+  },
+  "1338": {
+    "name": "Cuirass of Savagery",
+    "type": "3"
+  },
+  "1341": {
+    "name": "Frigid Charge",
+    "type": "3"
+  },
+  "1345": {
+    "name": "Nettle Gauntlet",
+    "type": "3"
+  },
+  "1347": {
+    "name": "Longnight Guardian",
+    "type": "3"
+  },
+  "1350": {
+    "name": "Ravage - Phantom",
+    "type": "3"
+  },
+  "1351": {
+    "name": "Amble - Winter",
+    "type": "3"
+  },
+  "1353": {
+    "name": "Dawnlight",
+    "type": "3"
+  },
+  "1411": {
+    "name": "Lightfoot Shoes",
+    "type": "4"
+  },
+  "1421": {
+    "name": "Boots of Fortitude",
+    "type": "4"
+  },
+  "1422": {
+    "name": "Boots of Resistance",
+    "type": "4"
+  },
+  "1423": {
+    "name": "Boots of Tranquility",
+    "type": "4"
+  },
+  "1424": {
+    "name": "Boots of the Arcane",
+    "type": "4"
+  },
+  "1425": {
+    "name": "Boots of Dexterity",
+    "type": "4"
+  },
+  "1426": {
+    "name": "Boots of Deftness",
+    "type": "4"
+  },
+  "1511": {
+    "name": "Hunting Knife",
+    "type": "5"
+  },
+  "1521": {
+    "name": "Guerrilla Machete",
+    "type": "5"
+  },
+  "1522": {
+    "name": "Patrol Axe",
+    "type": "5"
+  },
+  "1523": {
+    "name": "Relentless Blade",
+    "type": "5"
+  },
+  "1531": {
+    "name": "Runeblade",
+    "type": "5"
+  },
+  "1532": {
+    "name": "Giant's Grip",
+    "type": "5"
+  },
+  "1533": {
+    "name": "Rapacious Bite",
+    "type": "5"
+  },
+  "1534": {
+    "name": "Dragon's Rage",
+    "type": "3"
+  },
+  "1701": {
+    "name": "Knowledge Gem",
+    "type": "7"
+  },
+  "1711": {
+    "name": "Crimson Shadow",
+    "type": "7"
+  },
+  "1714": {
+    "name": "Guardian",
+    "type": "7"
+  },
+  "1721": {
+    "name": "Crimson Shadow - Redemption",
+    "type": "7"
+  },
+  "1723": {
+    "name": "Crimson Shadow - Howl",
+    "type": "7"
+  },
+  "1724": {
+    "name": "Guardian - Redemption",
+    "type": "7"
+  },
+  "1725": {
+    "name": "Guardian - Starspring",
+    "type": "7"
+  },
+  "1727": {
+    "name": "Twilight Stream",
+    "type": "2"
+  },
+  "1728": {
+    "name": "Golden Blade",
+    "type": "2"
+  },
+  "1737": {
+    "name": "Crimson Shadow - Radiance",
+    "type": "7"
+  },
+  "1747": {
+    "name": "Crimson Shadow - Starspring",
+    "type": "7"
+  },
+  "1754": {
+    "name": "Guardian - Radiance",
+    "type": "7"
+  },
+  "11110": {
+    "name": "Plume of Enchantment",
+    "type": "1"
+  },
+  "11210": {
+    "name": "Mortal Punisher",
+    "type": "1"
+  },
+  "11311": {
+    "name": "Pure Sky",
+    "type": "1"
+  },
+  "12211": {
+    "name": "Venomous Staff",
+    "type": "2"
+  },
+  "13211": {
+    "name": "Mirror of Radiance",
+    "type": "3"
+  },
+  "13310": {
+    "name": "Frostscar's Embrace",
+    "type": "3"
+  }
+}

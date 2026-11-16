@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK Broadcast Dashboard</title>
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d0d12; color: #d0d0d8; display: flex; flex-direction: column; padding: 20px 24px; overflow: hidden; }
+
+    /* ── Header / tabs ─────────────────────────────────────────── */
+    header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #222232; flex-shrink: 0; }
+    header h1 { font-size: 20px; font-weight: 600; color: #fff; letter-spacing: 0.03em; }
+    #server-status { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #888; }
+    .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #444; transition: background 0.3s; }
+    .status-dot.online  { background: #00cc88; box-shadow: 0 0 6px #00cc8888; }
+    .status-dot.offline { background: #ff4455; box-shadow: 0 0 6px #ff445588; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #333; background: #1a1a22; color: #777; }
+    .badge.green  { background: #0d2a1c; border-color: #1f6b46; color: #3ddc97; }
+    .badge.orange { background: #2a1a08; border-color: #6b4413; color: #f0a040; }
+
+    #tab-bar { display: flex; align-items: center; gap: 4px; padding: 12px 0; flex-shrink: 0; border-bottom: 1px solid #1e1e2c; margin-bottom: 16px; }
+    .tab-btn { padding: 5px 22px; border-radius: 6px; border: 1px solid #222232; background: #13131c; color: #555; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+    .tab-btn:hover { background: #1a1a28; color: #999; }
+    .tab-btn.active { background: #1e2340; border-color: #3344aa; color: #aabbff; }
+
+    .page { display: none; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
+    .page.active { display: flex; }
+    .page.scroll { overflow-y: auto; padding-right: 6px; }
+
+    /* ── Form pages (Draft, LED & Companion, Settings) ──────── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; align-items: start; }
+    .span-all { grid-column: 1 / -1; }
+    .box { background: #13131c; border: 1px solid #222232; border-top: 3px solid #333344; border-radius: 8px; padding: 16px 18px; }
+    .box.blue { border-top-color: #2a5fae; }
+    .box.red  { border-top-color: #a23040; }
+    .box-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #222232; }
+    .box-hdr h2 { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ccccdd; }
+    .form-group { margin-bottom: 12px; }
+    label, .lbl { display: block; margin-bottom: 4px; font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.05em; }
+    input[type=text], input[type=number], select { width: 100%; height: 34px; padding: 6px 10px; background: rgba(255,255,255,0.04); border: 1px solid #2c2c3c; border-radius: 5px; color: #eee; font-family: Consolas, monospace; font-size: 13px; outline: none; }
+    input:focus, select:focus { border-color: #4455aa; }
+    input[readonly] { background: #0b0b10; color: #555; cursor: not-allowed; }
+    .hint { font-size: 11px; color: #555; margin-top: 4px; line-height: 1.5; }
+    hr.sep { border: none; border-top: 1px solid #222232; margin: 14px 0; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 30px; padding: 0 14px; border-radius: 5px; border: 1px solid #2c2c3c; background: #1a1a26; color: #aaa; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none; transition: filter 0.1s; }
+    .btn:hover { filter: brightness(1.3); }
+    .btn:active { filter: brightness(0.85); }
+    .btn.wide { width: 100%; height: 36px; }
+    .btn-primary { background: #1a2550; border-color: #3344aa; color: #aabbff; }
+    .btn-danger  { background: #3a1018; border-color: #7a2030; color: #ff8899; }
+    .btn-show    { background: #0d2a1c; border-color: #1f6b46; color: #3ddc97; }
+    .btn-hide    { background: #2a1015; border-color: #6b1f2a; color: #ff6677; }
+    .btn-action  { background: #1a1a2a; border-color: #333355; color: #9999dd; }
+    .btn-copy    { background: transparent; border-color: #2a2a38; color: #666; padding: 0 9px; }
+    .btn-open    { background: #15151f; color: #8888bb; }
+    .btn-toggle  { min-width: 112px; }
+    .btn-toggle-on  { background: #0d2a1c; border-color: #1f6b46; color: #3ddc97; }
+    .btn-toggle-off { background: #1d1d26; border-color: #33333f; color: #666; }
+    .btn-preview-live { background: #1a1530; border-color: #3d3070; color: #a58bff; }
+    .btn-preview-live.active { background: #3d2a8a; border-color: #8d6bff; color: #fff; box-shadow: 0 0 8px #8d6bff66; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    .link-box { background: #0b0b10; border: 1px solid #222232; border-left: 3px solid #3344aa; border-radius: 4px; padding: 8px 10px; margin-bottom: 8px; font-size: 12px; color: #888; }
+    .link-box a { display: block; margin-top: 3px; color: #7f95ff; font-family: Consolas, monospace; text-decoration: none; word-break: break-all; }
+
+    .draft-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+    .draft-grid h3 { font-size: 12px; text-align: center; letter-spacing: 0.08em; margin: 4px 0 8px; }
+    .draft-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .draft-row .tag { width: 64px; flex-shrink: 0; text-align: center; font-size: 11px; font-weight: 700; color: #666; border: 1px solid #2c2c3c; border-radius: 4px; padding: 8px 0; }
+    .draft-row input { flex: 1; text-align: center; min-width: 0; }
+    .draft-row .btn-swap { flex: 1; min-width: 0; height: 26px; font-size: 11px; }
+    .btn-swap.active-swap { background: #1a2550; border-color: #5566dd; color: #fff; }
+    .btn-mode.active { background: #1a2550; border-color: #3344aa; color: #aabbff; }
+
+    .comp-row { display: grid; grid-template-columns: 130px 1fr 54px; gap: 8px; align-items: center; margin-bottom: 5px; }
+    .comp-row .lbl { margin: 0; font-weight: 700; color: #888; }
+    .comp-row input { height: 28px; font-size: 12px; }
+    .status-bar { padding: 10px; text-align: center; border-radius: 6px; font-size: 13px; font-weight: 700; border: 1px solid #333; margin-bottom: 16px; }
+    .status-bar.ok  { background: #0d2a1c; border-color: #1f6b46; color: #3ddc97; }
+    .status-bar.bad { background: #2a1015; border-color: #6b1f2a; color: #ff6677; }
+    .status-bar.wait { background: #1d1d26; color: #aaa; }
+
+    /* ── Match Board page ─────────────────────────────────────── */
+    .mb-cols { display: grid; grid-template-columns: minmax(340px, 1fr) minmax(520px, 1.6fr); gap: 12px; flex: 1; min-height: 0; overflow: hidden; }
+    .mb-col { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; }
+    .mb-col .panel { flex-shrink: 0; }
+    .panel { background: #16161f; border: 1px solid #1e1e2e; border-radius: 10px; padding: 14px 18px; }
+    .panel-title { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: #555; margin-bottom: 14px; }
+    .score-preview { display: flex; align-items: center; justify-content: center; gap: 28px; padding: 16px; background: #0a0a14; border-radius: 8px; }
+    .preview-team { text-align: center; min-width: 90px; }
+    .preview-logo { width: 48px; height: 48px; object-fit: contain; display: block; margin: 0 auto 4px; background: #fff; border-radius: 8px; padding: 3px; box-sizing: content-box; }
+    .preview-logo:not([src]) { visibility: hidden; }
+    .preview-short { font-size: 22px; font-weight: 800; letter-spacing: .04em; }
+    .preview-short.blue, .preview-score.blue { color: #4a8fff; }
+    .preview-short.red,  .preview-score.red  { color: #ff5566; }
+    .preview-side { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: .08em; margin-top: 3px; }
+    .preview-score { font-size: 44px; font-weight: 800; line-height: 1; margin-top: 4px; }
+    .preview-vs { font-size: 13px; color: #333; }
+    .preview-meta { font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-family: Consolas, monospace; }
+    .preview-dirty { display: none; margin-top: 8px; text-align: center; font-size: 11px; font-weight: 700; color: #f0a040; }
+    .preview-dirty.on { display: block; }
+    .btn-swap-teams { background: #1a2030; border-color: #2a3050; color: #88aaff; }
+
+    .teams-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; }
+    .team-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+    .col-hdr { display: flex; align-items: center; gap: 8px; }
+    .col-hdr-right { justify-content: flex-end; }
+    .side-lbl { font-size: 12px; font-weight: 700; color: #aaa; letter-spacing: .06em; }
+    .side-badge { font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 2px 7px; border-radius: 10px; }
+    .side-badge.blue { background: #0f1a33; color: #6699ff; border: 1px solid #2244aa; }
+    .side-badge.red  { background: #2a0f0f; color: #ff7788; border: 1px solid #aa2233; }
+    .team-logo-sm { width: 56px; height: 56px; object-fit: contain; display: block; margin: 2px auto 0; background: #fff; border-radius: 8px; padding: 3px; box-sizing: content-box; }
+    .team-logo-sm:not([src]) { visibility: hidden; }
+    .swap-indicator { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 4px; opacity: 0; transition: opacity .3s; }
+    .swap-indicator.active { opacity: 1; }
+    .swap-indicator-icon { font-size: 22px; color: #88aaff; }
+    .swap-indicator-label { font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #88aaff; text-transform: uppercase; }
+    .role-slots { display: flex; flex-direction: column; gap: 4px; }
+    .role-slot { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 6px; min-height: 36px; }
+    .role-label { font-size: 10px; color: #555; width: 76px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .04em; }
+    .player-chip { padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid #2a2a3a; background: #111120; color: #ccd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .role-slot select { height: 30px; border-radius: 20px; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; padding: 4px 10px; }
+    .slot-empty { font-size: 11px; color: #444; font-style: italic; }
+
+    .score-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #1a1a28; }
+    .score-row { display: flex; align-items: center; justify-content: center; gap: 20px; }
+    .score-side { display: flex; align-items: center; gap: 14px; }
+    .score-ctrl { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .score-short { font-size: 13px; font-weight: 700; color: #888; width: 52px; text-align: center; }
+    input.score-val { width: 72px; height: auto; padding: 0; background: transparent; border: none; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 48px; font-weight: 800; color: #fff; text-align: center; line-height: 1; -moz-appearance: textfield; }
+    input.score-val::-webkit-outer-spin-button, input.score-val::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .score-sep { font-size: 16px; color: #333; padding: 0 4px; }
+    .btn-plus  { background: #1a3a2a; border-color: #2a5a3a; color: #44cc88; font-size: 20px; width: 52px; }
+    .btn-minus { background: #3a1a1a; border-color: #5a2a2a; color: #ff6677; font-size: 20px; width: 52px; }
+    .btn-reset { background: #222230; border-color: #33334a; color: #9090c0; }
+    .action-row { display: flex; justify-content: center; gap: 10px; margin-top: 14px; }
+    /* Match Info (format / stage / day) — saved with Update Live Roster & Score */
+    .mi-row { display: flex; gap: 10px; margin-top: 12px; }
+    .mi-row > div { flex: 1; min-width: 0; }
+    .mi-row > div.mi-day { flex: 0 0 104px; }
+    .mi-row select { width: 100%; }
+
+    /* ── Settings page ─────────────────────────────────────────── */
+    #page-settings { overflow-y: auto; padding-right: 6px; }
+    #settings-columns { display: flex; gap: 16px; align-items: flex-start; }
+    #settings-col-left { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; }
+    #settings-col-right { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .settings-section { background: #16161f; border: 1px solid #222232; border-radius: 10px; overflow: hidden; margin-bottom: 16px; flex-shrink: 0; }
+    .settings-section-hdr { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #1e1e2c; font-size: 12px; font-weight: 600; color: #8888aa; text-transform: uppercase; letter-spacing: .08em; }
+    .settings-section-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+    .settings-section-body.links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; }
+    .settings-section-body.links-grid .link-box { margin: 0; }
+    .settings-row { display: flex; align-items: center; gap: 10px; }
+    .settings-row label { margin: 0; min-width: 80px; }
+    .settings-btn { height: 32px; padding: 0 16px; background: #1e2a4a; border: 1px solid #2a3a6a; border-radius: 5px; color: #7aabff; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .settings-btn:hover { filter: brightness(1.2); }
+    .settings-btn-danger { background: #2a1a1a; border-color: #5a2a2a; color: #ff6677; }
+    .settings-status { font-size: 11px; color: #555; }
+
+    /* ── Control page ─────────────────────────────────────────── */
+    #layout { flex: 1; display: flex; gap: 16px; overflow: hidden; min-height: 0; }
+    #sidebar { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .ov-item { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 7px; cursor: pointer; color: #888; font-size: 13px; border: 1px solid transparent; }
+    .ov-item:hover { background: #15151f; color: #ccc; }
+    .ov-item.active { background: #1e2340; border-color: #3344aa; color: #fff; }
+    .ov-dot { width: 7px; height: 7px; border-radius: 50%; background: #333; flex-shrink: 0; }
+    .ov-dot.on { background: #3ddc97; box-shadow: 0 0 5px #3ddc9788; }
+    #control-panel { width: 470px; flex-shrink: 0; display: none; flex-direction: column; background: #101018; border: 1px solid #222232; border-radius: 8px; overflow: hidden; }
+    #layout.split #control-panel { display: flex; }
+    #control-panel-hdr { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #222232; }
+    #control-panel-title { font-size: 14px; font-weight: 600; color: #fff; }
+    #control-panel-body { padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    #control-panel-body.flash-ok { animation: flashok 0.5s; }
+    @keyframes flashok { from { background: #0d2a1c; } to { background: transparent; } }
+    .features-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #555577; margin-top: 4px; }
+    .divider { height: 1px; background: #1e1e2c; margin: 6px 0; }
+    .feature-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .feature-name { font-size: 12px; color: #bbb; }
+    .feature-btns { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    #preview-panel { flex: 1; display: none; flex-direction: column; min-width: 0; }
+    #layout.split #preview-panel { display: flex; }
+    #preview-hdr { display: flex; justify-content: space-between; padding: 0 2px 8px; font-size: 12px; color: #666; }
+    #preview-frame-wrap { flex: 1; position: relative; overflow: hidden; border-radius: 8px; border: 1px solid #222232;
+      background: repeating-conic-gradient(#16161e 0% 25%, #101016 0% 50%) 50% / 24px 24px; }
+    #preview-iframe { position: absolute; width: 1920px; height: 1080px; border: none; transform-origin: top left; }
+    #control-empty { color: #444; font-size: 13px; padding: 20px; }
+    #layout.split #control-empty { display: none; }
+
+    /* ── Edit page ─────────────────────────────────────────────── */
+    #edit-layout { flex: 1; display: flex; gap: 16px; min-height: 0; }
+    #edit-panel { width: 330px; flex-shrink: 0; display: flex; flex-direction: column; background: #101018; border: 1px solid #222232; border-radius: 8px; overflow: hidden; }
+    #edit-panel-hdr { padding: 12px 14px; border-bottom: 1px solid #222232; display: flex; flex-direction: column; gap: 8px; }
+    #edit-panel-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .edit-btn { height: 26px; padding: 0 10px; background: #1a1a2a; border: 1px solid #333355; border-radius: 4px; color: #8888cc; font-size: 11px; cursor: pointer; }
+    .edit-btn:hover { filter: brightness(1.3); }
+    #edit-btn-save { background: #1a3a2a; border-color: #2a5a3a; color: #44cc88; }
+    #edit-save-status, #edit-default-status { font-size: 11px; }
+    #edit-elements { flex: 1; overflow-y: auto; padding: 8px 10px; min-height: 120px; }
+    .edit-group-btn { display: block; width: 100%; text-align: left; padding: 5px 10px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: #444466; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin: 8px 0 2px; }
+    .edit-group-btn:hover { background: #1a1a28; color: #8888bb; }
+    .edit-group-btn.active { background: #1c1e38; border-color: #445599; color: #8899dd; }
+    .edit-elem-btn { display: block; width: 100%; text-align: left; padding: 6px 12px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: #888; font-size: 12px; cursor: pointer; }
+    .edit-elem-btn:hover { background: #15151f; color: #ccc; }
+    .edit-elem-btn.active { background: #1e2340; border-color: #3344aa; color: #fff; }
+    #edit-controls { border-top: 1px solid #222232; padding: 12px 14px; flex-shrink: 0; }
+    .edit-ctrl-title { font-size: 12px; font-weight: 600; color: #aabbff; margin-bottom: 10px; }
+    .edit-ctrl-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .edit-ctrl-label { width: 74px; font-size: 11px; color: #777; flex-shrink: 0; }
+    .edit-ctrl-input { width: 80px; height: 26px; background: rgba(255,255,255,0.05); border: 1px solid #333344; border-radius: 4px; color: #eee; font-size: 12px; padding: 0 6px; text-align: right; }
+    .edit-step-btn { width: 26px; height: 26px; background: #1a1a2a; border: 1px solid #333355; border-radius: 4px; color: #8888cc; font-size: 15px; line-height: 1; cursor: pointer; flex-shrink: 0; }
+    .edit-ctrl-unit { font-size: 11px; color: #444; }
+    .edit-aspect-chk { width: 15px; height: 15px; margin-left: 4px; accent-color: #6677ff; cursor: pointer; }
+    .edit-no-sel { font-size: 12px; color: #444; font-style: italic; }
+    #edit-frame-wrap { flex: 1; position: relative; overflow: hidden; border-radius: 8px; border: 1px solid #222232; min-width: 0;
+      background: repeating-conic-gradient(#16161e 0% 25%, #101016 0% 50%) 50% / 24px 24px; }
+    #edit-iframe { position: absolute; border: none; transform-origin: top left; }
+    .edit-help { font-size: 10px; color: #444; line-height: 1.5; }
+
+    #copy-tooltip { position: fixed; z-index: 99; pointer-events: none; padding: 5px 10px; border-radius: 5px; background: #1e2340; border: 1px solid #3344aa; color: #aabbff; font-size: 12px; opacity: 0; transition: opacity 0.2s; }
+    #copy-tooltip.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+<div id="copy-tooltip"></div>
+
+<header>
+  <h1>HOK Broadcast Dashboard</h1>
+  <div id="server-status">
+    <span id="worker-status" class="badge">Loading server status…</span>
+    <div class="status-dot" id="sse-dot" title="Live link (SSE)"></div>
+    <span id="sse-label">Connecting…</span>
+  </div>
+</header>
+
+<nav id="tab-bar">
+  <button class="tab-btn active" data-page="matchboard">Match Board</button>
+  <button class="tab-btn" data-page="draft">Draft</button>
+  <button class="tab-btn" data-page="control">Control</button>
+  <button class="tab-btn" data-page="led">LED &amp; Companion</button>
+  <button class="tab-btn" data-page="edit">Edit</button>
+  <button class="tab-btn" data-page="settings">Settings</button>
+</nav>
+
+<datalist id="heroesDataList"></datalist>
+
+<!-- ═══════════════ PAGE: MATCH BOARD ═══════════════ -->
+<div id="page-matchboard" class="page active">
+  <div class="mb-cols">
+
+    <!-- Left column: live preview + sides & update -->
+    <div class="mb-col">
+      <div class="panel">
+        <div class="panel-title">Live Preview</div>
+        <div class="score-preview">
+          <div class="preview-team">
+            <img id="pv-left-logo" class="preview-logo" alt="">
+            <div class="preview-short blue" id="pv-left-short">HOME</div>
+            <div class="preview-side">Home · Left</div>
+            <div class="preview-score blue" id="pv-left-score">0</div>
+          </div>
+          <div class="preview-vs">vs</div>
+          <div class="preview-team">
+            <img id="pv-right-logo" class="preview-logo" alt="">
+            <div class="preview-short red" id="pv-right-short">AWAY</div>
+            <div class="preview-side">Away · Right</div>
+            <div class="preview-score red" id="pv-right-score">0</div>
+          </div>
+        </div>
+        <div class="preview-meta" id="pv-meta">Battle —</div>
+        <div class="mi-row">
+          <div><label for="mi-stage">Stage</label>
+            <select id="mi-stage"><option value="GROUP STAGE">Group Stage</option><option value="KNOCKOUTS">Knockouts</option><option value="GRAND FINALS">Grand Finals</option></select></div>
+          <div class="mi-day"><label for="mi-match">Match</label><select id="mi-match"></select></div>
+          <div><label for="mi-bestof">Series</label>
+            <select id="mi-bestof"><option value="3">Best of 3</option><option value="5">Best of 5</option><option value="7">Best of 7</option></select></div>
+          <div class="mi-day"><label for="mi-day">Day</label><select id="mi-day"></select></div>
+        </div>
+        <div class="preview-dirty" id="pv-dirty">Unsaved changes — press Update Live Roster &amp; Score</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Sides &amp; Update</div>
+        <div class="hint" style="margin:0 0 6px;">1. Swap the teams manually:</div>
+        <button class="btn wide btn-swap-teams" id="btn-switch-teams">⇄ Swap Blue &amp; Red</button>
+        <div class="hint" style="margin:12px 0 6px;">2. Detect sides from the live game:</div>
+        <button class="btn wide" id="btn-autodetect">Auto-Detect from In-Game</button>
+        <hr class="sep">
+        <button class="btn btn-primary wide" style="height:42px;font-size:14px;" id="btn-save-roster">Update Live Roster &amp; Score</button>
+        <div style="height:8px"></div>
+        <button class="btn wide" id="btn-refresh-csv">Re-download CSV Database</button>
+        <div style="height:8px"></div>
+        <a class="btn wide" href="/api/export_csv" target="_blank">Export Match Data (.CSV)</a>
+      </div>
+    </div>
+
+    <!-- Right column: teams & series score -->
+    <div class="mb-col">
+      <div class="panel">
+        <div class="panel-title">Teams &amp; Series Score</div>
+        <div class="teams-grid">
+          <div class="team-col">
+            <div class="col-hdr"><span class="side-lbl">TEAM 1 · HOME</span><span class="side-badge blue">● LEFT</span></div>
+            <img id="team1_logo" class="team-logo-sm" alt="">
+            <select id="team1_select" class="team-select"></select>
+            <div id="team1_roster_container" class="role-slots"></div>
+          </div>
+          <div class="swap-indicator" id="swap-indicator">
+            <div class="swap-indicator-icon">⇄</div>
+            <div class="swap-indicator-label">Swapped</div>
+          </div>
+          <div class="team-col">
+            <div class="col-hdr col-hdr-right"><span class="side-badge red">● RIGHT</span><span class="side-lbl">TEAM 2 · AWAY</span></div>
+            <img id="team2_logo" class="team-logo-sm" alt="">
+            <select id="team2_select" class="team-select"></select>
+            <div id="team2_roster_container" class="role-slots"></div>
+          </div>
+        </div>
+
+        <div class="score-section">
+          <div class="score-row">
+            <div class="score-side">
+              <span id="team1_short" class="score-short">HOME</span>
+              <div class="score-ctrl">
+                <button class="btn btn-plus" data-score="team1_score" data-step="1">+</button>
+                <input type="number" id="team1_score" class="score-val" value="0" min="0">
+                <button class="btn btn-minus" data-score="team1_score" data-step="-1">−</button>
+              </div>
+            </div>
+            <div class="score-sep">vs</div>
+            <div class="score-side">
+              <div class="score-ctrl">
+                <button class="btn btn-plus" data-score="team2_score" data-step="1">+</button>
+                <input type="number" id="team2_score" class="score-val" value="0" min="0">
+                <button class="btn btn-minus" data-score="team2_score" data-step="-1">−</button>
+              </div>
+              <span id="team2_short" class="score-short">AWAY</span>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-reset" id="btn-reset-scores">Reset Scores</button>
+            <button class="btn btn-primary" id="btn-save-roster-2">Update Live Roster &amp; Score</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: DRAFT ═══════════════ -->
+<div id="page-draft" class="page scroll">
+  <div class="grid">
+    <div class="box span-all">
+      <div class="hint" style="margin:0;">Stage / match / series text on every overlay now comes from <b>Match Board → Live Preview</b> (Stage, Match, Series dropdowns).</div>
+    </div>
+
+    <div class="box span-all">
+      <div class="draft-grid">
+        <div id="draft-home"></div>
+        <div id="draft-away"></div>
+      </div>
+      <div class="hint" style="text-align:center;margin-top:14px;text-transform:uppercase;">Swap reorders picks by hand — click two SWAP buttons to exchange those slots.</div>
+      <div class="row" style="justify-content:center;margin-top:20px;gap:12px;">
+        <button id="btn_mode_manual" class="btn btn-mode" style="width:150px;height:38px;">Manual Mode</button>
+        <button id="btn_mode_api" class="btn btn-mode" style="width:150px;height:38px;">Live API Mode</button>
+        <button class="btn btn-danger" style="width:150px;height:38px;" id="btn-draft-clear">Clear</button>
+        <button class="btn btn-primary" style="width:240px;height:38px;font-size:14px;" id="btn-draft-save">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: CONTROL ═══════════════ -->
+<div id="page-control" class="page">
+  <div id="layout">
+    <div id="sidebar"></div>
+    <div id="control-empty">Select an overlay on the left.</div>
+    <div id="control-panel">
+      <div id="control-panel-hdr">
+        <span id="control-panel-title"></span>
+        <a id="control-panel-open" class="btn btn-open" target="_blank">Open ↗</a>
+      </div>
+      <div id="control-panel-body"></div>
+    </div>
+    <div id="preview-panel">
+      <div id="preview-hdr"><span id="preview-title"></span><span id="preview-label"></span></div>
+      <div id="preview-frame-wrap"><iframe id="preview-iframe" src="about:blank" allow="autoplay"></iframe></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: LED & COMPANION ═══════════════ -->
+<div id="page-led" class="page scroll">
+  <div id="comp_status_bar" class="status-bar wait">Connecting to Companion…</div>
+  <div class="grid">
+    <div class="box blue span-all">
+      <div class="box-hdr"><h2>0. Draft LED Control (separate from the main draft)</h2></div>
+      <div class="draft-grid" style="margin-bottom:16px;">
+        <div><label>Home Team (left on the LED)</label><select id="draft_led_home"></select></div>
+        <div><label>Away Team (right on the LED)</label><select id="draft_led_away"></select></div>
+      </div>
+      <div class="draft-grid">
+        <div>
+          <label>First Pick</label>
+          <select id="draft_first_pick">
+            <option value="HOME">HOME TEAM (Left)</option>
+            <option value="AWAY">AWAY TEAM (Right)</option>
+          </select>
+          <div class="hint">Sets which side of the LED wall the first-pick team's turns animate on. Also flips Companion home/away paths.</div>
+        </div>
+        <div>
+          <label>LED Background Mode</label>
+          <div class="row"><button id="btn-led-pickbox" class="btn btn-toggle btn-toggle-on" style="flex:1;height:34px;">● Pick Boxes Shown</button></div>
+          <div class="hint">Hidden = POV cam mode: only the ban boxes stay, to sit on top of the player cameras. Live GET: <code>/overlay/led_pickbox/hide</code> · <code>/show</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box span-all">
+      <div class="box-hdr"><h2>1. Companion Base URL</h2></div>
+      <div class="hint" style="margin:0 0 8px;">Make sure the HTTP API is enabled in Companion's settings.</div>
+      <div class="row" style="max-width:560px;">
+        <input type="text" id="comp_url" value="http://127.0.0.1:8000" placeholder="e.g. http://192.168.1.5:8000" style="flex:1;">
+        <button class="btn btn-primary" style="height:34px;" id="btn-comp-test">Test Connection</button>
+      </div>
+    </div>
+
+    <div class="box span-all">
+      <div class="box-hdr"><h2>2. LED Control Paths (Companion endpoints)</h2></div>
+      <div class="hint" style="margin:0 0 14px;">When an event happens in-game, this dashboard sends a POST to <b>Base URL + Path</b> (keep this dashboard open). Example (v4+): <code>api/location/bank/page/button/press</code></div>
+      <div class="draft-grid">
+        <div><h3 style="color:#7fb0ff;text-align:left;">Home Team Paths</h3><div id="comp-home"></div></div>
+        <div><h3 style="color:#ff8899;text-align:left;">Away Team Paths</h3><div id="comp-away"></div></div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:20px;"><button class="btn btn-primary" style="width:300px;height:40px;font-size:14px;" id="btn-comp-save">Save Server Configuration</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: EDIT ═══════════════ -->
+<div id="page-edit" class="page">
+  <div id="edit-layout">
+    <div id="edit-panel">
+      <div id="edit-panel-hdr">
+        <select id="edit-config-select"></select>
+        <div id="edit-panel-actions">
+          <button class="edit-btn" id="edit-btn-defaults">Load Defaults</button>
+          <button class="edit-btn" id="edit-btn-save">Save</button>
+          <span id="edit-save-status"></span>
+          <button class="edit-btn" id="edit-btn-save-default">Save as Default…</button>
+          <span id="edit-default-status"></span>
+        </div>
+        <div class="edit-help">Drag in the preview · arrows nudge 1px (Shift = 10px) · Ctrl/Cmd+Z undo · click a group title to move the whole group. Save writes overlay_styles.json and reloads every open page.</div>
+      </div>
+      <div id="edit-elements"></div>
+      <div id="edit-controls"><div class="edit-no-sel">Select an element to edit</div></div>
+    </div>
+    <div id="edit-frame-wrap"><iframe id="edit-iframe" src="about:blank" allow="autoplay"></iframe></div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE: SETTINGS ═══════════════ -->
+<div id="page-settings" class="page">
+<div id="settings-columns">
+<div id="settings-col-left">
+
+  <div class="settings-section">
+    <div class="settings-section-hdr">HOK API Configuration <button id="lockBtn" class="btn" style="height:22px;">UNLOCK</button></div>
+    <div class="settings-section-body">
+      <div class="form-group"><label>CSV Database URL</label><input type="text" id="csv_url" readonly></div>
+      <div class="form-group"><label>APP_ID</label><input type="text" id="app_id" readonly></div>
+      <div class="form-group"><label>APP_SECRET</label><input type="text" id="app_secret" readonly></div>
+      <div class="form-group"><label>BASE_URL</label><input type="text" id="base_url" readonly></div>
+      <hr class="sep">
+      <div class="form-group"><label>Data Center APP_ID</label><input type="text" id="dc_app_id" readonly></div>
+      <div class="form-group"><label>Data Center APP_SECRET</label><input type="text" id="dc_app_secret" readonly></div>
+      <div class="form-group"><label>Data Center URL (win rate / head to head)</label><input type="text" id="datacenter_url" readonly></div>
+      <div class="form-group">
+        <label>Season ID</label><input type="text" id="season_ids" readonly placeholder="Comma-separated if more than one, e.g. IKL2026S2">
+        <div class="hint">Format: BrandName + SeasonName + StageName (as configured in the tournament admin).</div>
+      </div>
+      <button class="settings-btn" id="btn-save-settings">Save Settings</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-hdr">Match Connection</div>
+    <div class="settings-section-body">
+      <div class="form-group"><label>BATTLE_ID (leave empty to auto-detect)</label><input type="text" id="battle_id" placeholder="e.g. 1775873918_171_169279768"></div>
+      <div class="form-group">
+        <div class="row" style="justify-content:space-between;margin-bottom:4px;"><label style="margin:0;">OB_OPEN_ID</label><button id="lockObBtn" class="btn" style="height:22px;">UNLOCK</button></div>
+        <input type="text" id="ob_open_id" readonly>
+      </div>
+      <div class="row">
+        <button class="settings-btn" style="flex:3;" id="btn-apply-match">Apply Connection</button>
+        <button class="settings-btn settings-btn-danger" style="flex:1;" id="btn-clear-battle">Clear Match</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-hdr">Overlay Pages</div>
+    <div class="settings-section-body">
+      <div class="settings-row">
+        <label>All Pages</label>
+        <button id="btn-force-reload" class="settings-btn">Force-Refresh All Overlays</button>
+        <span id="force-reload-status" class="settings-status"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div id="settings-col-right">
+
+  <div class="settings-section">
+    <div class="settings-section-hdr">Pages (Browser Sources)</div>
+    <div class="settings-section-body links-grid">
+      <div class="link-box">In-Game Overlay (1920x1080)<a href="/overlay" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Draft Pick (1920x1080)<a href="/draftpick" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Draft LED (1764x1024)<a href="/draft-led" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Fullscreen (1920x1080)<a href="/fullscreen" target="_blank" class="dynamic-url"></a></div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-hdr">Data Sources (JSON)</div>
+    <div class="settings-section-body links-grid">
+      <div class="link-box">vMix Data Output<a href="/api/vmix-output" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">In-Game Live Data<a href="/api/ingame_data" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Raw Player Panel (Hexagon)<a href="/api/player_panel" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Battle History (OB_OPEN_ID)<a href="/api/battle_history" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Data Center: Team H2H<a href="/api/datacenter/team_vs_team?team_a=AG&team_b=EStar&season_ids=IKL2026S2" target="_blank" class="dynamic-url"></a></div>
+      <div class="link-box">Data Center: Hero Win Rate<a href="/api/datacenter/hero_win_rate?hero_id=105&season_ids=IKL2026S2" target="_blank" class="dynamic-url"></a></div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ════════════════════ Helpers ════════════════════ */
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+  function btn(label, cls, fn) { var b = el('button', 'btn ' + (cls || ''), label); b.addEventListener('click', fn); return b; }
+  function getJSON(url) { return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }); }
+  function postJSON(url, body) {
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }).then(function (r) { return r.json(); });
+  }
+  function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  var _copyTipTimer = null;
+  function copyRoute(path, label, triggerEl) {
+    var url = window.location.origin + path;
+    function showTip() {
+      var tip = $('copy-tooltip');
+      tip.textContent = label + ' copied!';
+      var r = triggerEl.getBoundingClientRect();
+      tip.style.left = r.left + 'px';
+      tip.style.top = (r.top - 34) + 'px';
+      tip.classList.add('visible');
+      clearTimeout(_copyTipTimer);
+      _copyTipTimer = setTimeout(function () { tip.classList.remove('visible'); }, 1800);
+    }
+    // navigator.clipboard only exists on https/localhost — from another PC over http fall back.
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      if (ok) showTip(); else window.prompt('Copy this URL:', url);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(showTip, fallbackCopy);
+    else fallbackCopy();
+  }
+  function copyBtn(path, label, text) {
+    var b = el('button', 'btn btn-copy');
+    b.innerHTML = '⧉' + (text ? ' ' + text : '');
+    b.title = 'Copy ' + label + ' route';
+    b.addEventListener('click', function () { copyRoute(path, label + ' route', b); });
+    return b;
+  }
+
+  /* ════════════════════ Tabs ════════════════════
+     Control's preview iframe and Edit's iframe are released (about:blank —
+     never '' which would load this page into itself) when leaving their tab,
+     and reloaded on return, so hidden tabs cost nothing. */
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var leavingControl = $('page-control').classList.contains('active') && b.dataset.page !== 'control';
+      var leavingEdit    = $('page-edit').classList.contains('active') && b.dataset.page !== 'edit';
+      tabBtns.forEach(function (x) { x.classList.remove('active'); });
+      document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+      b.classList.add('active');
+      $('page-' + b.dataset.page).classList.add('active');
+
+      if (leavingControl && activeItem) { var keep = lastOverlay, keepItem = lastItem; deselectOverlay(); lastOverlay = keep; lastItem = keepItem; }
+      if (leavingEdit) { editIframe.src = 'about:blank'; editIfLoaded = false; }
+      if (b.dataset.page === 'control' && lastOverlay && !activeItem) selectOverlay(lastOverlay, lastItem);
+      if (b.dataset.page === 'edit') loadConfig($('edit-config-select').value);
+    });
+  });
+
+  /* ════════════════════ App state (server_state.json) ════════════════════ */
+  var ROLE_ORDER = ['Clash Lane', 'Jungler', 'Mid Lane', 'Farm Lane', 'Roamer'];
+  var SETTINGS_IDS = ['app_id', 'app_secret', 'base_url', 'csv_url', 'datacenter_url', 'season_ids', 'dc_app_id', 'dc_app_secret'];
+  var COMP_EVENTS = [
+    ['fb', 'FIRST BLOOD'], ['dk', 'DOUBLE KILL'], ['tk', 'TRIPLE KILL'], ['qk', 'QUADRA KILL'], ['pk', 'PENTA KILL'], null,
+    ['1t', '1st TYRANT'], ['1o', '1st OVERLORD'], ['ty', 'TYRANT'], ['ov', 'OVERLORD'], ['st', 'SHADOW TYRANT'], ['so', 'SHADOW OVERLORD'], ['td', 'TEMPEST DRAGON'],
+  ];
+  var COMPANION_KEYS = ['comp_url', 'draft_first_pick', 'draft_led_home', 'draft_led_away'];
+  COMP_EVENTS.forEach(function (e) { if (e) { COMPANION_KEYS.push('h_' + e[0]); COMPANION_KEYS.push('a_' + e[0]); } });
+  // State key → input id (h_fb → comp_h_fb)
+  function compInputId(key) { return /^(comp_|draft_)/.test(key) ? key : 'comp_' + key; }
+
+  var appState = {};
+  var csvPlayers = [], uniqueTeams = [], csvHeroes = [], teamFullNameMap = {};
+  var localLastUpdated = 0;
+  var draftMode = 'API';
+  var swapActive = null;
+  var isLocked = true, isObLocked = true;
+
+  function pushState(payload) {
+    return postJSON('/api/state', payload).then(function (r) { if (r && r.last_updated) localLastUpdated = r.last_updated; return r; }).catch(function () {});
+  }
+
+  function setLocked(locked) {
+    isLocked = locked;
+    SETTINGS_IDS.forEach(function (id) { $(id).readOnly = locked; });
+    $('lockBtn').textContent = locked ? 'UNLOCK' : 'LOCK';
+  }
+  $('lockBtn').addEventListener('click', function () { setLocked(!isLocked); });
+  $('lockObBtn').addEventListener('click', function () {
+    isObLocked = !isObLocked;
+    $('ob_open_id').readOnly = isObLocked;
+    $('lockObBtn').textContent = isObLocked ? 'UNLOCK' : 'LOCK';
+  });
+
+  function heroNameById(id) { var h = csvHeroes.find(function (x) { return x.id == id; }); return h ? h.name : id; }
+
+  function restoreDraftInputs() {
+    var restore = function (arr, prefix) {
+      (arr || []).forEach(function (v, i) {
+        var inp = $(prefix + '-' + i);
+        if (inp) inp.value = (v === 0 || v === '0' || !v) ? '' : heroNameById(v);
+      });
+    };
+    restore(appState.home_ban_override, 'hb');
+    restore(appState.away_ban_override, 'ab');
+    restore(appState.home_role_swap, 'hp');
+    restore(appState.away_role_swap, 'ap');
+  }
+
+  // Fill every form from appState (initial load and when another dashboard saved).
+  function fillForms(withTeams) {
+    SETTINGS_IDS.concat(['battle_id', 'ob_open_id']).forEach(function (id) { if (appState[id] !== undefined) $(id).value = appState[id]; });
+    if (appState.team_1_score !== undefined) $('team1_score').value = appState.team_1_score;
+    if (appState.team_2_score !== undefined) $('team2_score').value = appState.team_2_score;
+    setMatchInfo(appState.match_best_of, appState.match_stage, appState.match_day, appState.match_number);
+    COMPANION_KEYS.forEach(function (key) { if (appState[key] !== undefined && $(compInputId(key))) $(compInputId(key)).value = appState[key]; });
+    if (withTeams) {
+      if (appState.team_1_abbr) { $('team1_select').value = appState.team_1_abbr; renderTeamRoster(1, appState.team_1_uids || []); }
+      if (appState.team_2_abbr) { $('team2_select').value = appState.team_2_abbr; renderTeamRoster(2, appState.team_2_uids || []); }
+    }
+    if (appState.draft_mode) setDraftMode(appState.draft_mode, false);
+    restoreDraftInputs();
+    updateMatchPreview();
+  }
+
+  function loadInitialData() {
+    return getJSON('/api/state').then(function (s) {
+      appState = s || {};
+      localLastUpdated = appState.last_updated || 0;
+      fillForms(false);
+      return loadLocalCSV();
+    }).then(function () { fillForms(true); }).catch(function (e) { console.error(e); });
+  }
+
+  function forceSyncDashboard() {
+    return getJSON('/api/state').then(function (s) { appState = s || {}; fillForms(true); }).catch(function () {});
+  }
+
+  /* ── CSV: teams, players (nickname/role/uid), heroes ── */
+  function loadLocalCSV() {
+    return fetch('/api/database_csv', { cache: 'no-store' }).then(function (res) {
+      if (!res.ok) return;
+      return res.text().then(function (text) {
+        csvPlayers = []; csvHeroes = []; teamFullNameMap = {};
+        var teams = {};
+        var lines = text.split(/\r?\n/);
+        var header = lines[0].split(',');
+        var noIdx = header.findIndex(function (h) { return h.trim().toLowerCase() === 'no'; }); if (noIdx === -1) noIdx = 9;
+        var heroIdx = header.findIndex(function (h) { return h.trim().toLowerCase() === 'hero'; }); if (heroIdx === -1) heroIdx = 10;
+        for (var i = 1; i < lines.length; i++) {
+          var cols = lines[i].split(',');
+          if (cols.length < 2) continue;
+          var tName = (cols[0] || '').trim(), tAbbr = (cols[1] || '').trim();
+          if (tAbbr && tName) teamFullNameMap[tAbbr] = tName;
+          var nickname = '', role = '', uid = '';
+          cols.forEach(function (c) {
+            var v = c.trim();
+            if (v.indexOf('.') !== -1 && !nickname) nickname = v;
+            else if (ROLE_ORDER.indexOf(v) !== -1) role = v;
+            else if (v.length > 10 && !isNaN(v)) uid = v;
+          });
+          if (nickname && role && uid) { teams[nickname.split('.')[0]] = 1; csvPlayers.push({ nickname: nickname, role: role, uid: uid, teamAbbr: nickname.split('.')[0] }); }
+          var hId = (cols[noIdx] || '').trim(), hName = (cols[heroIdx] || '').trim();
+          if (hId && !isNaN(hId) && hName && hName.toLowerCase() !== 'hero' && !csvHeroes.find(function (h) { return h.id === parseInt(hId, 10); })) {
+            csvHeroes.push({ id: parseInt(hId, 10), name: hName });
+          }
+        }
+        uniqueTeams = Object.keys(teams).sort();
+        var opts = '<option value="">-- Select Team --</option>' + uniqueTeams.map(function (t) { return '<option value="' + t + '">' + t + '</option>'; }).join('');
+        ['team1_select', 'team2_select', 'draft_led_home', 'draft_led_away'].forEach(function (id) { var v = $(id).value; $(id).innerHTML = opts; $(id).value = v; });
+        if (appState.draft_led_home) $('draft_led_home').value = appState.draft_led_home;
+        if (appState.draft_led_away) $('draft_led_away').value = appState.draft_led_away;
+        $('heroesDataList').innerHTML = csvHeroes.map(function (h) { return '<option value="' + h.name + '">ID: ' + h.id + '</option>'; }).join('');
+      });
+    }).catch(function () {});
+  }
+
+  function renderTeamRoster(teamNum, savedUIDs) {
+    savedUIDs = savedUIDs || [];
+    var abbr = $('team' + teamNum + '_select').value;
+    var container = $('team' + teamNum + '_roster_container');
+    var logo = $('team' + teamNum + '_logo');
+    if (!abbr) { container.innerHTML = ''; logo.removeAttribute('src'); updateMatchPreview(); return; }
+    logo.src = '/assets/images/logo/' + encodeURIComponent(abbr) + '.png';
+    var roster = csvPlayers.filter(function (p) { return p.teamAbbr === abbr; });
+    var html = '';
+    ROLE_ORDER.forEach(function (role, i) {
+      var p = roster.filter(function (x) { return x.role.toLowerCase() === role.toLowerCase(); });
+      html += '<div class="role-slot"><span class="role-label">' + role + '</span>';
+      if (p.length === 0) html += '<span class="slot-empty">N/A</span><input type="hidden" class="t' + teamNum + '_uid_input" value="" data-name="N/A">';
+      else if (p.length === 1) html += '<span class="player-chip">' + p[0].nickname + '</span><input type="hidden" class="t' + teamNum + '_uid_input" value="' + p[0].uid + '" data-name="' + p[0].nickname + '">';
+      else {
+        html += '<select class="t' + teamNum + '_uid_input">';
+        p.forEach(function (x) { html += '<option value="' + x.uid + '"' + (x.uid === (savedUIDs[i] || null) ? ' selected' : '') + '>' + x.nickname + '</option>'; });
+        html += '</select>';
+      }
+      html += '</div>';
+    });
+    container.innerHTML = html;
+    updateMatchPreview();
+  }
+  $('team1_select').addEventListener('change', function () { renderTeamRoster(1); });
+  $('team2_select').addEventListener('change', function () { renderTeamRoster(2); });
+
+  /* ── Match Board: Match Info — series format (match_best_of 3|5|7), stage
+     (match_stage 'GROUP STAGE'|'KNOCKOUTS'|'GRAND FINALS'), day (match_day 1–15).
+     Saved in server_state.json with Update Live Roster & Score; overlays read
+     them from /api/state. ── */
+  var MI_DEFAULT = { bestOf: 3, stage: 'GROUP STAGE', day: 1, match: 1 };
+  var matchInfo = Object.assign({}, MI_DEFAULT);
+  (function buildDays() {
+    var html = '';
+    for (var d = 1; d <= 15; d++) html += '<option value="' + d + '">Day ' + d + '</option>';
+    $('mi-day').innerHTML = html;
+    html = '';
+    for (var m = 1; m <= 10; m++) html += '<option value="' + m + '">Match ' + m + '</option>';
+    $('mi-match').innerHTML = html;
+  })();
+  function paintMatchInfo() {
+    $('mi-bestof').value = String(matchInfo.bestOf);
+    $('mi-stage').value = matchInfo.stage;
+    $('mi-day').value = String(matchInfo.day);
+    $('mi-match').value = String(matchInfo.match);
+  }
+  function setMatchInfo(bestOf, stage, day, match) {
+    matchInfo.match = (+match >= 1 && +match <= 10) ? +match : MI_DEFAULT.match;
+    matchInfo.bestOf = [3, 5, 7].indexOf(+bestOf) !== -1 ? +bestOf : MI_DEFAULT.bestOf;
+    matchInfo.stage = ['GROUP STAGE', 'KNOCKOUTS', 'GRAND FINALS'].indexOf(stage) !== -1 ? stage : MI_DEFAULT.stage;
+    matchInfo.day = (+day >= 1 && +day <= 15) ? +day : MI_DEFAULT.day;
+    paintMatchInfo();
+  }
+  [['mi-bestof', 'bestOf', true], ['mi-stage', 'stage', false], ['mi-day', 'day', true], ['mi-match', 'match', true]].forEach(function (g) {
+    $(g[0]).addEventListener('change', function () {
+      matchInfo[g[1]] = g[2] ? +$(g[0]).value : $(g[0]).value;
+      updateMatchPreview();
+    });
+  });
+  function matchInfoText(mi) { return mi.stage + ' · DAY ' + mi.day + ' · MATCH ' + mi.match + ' · BEST OF ' + mi.bestOf; }
+
+  /* ── Match Board: live preview of the form + unsaved/swapped flags ── */
+  var swappedSinceSave = false;
+  function logoUrl(abbr) { return '/assets/images/logo/' + encodeURIComponent(abbr) + '.png'; }
+  function setPreviewLogo(img, abbr) { if (abbr) img.src = logoUrl(abbr); else img.removeAttribute('src'); }
+  function updateMatchPreview() {
+    var t1 = $('team1_select').value, t2 = $('team2_select').value;
+    var s1 = parseInt($('team1_score').value, 10) || 0, s2 = parseInt($('team2_score').value, 10) || 0;
+    $('pv-left-short').textContent = t1 || 'HOME';
+    $('pv-right-short').textContent = t2 || 'AWAY';
+    $('pv-left-score').textContent = s1;
+    $('pv-right-score').textContent = s2;
+    $('team1_short').textContent = t1 || 'HOME';
+    $('team2_short').textContent = t2 || 'AWAY';
+    setPreviewLogo($('pv-left-logo'), t1);
+    setPreviewLogo($('pv-right-logo'), t2);
+    $('pv-meta').textContent = matchInfoText(matchInfo) + '  ·  Battle ' + (appState.battle_id || '— (auto-detect)');
+    var dirty = t1 !== (appState.team_1_abbr || '') || t2 !== (appState.team_2_abbr || '') ||
+      s1 !== (appState.team_1_score || 0) || s2 !== (appState.team_2_score || 0) ||
+      matchInfo.bestOf !== (+appState.match_best_of || MI_DEFAULT.bestOf) || matchInfo.stage !== (appState.match_stage || MI_DEFAULT.stage) ||
+      matchInfo.day !== (+appState.match_day || MI_DEFAULT.day) || matchInfo.match !== (+appState.match_number || MI_DEFAULT.match) ||
+      JSON.stringify(rosterUids(1)) !== JSON.stringify(appState.team_1_uids || rosterUids(1)) ||
+      JSON.stringify(rosterUids(2)) !== JSON.stringify(appState.team_2_uids || rosterUids(2));
+    $('pv-dirty').classList.toggle('on', dirty);
+    $('swap-indicator').classList.toggle('active', swappedSinceSave && dirty);
+  }
+  function rosterUids(t) { return Array.prototype.map.call(document.querySelectorAll('.t' + t + '_uid_input'), function (inp) { return inp.value; }); }
+  ['team1_roster_container', 'team2_roster_container'].forEach(function (id) { $(id).addEventListener('change', updateMatchPreview); });
+  ['team1_score', 'team2_score'].forEach(function (id) { $(id).addEventListener('input', updateMatchPreview); });
+  document.querySelectorAll('[data-score]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var inp = $(b.dataset.score);
+      inp.value = Math.max(0, (parseInt(inp.value, 10) || 0) + parseInt(b.dataset.step, 10));
+      updateMatchPreview();
+    });
+  });
+  $('btn-reset-scores').addEventListener('click', function () { $('team1_score').value = 0; $('team2_score').value = 0; updateMatchPreview(); });
+
+  /* ── Settings + Match Board actions ── */
+  function saveDashboardSettings() {
+    var payload = { battle_id: $('battle_id').value, ob_open_id: $('ob_open_id').value };
+    SETTINGS_IDS.forEach(function (id) { payload[id] = $(id).value; });
+    Object.assign(appState, payload);
+    return pushState(payload).then(function () { if (payload.csv_url && csvPlayers.length === 0) refreshCSV(); });
+  }
+  $('btn-save-settings').addEventListener('click', saveDashboardSettings);
+  $('btn-apply-match').addEventListener('click', saveDashboardSettings);
+
+  $('btn-clear-battle').addEventListener('click', function () {
+    if (!confirm('WARNING!\n\nClear this Battle ID and wipe all saved data from the previous match? Only do this once the game has changed.')) return;
+    postJSON('/api/clear_battle').then(function (r) {
+      if (r.success) { $('battle_id').value = ''; appState.battle_id = ''; alert('Done: ' + r.message + '\n\nThe server is now waiting to auto-detect the next match.'); }
+      else alert('Failed: ' + r.error);
+    }).catch(function () { alert('Something went wrong while clearing the data.'); });
+  });
+
+  function refreshCSV() {
+    var url = $('csv_url').value;
+    if (!url) return alert('CSV URL is empty! Fill it in on the Settings tab first.');
+    postJSON('/api/update_csv', { url: url }).then(function (r) {
+      if (r.success) { alert('Done: ' + r.message); loadLocalCSV().then(function () { fillForms(true); }); }
+      else alert('Error: ' + r.error);
+    }).catch(function () { alert('Failed to update the CSV.'); });
+  }
+  $('btn-refresh-csv').addEventListener('click', refreshCSV);
+
+  function saveRoster() {
+    var names = function (t) {
+      return Array.prototype.map.call(document.querySelectorAll('.t' + t + '_uid_input'), function (inp) {
+        return inp.tagName === 'SELECT' ? inp.options[inp.selectedIndex].text : inp.dataset.name;
+      });
+    };
+    var uids = function (t) { return Array.prototype.map.call(document.querySelectorAll('.t' + t + '_uid_input'), function (inp) { return inp.value; }); };
+    var payload = {
+      team_1_abbr: $('team1_select').value, team_1_score: parseInt($('team1_score').value, 10) || 0, team_1_players: names(1), team_1_uids: uids(1),
+      team_2_abbr: $('team2_select').value, team_2_score: parseInt($('team2_score').value, 10) || 0, team_2_players: names(2), team_2_uids: uids(2),
+      match_best_of: matchInfo.bestOf, match_stage: matchInfo.stage, match_day: matchInfo.day, match_number: matchInfo.match,
+    };
+    Object.assign(appState, payload);
+    swappedSinceSave = false;
+    updateMatchPreview();
+    pushState(payload);
+  }
+  $('btn-save-roster').addEventListener('click', saveRoster);
+  $('btn-save-roster-2').addEventListener('click', saveRoster);
+
+  $('btn-switch-teams').addEventListener('click', function () {
+    var t1 = $('team1_select').value, s1 = $('team1_score').value, u1 = Array.prototype.map.call(document.querySelectorAll('.t1_uid_input'), function (e) { return e.value; });
+    var t2 = $('team2_select').value, s2 = $('team2_score').value, u2 = Array.prototype.map.call(document.querySelectorAll('.t2_uid_input'), function (e) { return e.value; });
+    $('team1_select').value = t2; $('team1_score').value = s2;
+    $('team2_select').value = t1; $('team2_score').value = s1;
+    swappedSinceSave = !swappedSinceSave;
+    renderTeamRoster(1, u2); renderTeamRoster(2, u1);
+  });
+
+  $('btn-force-reload').addEventListener('click', function () {
+    getJSON('/overlay/force-reload').then(function (d) {
+      $('force-reload-status').textContent = 'Reloaded ✓ (' + d.clients + ' connection' + (d.clients === 1 ? '' : 's') + ')';
+      setTimeout(function () { $('force-reload-status').textContent = ''; }, 2500);
+    }).catch(function () { $('force-reload-status').textContent = 'Failed'; });
+  });
+
+  $('btn-autodetect').addEventListener('click', function () {
+    getJSON('/api/ingame_data').then(function (data) {
+      if (!data.players || data.players.length === 0) return alert('No in-game data yet.');
+      var abbrOf = function (list) {
+        var counts = {};
+        list.forEach(function (p) { if ((p.NickName || '').indexOf('.') !== -1) { var a = p.NickName.split('.')[0].toUpperCase(); counts[a] = (counts[a] || 0) + 1; } });
+        return Object.keys(counts).reduce(function (a, b) { return counts[a] > counts[b] ? a : b; }, '');
+      };
+      var t1 = abbrOf(data.players.filter(function (p) { return p.Camp === 1; }));
+      var t2 = abbrOf(data.players.filter(function (p) { return p.Camp === 2; }));
+      var msg = 'Detected sides:\n';
+      if (t1 && uniqueTeams.indexOf(t1) !== -1) { $('team1_select').value = t1; renderTeamRoster(1); msg += 'Left = ' + t1 + '\n'; }
+      if (t2 && uniqueTeams.indexOf(t2) !== -1) { $('team2_select').value = t2; renderTeamRoster(2); msg += 'Right = ' + t2 + '\n'; }
+      alert(msg);
+    }).catch(function () { alert('Could not detect from the API.'); });
+  });
+
+  document.querySelectorAll('.dynamic-url').forEach(function (a) { a.textContent = window.location.origin + a.getAttribute('href'); });
+
+  /* ════════════════════ Draft tab ════════════════════ */
+  var DRAFT_SEQ = [
+    { t: 'B', c: 1 }, { t: 'B', c: 2 }, { t: 'B', c: 1 }, { t: 'B', c: 2 },
+    { t: 'P', c: 1 }, { t: 'P', c: 2 }, { t: 'P', c: 2 }, { t: 'P', c: 1 }, { t: 'P', c: 1 }, { t: 'P', c: 2 },
+    { t: 'B', c: 2 }, { t: 'B', c: 1 }, { t: 'B', c: 2 }, { t: 'B', c: 1 },
+    { t: 'P', c: 2 }, { t: 'P', c: 1 }, { t: 'P', c: 1 }, { t: 'P', c: 2 },
+  ];
+
+  function buildDraftSide(container, side, color, title) {
+    var b = side === 'home' ? 'hb' : 'ab', p = side === 'home' ? 'hp' : 'ap';
+    var html = '<h3 style="color:' + color + '">HERO BAN (' + title + ')</h3><div class="draft-row"><div class="tag">BAN</div>';
+    for (var i = 0; i < 4; i++) html += '<input type="text" id="' + b + '-' + i + '" list="heroesDataList">';
+    html += '</div><div style="height:12px"></div><h3 style="color:' + color + '">HERO PICK (' + title + ')</h3><div class="draft-row"><div class="tag">PICK</div>';
+    for (i = 0; i < 5; i++) html += '<input type="text" id="' + p + '-' + i + '" list="heroesDataList">';
+    html += '</div><div class="draft-row"><div class="tag" style="visibility:hidden">.</div>';
+    for (i = 0; i < 5; i++) html += '<button class="btn btn-swap" id="swap-' + p + '-' + i + '" data-type="' + p + '" data-index="' + i + '">SWAP</button>';
+    html += '</div>';
+    container.innerHTML = html;
+  }
+  buildDraftSide($('draft-home'), 'home', '#7fb0ff', 'HOME');
+  buildDraftSide($('draft-away'), 'away', '#ff8899', 'AWAY');
+
+  document.querySelectorAll('.btn-swap').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var type = b.dataset.type, index = b.dataset.index;
+      if (!swapActive) { swapActive = { type: type, index: index }; b.classList.add('active-swap'); return; }
+      var i1 = $(swapActive.type + '-' + swapActive.index), i2 = $(type + '-' + index);
+      var tmp = i1.value; i1.value = i2.value; i2.value = tmp;
+      document.querySelectorAll('.btn-swap').forEach(function (x) { x.classList.remove('active-swap'); });
+      swapActive = null;
+    });
+  });
+
+  function setDraftMode(mode, doFetch) {
+    draftMode = mode;
+    $('btn_mode_manual').classList.toggle('active', mode === 'MANUAL');
+    $('btn_mode_api').classList.toggle('active', mode === 'API');
+    if (mode === 'API' && doFetch !== false) fetchCurrentDraftHeroes();
+  }
+  $('btn_mode_manual').addEventListener('click', function () { setDraftMode('MANUAL'); });
+  $('btn_mode_api').addEventListener('click', function () { setDraftMode('API'); });
+
+  // Live API mode: copy the current API draft into the inputs.
+  function fetchCurrentDraftHeroes() {
+    getJSON('/api/draft_phase').then(function (data) {
+      var bp = (data.response && data.response.BanPickList) || [];
+      var hB = [], aB = [], hP = [], aP = [];
+      for (var i = 0; i < 18; i++) {
+        var ev = bp[i], act = DRAFT_SEQ[i];
+        if (!ev || !(ev.HeroID > 0)) continue;
+        var n = heroNameById(ev.HeroID);
+        if (act.t === 'B') (act.c === 1 ? hB : aB).push(n); else (act.c === 1 ? hP : aP).push(n);
+      }
+      for (i = 0; i < 4; i++) { if (hB[i]) $('hb-' + i).value = hB[i]; if (aB[i]) $('ab-' + i).value = aB[i]; }
+      for (i = 0; i < 5; i++) { if (hP[i]) $('hp-' + i).value = hP[i]; if (aP[i]) $('ap-' + i).value = aP[i]; }
+    }).catch(function () {});
+  }
+
+  function saveDraftManual() {
+    var getId = function (val) {
+      if (!val) return 0;
+      var h = csvHeroes.find(function (x) { return x.name.toLowerCase() === val.toLowerCase(); });
+      return h ? h.id : (parseInt(val, 10) || 0);
+    };
+    var hB = [], aB = [], hP = [], aP = [];
+    for (var i = 0; i < 4; i++) { hB.push(getId($('hb-' + i).value.trim())); aB.push(getId($('ab-' + i).value.trim())); }
+    for (i = 0; i < 5; i++) { hP.push(getId($('hp-' + i).value.trim())); aP.push(getId($('ap-' + i).value.trim())); }
+    var payload = { draft_mode: draftMode,
+      home_ban_override: hB, away_ban_override: aB, home_role_swap: hP, away_role_swap: aP };
+    Object.assign(appState, payload);
+    return pushState(payload);
+  }
+  $('btn-draft-save').addEventListener('click', saveDraftManual);
+  $('btn-draft-clear').addEventListener('click', function () {
+    if (!confirm('Clear every draft hero? The overlays will clear too.')) return;
+    document.querySelectorAll('#draft-home input, #draft-away input').forEach(function (i) { i.value = ''; });
+    saveDraftManual();
+  });
+
+  /* ════════════════════ Live state: check overlays + feature toggles ════════════════════
+     Buttons only fire the GET; the SSE echo (dashboardSSE below) is the single
+     source of truth for what they display — so they stay right no matter who
+     changed the state (this dashboard, another one, Companion, curl). */
+  var checkOverlayStates = {};
+  var checkToggleBtns = {};   // key -> [buttons]
+  var featureStates = {};
+  var featureBtns = {};       // feature -> [buttons]
+  var dots = {};              // overlay id -> sidebar dot
+
+  function applyCheckToggle(key) {
+    var shown = !!checkOverlayStates[key];
+    (checkToggleBtns[key] || []).forEach(function (b) {
+      if (!b.isConnected) return;
+      var labels = b._labels || ['● Showing', '○ Hidden'];
+      b.textContent = shown ? labels[0] : labels[1];
+      b.className = 'btn btn-toggle ' + (shown ? 'btn-toggle-on' : 'btn-toggle-off');
+    });
+    OVERLAYS.forEach(function (ov) {
+      var keys = [].concat(ov.dotKey || []);
+      if (keys.indexOf(key) !== -1 && dots[ov.id]) dots[ov.id].classList.toggle('on', keys.some(function (k) { return !!checkOverlayStates[k]; }));
+    });
+  }
+  function applyFeatureToggle(f) {
+    var on = featureStates[f] !== false;
+    (featureBtns[f] || []).forEach(function (b) {
+      if (!b.isConnected) return;
+      b.textContent = on ? '● Enabled' : '○ Disabled';
+      b.className = 'btn btn-toggle ' + (on ? 'btn-toggle-on' : 'btn-toggle-off');
+    });
+  }
+  function toggleCheckOverlay(key) {
+    fetch('/overlay/' + encodeURIComponent(key) + '/' + (checkOverlayStates[key] ? 'hide' : 'show'), { cache: 'no-store' }).catch(function () {});
+  }
+  function toggleFeature(f) {
+    fetch('/overlay/feature/' + encodeURIComponent(f) + '/' + (featureStates[f] !== false ? 'disable' : 'enable'), { cache: 'no-store' }).catch(function () {});
+  }
+  function checkToggleBtn(key, labels) {
+    var b = el('button', 'btn btn-toggle btn-toggle-off', '○ Hidden');
+    b._labels = labels;
+    b.addEventListener('click', function () { toggleCheckOverlay(key); });
+    (checkToggleBtns[key] = checkToggleBtns[key] || []).push(b);
+    return b;
+  }
+  function featureToggleBtn(f) {
+    var b = el('button', 'btn btn-toggle btn-toggle-on', '● Enabled');
+    b.addEventListener('click', function () { toggleFeature(f); });
+    (featureBtns[f] = featureBtns[f] || []).push(b);
+    return b;
+  }
+
+  function loadLiveState() {
+    getJSON('/overlay/check-overlays').then(function (d) { checkOverlayStates = d || {}; Object.keys(checkOverlayStates).forEach(applyCheckToggle); }).catch(function () {});
+    getJSON('/overlay/features').then(function (d) { featureStates = d || {}; Object.keys(featureStates).forEach(applyFeatureToggle); }).catch(function () {});
+  }
+
+  // LED tab pick-box toggle shares the same live state
+  var ledPickBtn = $('btn-led-pickbox');
+  ledPickBtn._labels = ['● Pick Boxes Shown (normal)', '○ Pick Boxes Hidden (POV cam)'];
+  ledPickBtn.addEventListener('click', function () { toggleCheckOverlay('led_pickbox'); });
+  checkToggleBtns.led_pickbox = [ledPickBtn];
+
+  /* ════════════════════ Control tab ════════════════════ */
+  var KILL_TYPES = ['FIRST BLOOD', 'DOUBLE KILL', 'TRIPLE KILL', 'QUADRA KILL', 'PENTA KILL', 'ACE'];
+  var OBJ_TYPES = ['FIRST TYRANT', 'TYRANT', 'SHADOW TYRANT', 'FIRST OVERLORD', 'OVERLORD', 'SHADOW OVERLORD', 'TEMPEST DRAGON'];
+
+  /* Overlay entries:
+       file             page under /html/
+       previewSize      [w, h] when not 1920x1080
+       dotKey           check key that lights the sidebar dot
+       show/hide + showKey  whole-scene SHOWING/HIDDEN toggle (+ copy routes, ◈ Preview)
+       checkToggles     [{ name, key, previewButton }]  independent on/off panels
+       featureToggles   [{ name, feature }]               armable auto-triggers
+       eventTester      kill/objective test buttons (live GET + local preview) */
+  var OVERLAYS = [
+    {
+      id: 'ingame', name: 'In-Game Overlay', file: 'overlay.html', dotKey: ['topbar', 'itemcheck', 'damagerank', 'goldrank'],
+      // Quadrants: panels in different quadrants can be live together; showing one
+      // replaces whatever else is up in its own quadrant (animates out, then in).
+      checkToggles: [
+        { name: 'Top Bar (top)', key: 'topbar', previewButton: true, previewGroup: 'q-top' },
+        { name: 'Item Check (bottom)', key: 'itemcheck', previewButton: true, previewGroup: 'q-bottom' },
+        { name: 'Damage Rank (right)', key: 'damagerank', previewButton: true, previewGroup: 'q-right' },
+        { name: 'Gold Rank (right)', key: 'goldrank', previewButton: true, previewGroup: 'q-right' },
+        { name: 'Test Background', key: 'testbg', previewButton: true, previewGroup: 'testbg' },
+      ],
+      featureToggles: [
+        { name: 'Kill Events (auto-trigger)', feature: 'killevents' },
+        { name: 'Objective Events (auto-trigger)', feature: 'objectives' },
+        { name: 'Real-Time Team Fight (no overlay yet)', feature: 'rttf' },
+      ],
+      eventTester: true,
+      damageRankTester: true,
+    },
+    {
+      id: 'draftpick', name: 'Draft Pick', file: 'draftpick.html', dotKey: 'draftpick',
+      show: '/overlay/draftpick/show', hide: '/overlay/draftpick/hide', showKey: 'draftpick',
+    },
+    {
+      id: 'draftled', name: 'Draft LED', file: 'draft-led.html', previewSize: [1764, 1024], dotKey: 'draftled',
+      show: '/overlay/draftled/show', hide: '/overlay/draftled/hide', showKey: 'draftled',
+      checkToggles: [
+        { name: 'Pick Boxes (Hidden = POV cam mode)', key: 'led_pickbox', previewButton: true },
+      ],
+    },
+    {
+      // Full-screen scenes (one container each in fullscreen.html).
+      id: 'fullscreen', name: 'Fullscreen', file: 'fullscreen.html', dotKey: ['posthexagon', 'poststats', 'postgoldgraph', 'postitems', 'versusslide', 'headtohead'],
+      // Scenes are mutually exclusive (showing one hides the other); the
+      // background video, header and ticker stay up between them.
+      checkToggles: [
+        { name: 'Post Hexagon', key: 'posthexagon', previewButton: true },
+        { name: 'Post Stats', key: 'poststats', previewButton: true },
+        { name: 'Post Gold Graph', key: 'postgoldgraph', previewButton: true },
+        { name: 'Post Items', key: 'postitems', previewButton: true },
+        { name: 'Versus Slide', key: 'versusslide', previewButton: true },
+        { name: 'Head to Head', key: 'headtohead', previewButton: true },
+      ],
+      goldGraphStatus: true,
+      postHexagonRoles: true,
+      headToHeadRoles: true,
+      optionToggles: [
+        { name: 'Background Video (all scenes)', key: 'fsbg' },
+      ],
+    },
+  ];
+
+  var layout = $('layout');
+  var previewIframe = $('preview-iframe');
+  var controlPanelBody = $('control-panel-body');
+  var activeItem = null, lastOverlay = null, lastItem = null;
+  // One active preview per GROUP (turnOff fn by group). Default group = one at a
+  // time; In-Game quadrant panels use their quadrant, so top + bottom previews
+  // can run together while two panels of the same quadrant still replace each other.
+  var activePreviewOff = {};
+
+  function hit(url) {
+    fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return;
+      controlPanelBody.classList.remove('flash-ok'); void controlPanelBody.offsetWidth; controlPanelBody.classList.add('flash-ok');
+    }).catch(function () {});
+  }
+
+  function scalePreview() {
+    var wrap = $('preview-frame-wrap');
+    var size = (lastOverlay && lastOverlay.previewSize) || [1920, 1080];
+    previewIframe.style.width = size[0] + 'px';
+    previewIframe.style.height = size[1] + 'px';
+    var scale = Math.min(wrap.clientWidth / size[0], wrap.clientHeight / size[1]);
+    previewIframe.style.transform = 'scale(' + scale + ')';
+    previewIframe.style.left = Math.round((wrap.clientWidth - size[0] * scale) / 2) + 'px';
+    previewIframe.style.top = Math.round((wrap.clientHeight - size[1] * scale) / 2) + 'px';
+  }
+  window.addEventListener('resize', function () { if (layout.classList.contains('split')) scalePreview(); });
+
+  function previewCall(event, action) {
+    var iw = previewIframe.contentWindow;
+    if (iw && typeof iw.previewTrigger === 'function') iw.previewTrigger(event, action);
+  }
+
+  /* ◈ Preview toggle — local to the preview iframe only (the page there is
+     loaded with ?preview=1 and ignores real broadcast state). One active at a time. */
+  function buildPreviewToggleBtn(eventName, group) {
+    group = group || 'default';
+    var b = el('button', 'btn btn-preview-live', '◈ Preview');
+    var active = false;
+    function turnOff(silent) {
+      active = false; b.classList.remove('active');
+      if (!silent) previewCall(eventName, 'hide');
+      if (activePreviewOff[group] === turnOff) delete activePreviewOff[group];
+    }
+    b.addEventListener('click', function () {
+      if (active) { turnOff(); return; }
+      // Same group: the page itself animates the previous one out (quadrant rule), so
+      // just reset its button without sending a hide that could race the new show.
+      if (activePreviewOff[group]) activePreviewOff[group](group !== 'default');
+      active = true; b.classList.add('active'); activePreviewOff[group] = turnOff;
+      previewCall(eventName, 'show');
+    });
+    return b;
+  }
+
+  function selectOverlay(ov, item) {
+    if (activeItem === item) return;
+    if (activeItem) activeItem.classList.remove('active');
+    activeItem = item; lastOverlay = ov; lastItem = item;
+    item.classList.add('active');
+    $('control-panel-title').textContent = ov.name;
+    $('control-panel-open').href = '/html/' + ov.file;
+    buildControlBody(ov);
+    $('preview-title').textContent = ov.name + ' — preview (local only, not on air)';
+    $('preview-label').textContent = ov.file;
+    previewIframe.src = '/html/' + ov.file + '?t=' + Date.now() + '&preview=1';
+    layout.classList.add('split');
+    requestAnimationFrame(scalePreview);
+  }
+
+  function deselectOverlay() {
+    if (activeItem) activeItem.classList.remove('active');
+    activeItem = null; lastOverlay = null; lastItem = null;
+    layout.classList.remove('split');
+    previewIframe.src = 'about:blank';
+    controlPanelBody.innerHTML = '';
+    activePreviewOff = {};
+  }
+
+  /* ── Post Hexagon role picker ──
+     Options come from /api/post-hexagon (who is in the game, matched to
+     roles). Changing it sets the LIVE role (/overlay/posthexagon/role/<role>,
+     on air it swaps with an animation) and the preview's role. */
+  var hexRole = 'clash';
+  var hexRoleSelect = null;
+  function refreshHexRoles() {
+    if (!hexRoleSelect) return Promise.resolve();
+    return getJSON('/api/post-hexagon').then(function (d) {
+      if (!hexRoleSelect) return;
+      hexRoleSelect.innerHTML = (d.roles || []).map(function (r) {
+        var h = r.home ? r.home.name + (r.home.heroName ? ' (' + r.home.heroName + ')' : '') : '—';
+        var a = r.away ? r.away.name + (r.away.heroName ? ' (' + r.away.heroName + ')' : '') : '—';
+        return '<option value="' + r.key + '">' + r.label + ' — ' + h + '  vs  ' + a + '</option>';
+      }).join('');
+      hexRoleSelect.value = hexRole;
+    }).catch(function () {});
+  }
+  function applyHexRole(role) {
+    hexRole = role;
+    if (hexRoleSelect && hexRoleSelect.value !== role) hexRoleSelect.value = role;
+    previewCall('posthexagon_role', role);
+  }
+  function buildPostHexagonRoles(body) {
+    body.appendChild(el('div', 'divider'));
+    body.appendChild(el('div', 'features-label', 'Post Hexagon — Compare Role'));
+    var row = el('div', 'row');
+    hexRoleSelect = el('select');
+    hexRoleSelect.style.flex = '1';
+    hexRoleSelect.addEventListener('change', function () {
+      var role = hexRoleSelect.value;
+      applyHexRole(role);
+      fetch('/overlay/posthexagon/role/' + role, { cache: 'no-store' }).catch(function () {});
+    });
+    row.appendChild(hexRoleSelect);
+    row.appendChild(btn('↻', '', refreshHexRoles));
+    body.appendChild(row);
+    var copyRow = el('div', 'row');
+    copyRow.appendChild(el('span', 'feature-name', 'Show with role:'));
+    [['clash', 'Clash'], ['jungler', 'Jungle'], ['mid', 'Mid'], ['farm', 'Farm'], ['roamer', 'Roam']].forEach(function (r) {
+      copyRow.appendChild(copyBtn('/overlay/posthexagon/' + r[0] + '/show', 'Post Hexagon ' + r[1] + ' show', r[1]));
+    });
+    body.appendChild(copyRow);
+    getJSON('/overlay/posthexagon-state').then(function (d) { hexRole = d.role || hexRole; }).catch(function () {}).then(refreshHexRoles);
+  }
+
+  /* ── Head to Head role picker ──
+     Options = Match Board players per role (the scene compares Team 1 vs
+     Team 2's player in that slot). Changing it sets the LIVE role
+     (/overlay/headtohead/role/<role>) and the preview's role. Stats are
+     averaged over every game the server recorded (lib/playerHistory.js). */
+  var h2hRole = 'clash';
+  var h2hRoleSelect = null, h2hInfo = null;
+  function refreshH2hRoles() {
+    if (!h2hRoleSelect) return Promise.resolve();
+    return getJSON('/api/head-to-head?role=' + h2hRole).then(function (d) {
+      if (!h2hRoleSelect) return;
+      h2hRoleSelect.innerHTML = (d.roles || []).map(function (r) {
+        return '<option value="' + r.key + '">' + r.label + ' — ' + (r.home || '—') + '  vs  ' + (r.away || '—') + '</option>';
+      }).join('');
+      h2hRoleSelect.value = h2hRole;
+      var n = d.gamesRecorded || 0;
+      h2hInfo.textContent = n ? 'Stats = ' + n + ' recorded game' + (n === 1 ? '' : 's') + ' (this ' + (d.home && d.home.name || 'home') + ': ' + (d.home && d.home.stats.games || 0) + ', ' + (d.away && d.away.name || 'away') + ': ' + (d.away && d.away.stats.games || 0) + ')'
+        : '⚠ No games recorded yet — values show "-". The server records every game it polls.';
+      h2hInfo.style.color = n ? '#3ddc97' : '#f0a040';
+    }).catch(function () {});
+  }
+  function applyH2hRole(role) {
+    h2hRole = role;
+    if (h2hRoleSelect && h2hRoleSelect.value !== role) h2hRoleSelect.value = role;
+    previewCall('headtohead_role', role);
+    refreshH2hRoles();
+  }
+  function buildHeadToHeadRoles(body) {
+    body.appendChild(el('div', 'divider'));
+    body.appendChild(el('div', 'features-label', 'Head to Head — Compare Role'));
+    var row = el('div', 'row');
+    h2hRoleSelect = el('select');
+    h2hRoleSelect.style.flex = '1';
+    h2hRoleSelect.addEventListener('change', function () {
+      var role = h2hRoleSelect.value;
+      applyH2hRole(role);
+      fetch('/overlay/headtohead/role/' + role, { cache: 'no-store' }).catch(function () {});
+    });
+    row.appendChild(h2hRoleSelect);
+    row.appendChild(btn('↻', '', refreshH2hRoles));
+    body.appendChild(row);
+    var copyRow = el('div', 'row');
+    copyRow.appendChild(el('span', 'feature-name', 'Show with role:'));
+    [['clash', 'Clash'], ['jungler', 'Jungle'], ['mid', 'Mid'], ['farm', 'Farm'], ['roamer', 'Roam']].forEach(function (r) {
+      copyRow.appendChild(copyBtn('/overlay/headtohead/' + r[0] + '/show', 'Head to Head ' + r[1] + ' show', r[1]));
+    });
+    body.appendChild(copyRow);
+    var infoRow = el('div', 'row');
+    h2hInfo = el('div', 'hint', 'Recorded games: checking…');
+    h2hInfo.style.margin = '0'; h2hInfo.style.flex = '1';
+    infoRow.appendChild(h2hInfo);
+    infoRow.appendChild(btn('Clear history', 'btn-reset', function () {
+      if (!confirm('Delete ALL recorded game stats used by Head to Head?\n\nDo this only after test games — it cannot be undone.')) return;
+      postJSON('/api/head-to-head/clear-history').then(refreshH2hRoles).catch(function () {});
+    }));
+    body.appendChild(infoRow);
+    getJSON('/overlay/headtohead-state').then(function (d) { h2hRole = d.role || h2hRole; }).catch(function () {}).then(refreshH2hRoles);
+  }
+
+  function buildControlBody(ov) {
+    var body = controlPanelBody;
+    body.innerHTML = '';
+    activePreviewOff = {}; // its buttons were just wiped
+    hexRoleSelect = null;    // same
+    h2hRoleSelect = null; h2hInfo = null;
+
+    /* Whole-scene SHOWING/HIDDEN toggle */
+    if (ov.show || ov.hide) {
+      body.appendChild(el('div', 'features-label', 'Scene'));
+      var row = el('div', 'row');
+      row.appendChild(checkToggleBtn(ov.showKey));
+      row.appendChild(copyBtn(ov.show, ov.name + ' show', 'show'));
+      row.appendChild(copyBtn(ov.hide, ov.name + ' hide', 'hide'));
+      row.appendChild(buildPreviewToggleBtn(ov.show.split('/')[2]));
+      body.appendChild(row);
+      applyCheckToggle(ov.showKey);
+    }
+
+    /* Independent on/off panels */
+    if (ov.checkToggles && ov.checkToggles.length) {
+      if (body.children.length) body.appendChild(el('div', 'divider'));
+      body.appendChild(el('div', 'features-label', 'Show / Hide'));
+      ov.checkToggles.forEach(function (ct) {
+        var fr = el('div', 'feature-row');
+        fr.appendChild(el('div', 'feature-name', ct.name));
+        var g = el('div', 'feature-btns');
+        g.appendChild(checkToggleBtn(ct.key));
+        if (ct.previewButton) g.appendChild(buildPreviewToggleBtn(ct.key, ct.previewGroup));
+        g.appendChild(copyBtn('/overlay/' + ct.key + '/show', ct.name + ' show', 'show'));
+        g.appendChild(copyBtn('/overlay/' + ct.key + '/hide', ct.name + ' hide', 'hide'));
+        fr.appendChild(g);
+        body.appendChild(fr);
+        applyCheckToggle(ct.key);
+      });
+    }
+
+    /* Armable auto-triggers */
+    if (ov.featureToggles && ov.featureToggles.length) {
+      body.appendChild(el('div', 'divider'));
+      body.appendChild(el('div', 'features-label', 'Auto-Trigger'));
+      ov.featureToggles.forEach(function (ft) {
+        var fr = el('div', 'feature-row');
+        fr.appendChild(el('div', 'feature-name', ft.name));
+        var g = el('div', 'feature-btns');
+        g.appendChild(featureToggleBtn(ft.feature));
+        g.appendChild(copyBtn('/overlay/feature/' + ft.feature + '/enable', ft.name + ' enable', 'on'));
+        g.appendChild(copyBtn('/overlay/feature/' + ft.feature + '/disable', ft.name + ' disable', 'off'));
+        fr.appendChild(g);
+        body.appendChild(fr);
+        applyFeatureToggle(ft.feature);
+      });
+    }
+
+    /* Kill / objective tester: ▶ fires on every live overlay (GET), ◈ plays only in the preview */
+    if (ov.eventTester) {
+      [['kp', 'Kill Event Tester', KILL_TYPES], ['obj', 'Objective Event Tester', OBJ_TYPES]].forEach(function (grp) {
+        body.appendChild(el('div', 'divider'));
+        body.appendChild(el('div', 'features-label', grp[1] + ' — ▶ = on air · ◈ = preview only'));
+        grp[2].forEach(function (type) {
+          var route = '/overlay/debugevent/' + grp[0] + '/' + encodeURIComponent(type);
+          var fr = el('div', 'feature-row');
+          fr.appendChild(el('div', 'feature-name', type));
+          var g = el('div', 'feature-btns');
+          g.appendChild(btn('▶ Live', 'btn-action', function () { hit(route); }));
+          g.appendChild(btn('◈', 'btn-preview-live', function () { previewCall('debugevent', type); }));
+          g.appendChild(copyBtn(route, type + ' test'));
+          fr.appendChild(g);
+          body.appendChild(fr);
+        });
+      });
+    }
+
+    /* Damage Rank / Gold Rank: fake rank changes to check the transition animation.
+       ▶ = every live overlay (GET /overlay/<panel>/debug/<mode>), ◈ = preview only.
+       Live data is ignored until "Back to Live" or the panel is hidden. */
+    if (ov.damageRankTester) [['damagerank', 'Damage Rank'], ['goldrank', 'Gold Rank']].forEach(function (pn) {
+      body.appendChild(el('div', 'divider'));
+      body.appendChild(el('div', 'features-label', pn[1] + ' — Rank Change Tester — ▶ = on air · ◈ = preview only'));
+      var drHint = el('div', 'hint', 'Show the panel first (or its ◈ Preview). Fake values replace live data until "Back to Live" or the panel hides.');
+      drHint.style.margin = '0';
+      body.appendChild(drHint);
+      [['shuffle', 'Shuffle (one overtake)'], ['climb', 'Last → First'], ['auto', 'Auto shuffle every 2.5 s (again = stop)'], ['live', 'Back to Live data']].forEach(function (m) {
+        var route = '/overlay/' + pn[0] + '/debug/' + m[0];
+        var fr = el('div', 'feature-row');
+        fr.appendChild(el('div', 'feature-name', m[1]));
+        var g = el('div', 'feature-btns');
+        g.appendChild(btn('▶ Live', 'btn-action', function () { hit(route); }));
+        g.appendChild(btn('◈', 'btn-preview-live', function () { previewCall(pn[0] + '_debug', m[0]); }));
+        g.appendChild(copyBtn(route, pn[1] + ' ' + m[0]));
+        fr.appendChild(g);
+        body.appendChild(fr);
+      });
+    });
+
+    /* Options: persistent on/off settings for the page (Enabled/Disabled) */
+    if (ov.optionToggles && ov.optionToggles.length) {
+      body.appendChild(el('div', 'divider'));
+      body.appendChild(el('div', 'features-label', 'Options'));
+      ov.optionToggles.forEach(function (ot) {
+        var fr = el('div', 'feature-row');
+        fr.appendChild(el('div', 'feature-name', ot.name));
+        var g = el('div', 'feature-btns');
+        g.appendChild(checkToggleBtn(ot.key, ['● Enabled', '○ Disabled']));
+        g.appendChild(copyBtn('/overlay/' + ot.key + '/show', ot.name + ' enable', 'on'));
+        g.appendChild(copyBtn('/overlay/' + ot.key + '/hide', ot.name + ' disable', 'off'));
+        fr.appendChild(g);
+        body.appendChild(fr);
+        applyCheckToggle(ot.key);
+      });
+    }
+
+    /* Post Gold Graph: was gold history recorded for this battle? */
+    if (ov.goldGraphStatus) {
+      var gst = el('div', 'hint', 'Gold history: checking…');
+      gst.style.margin = '0';
+      body.appendChild(gst);
+      getJSON('/api/post-gold-graph').then(function (d) {
+        if (d.timelineRecorded) { gst.textContent = 'Gold Graph history: ' + d.timelineSamples + ' samples recorded for this game ✓'; gst.style.color = '#3ddc97'; }
+        else { gst.textContent = '⚠ Gold Graph: no gold history recorded for this game (server wasn\'t polling during it) — the graph shows a straight line to the final gold difference.'; gst.style.color = '#f0a040'; }
+      }).catch(function () { gst.textContent = ''; });
+    }
+
+    /* Post Hexagon: role pair to compare (players currently in the game) */
+    if (ov.postHexagonRoles) buildPostHexagonRoles(body);
+    if (ov.headToHeadRoles) buildHeadToHeadRoles(body);
+
+    /* Utility */
+    body.appendChild(el('div', 'divider'));
+    var urow = el('div', 'row');
+    urow.appendChild(btn('Reload All Pages', 'btn-action', function () { hit('/overlay/force-reload'); }));
+    urow.appendChild(copyBtn('/overlay/force-reload', 'Reload all pages'));
+    urow.appendChild(copyBtn('/html/' + ov.file, ov.name + ' page', 'page URL'));
+    body.appendChild(urow);
+  }
+
+  OVERLAYS.forEach(function (ov) {
+    var item = el('div', 'ov-item');
+    var dot = el('div', 'ov-dot');
+    item.appendChild(dot);
+    item.appendChild(el('span', 'ov-name', ov.name));
+    item.addEventListener('click', function () { selectOverlay(ov, item); });
+    $('sidebar').appendChild(item);
+    dots[ov.id] = dot;
+  });
+
+  /* ════════════════════ Live sync (one shared SSE connection) ════════════════════ */
+  var dashboardSSE = createOverlaySSE();
+  dashboardSSE.onopen = function () { $('sse-dot').className = 'status-dot online'; $('sse-label').textContent = 'Live'; loadLiveState(); };
+  dashboardSSE.onerror = function () { $('sse-dot').className = 'status-dot offline'; $('sse-label').textContent = 'Disconnected'; };
+
+  ['topbar', 'itemcheck', 'damagerank', 'goldrank', 'testbg', 'draftpick', 'draftled', 'led_pickbox', 'posthexagon', 'poststats', 'postgoldgraph', 'postitems', 'versusslide', 'headtohead', 'fsbg'].forEach(function (key) {
+    dashboardSSE.addEventListener(key, function (e) {
+      try {
+        var d = JSON.parse(e.data);
+        if (d.action === 'show' || d.action === 'hide') { checkOverlayStates[key] = d.action === 'show'; applyCheckToggle(key); }
+        else if (key === 'posthexagon' && d.action === 'role') applyHexRole(d.role);
+        else if (key === 'headtohead' && d.action === 'role') applyH2hRole(d.role);
+      } catch (err) {}
+    });
+  });
+  dashboardSSE.addEventListener('featuretoggle', function (e) {
+    try { var d = JSON.parse(e.data); featureStates[d.feature] = !!d.enabled; applyFeatureToggle(d.feature); } catch (err) {}
+  });
+  // Another dashboard (or this one) saved config → re-sync if it's newer than ours.
+  dashboardSSE.addEventListener('appstate', function (e) {
+    try {
+      var d = JSON.parse(e.data);
+      refreshHexRoles();
+      if (d.cleared) { $('battle_id').value = ''; return; }
+      if (d.last_updated && d.last_updated > localLastUpdated) { localLastUpdated = d.last_updated; forceSyncDashboard(); }
+    } catch (err) {}
+  });
+
+  /* ── Worker status badge (2 s) ── */
+  function checkStatus() {
+    getJSON('/api/server_status').then(function (d) {
+      var badge = $('worker-status');
+      if (d.status === 'RUNNING') { badge.className = 'badge green'; badge.textContent = 'Server: Live Pulling'; }
+      else if (d.status === 'SLEEP') { badge.className = 'badge orange'; badge.textContent = 'Server: Auto-Sleep (Game Ended)'; }
+      else { badge.className = 'badge'; badge.textContent = 'Server: Idle'; }
+      if (d.battleId && $('battle_id').value === '') $('battle_id').value = d.battleId;
+      if (d.last_updated && localLastUpdated !== 0 && d.last_updated > localLastUpdated) { localLastUpdated = d.last_updated; forceSyncDashboard(); }
+      else if (d.last_updated && localLastUpdated === 0) localLastUpdated = d.last_updated;
+    }).catch(function () { var b = $('worker-status'); b.className = 'badge'; b.textContent = 'Server unreachable'; });
+  }
+
+  /* ════════════════════ LED & Companion ════════════════════ */
+  function buildCompanionRows(container, side) {
+    COMP_EVENTS.forEach(function (ev) {
+      if (!ev) { container.appendChild(el('div', '', '')).style.height = '12px'; return; }
+      var key = side + '_' + ev[0];
+      var r = el('div', 'comp-row');
+      r.appendChild(el('span', 'lbl', ev[1]));
+      var inp = el('input'); inp.type = 'text'; inp.id = 'comp_' + key; inp.placeholder = 'api/location/...';
+      r.appendChild(inp);
+      var push = btn('PUSH', '', function () { manualPushCompanion(key, push); });
+      push.style.padding = '0';
+      r.appendChild(push);
+      container.appendChild(r);
+    });
+  }
+  buildCompanionRows($('comp-home'), 'h');
+  buildCompanionRows($('comp-away'), 'a');
+
+  function compBaseUrl() { var u = $('comp_url').value.trim(); return u.endsWith('/') ? u.slice(0, -1) : u; }
+  function compFullUrl(path) { return compBaseUrl() + (path.startsWith('/') ? path : '/' + path); }
+
+  $('btn-comp-save').addEventListener('click', function () {
+    var payload = {};
+    COMPANION_KEYS.forEach(function (key) { var inp = $(compInputId(key)); if (inp) payload[key] = inp.value; });
+    var byRole = function (abbr) {
+      if (!abbr) return [];
+      var roster = csvPlayers.filter(function (p) { return p.teamAbbr === abbr; });
+      return ROLE_ORDER.map(function (role) { var p = roster.find(function (x) { return x.role.toLowerCase() === role.toLowerCase(); }); return p ? p.nickname : ''; });
+    };
+    payload.led_home_players = byRole($('draft_led_home').value);
+    payload.led_away_players = byRole($('draft_led_away').value);
+    Object.assign(appState, payload);
+    pushState(payload).then(function () { alert('Configuration saved!'); checkCompanionConnection(); });
+  });
+
+  function checkCompanionConnection() {
+    var bar = $('comp_status_bar');
+    if (!compBaseUrl()) { bar.className = 'status-bar bad'; bar.textContent = '❌ CONNECTION FAILED: BASE URL IS EMPTY'; return; }
+    bar.className = 'status-bar wait'; bar.textContent = '⏳ TESTING CONNECTION…';
+    fetch(compBaseUrl(), { method: 'GET', mode: 'no-cors' })
+      .then(function () { bar.className = 'status-bar ok'; bar.textContent = '✅ COMPANION CONNECTED'; })
+      .catch(function () { bar.className = 'status-bar bad'; bar.textContent = '❌ CONNECTION FAILED: MAKE SURE COMPANION IS RUNNING AND ITS HTTP API IS ENABLED'; });
+  }
+  $('btn-comp-test').addEventListener('click', checkCompanionConnection);
+
+  function manualPushCompanion(key, button) {
+    var path = $('comp_' + key).value;
+    if (!path) return alert('Path is empty! Fill in the path first.');
+    if (!compBaseUrl()) return alert('Companion Base URL is empty!');
+    var url = compFullUrl(path);
+    fetch(url, { method: 'POST', mode: 'no-cors' }).then(function () {
+      var old = button.textContent; button.textContent = 'OK!'; button.style.background = '#0d2a1c';
+      setTimeout(function () { button.textContent = old; button.style.background = ''; }, 1000);
+    }).catch(function () { alert('Failed to reach: ' + url); });
+  }
+
+  // Auto-trigger queue: one Companion press every 1.5 s at most.
+  var companionQueue = [], isCompanionPlaying = false;
+  function sendCompanion(path) { if (!path) return; companionQueue.push(path); processCompanionQueue(); }
+  function processCompanionQueue() {
+    if (isCompanionPlaying || companionQueue.length === 0) return;
+    if (!compBaseUrl()) { companionQueue.length = 0; return; }
+    isCompanionPlaying = true;
+    var path = companionQueue.shift();
+    var cleanPath = path.startsWith('/') ? path : '/' + path;
+    fetch(compBaseUrl() + cleanPath, { method: 'POST', mode: 'no-cors' })
+      .then(function () { fetch('/api/companion_triggered?path=' + encodeURIComponent(cleanPath)).catch(function () {}); })
+      .catch(function (e) { console.error('[COMPANION] trigger failed:', e); });
+    setTimeout(function () { isCompanionPlaying = false; processCompanionQueue(); }, 1500);
+  }
+
+  /* Background tracker (runs while this dashboard is open): kills from player
+     stats, objectives from TEAM stats (no double trigger). First poll of a
+     battle / a game clock ≤ 10 s = baseline only. FIRST PICK = AWAY flips
+     camp 1 onto the away paths. */
+  var compBattleId = '', compKpData = {}, compTeamData = { 1: {}, 2: {} }, compIsFirstFetch = true;
+  var compFirstTyrant = false, compFirstOverlord = false, compBusy = false;
+  function compReset() { compKpData = {}; compTeamData = { 1: {}, 2: {} }; compIsFirstFetch = true; compFirstTyrant = false; compFirstOverlord = false; }
+
+  function companionAutoTriggerLoop() {
+    if (compBusy) return;
+    compBusy = true;
+    getJSON('/api/ingame_data').then(function (ingame) {
+      if (!ingame.players || ingame.players.length === 0) return;
+      var matchId = ingame.battle_id || ingame.players[0].BattleID || '';
+      var gameTime = ingame.players[0].CurrentGameTime || 0;
+      var firstPick = $('draft_first_pick').value || 'HOME';
+      var sideOf = function (camp) { return (firstPick === 'HOME') === (camp === 1) ? 'comp_h' : 'comp_a'; };
+      var val = function (id) { var e = $(id); return e ? e.value : ''; };
+
+      if (matchId !== compBattleId && matchId !== '') { compBattleId = matchId; compReset(); console.log('[COMPANION] New match — tracker reset.'); }
+      if (gameTime > 0 && gameTime <= 10 && !compIsFirstFetch) { compReset(); console.log('[COMPANION] Game clock restarted — tracker reset.'); }
+
+      ingame.players.forEach(function (p) {
+        var uid = p.PlayerUID || p.openid;
+        var kp = compKpData[uid] || (compKpData[uid] = { fb: 0, d: 0, t: 0, q: 0, pk: 0 });
+        var cur = { fb: p.FirstBloodTime > 0 ? 1 : 0, d: p.VTDoubleKill || 0, t: p.VTTripleKill || 0, q: p.VTQuataryKill || 0, pk: p.VTPentaKill || 0 };
+        if (compIsFirstFetch) { Object.assign(kp, cur); return; }
+        var s = sideOf(p.Camp);
+        if (cur.fb > 0 && kp.fb === 0) { sendCompanion(val(s + '_fb')); kp.fb = 1; }
+        if (cur.d > kp.d)   { sendCompanion(val(s + '_dk')); kp.d = cur.d; }
+        if (cur.t > kp.t)   { sendCompanion(val(s + '_tk')); kp.t = cur.t; }
+        if (cur.q > kp.q)   { sendCompanion(val(s + '_qk')); kp.q = cur.q; }
+        if (cur.pk > kp.pk) { sendCompanion(val(s + '_pk')); kp.pk = cur.pk; }
+      });
+
+      (ingame.team_stats || []).forEach(function (t) {
+        var camp = t.Camp;
+        var o = compTeamData[camp] || (compTeamData[camp] = {});
+        var cur = { tyr: t.KillBigDragonCnt || 0, ov: t.KillXiaoZhuzaiCnt || 0, st: t.KillDarkBigDragonCnt || 0, so: t.KillBaronCnt || 0, td: t.KillYuanGuBaoJunCnt || 0 };
+        if (compIsFirstFetch) {
+          Object.assign(o, cur);
+          if (o.tyr > 0) compFirstTyrant = true;
+          if (o.ov > 0) compFirstOverlord = true;
+          return;
+        }
+        var s = sideOf(camp);
+        if (cur.tyr > o.tyr) { sendCompanion(val(s + (compFirstTyrant ? '_ty' : '_1t'))); compFirstTyrant = true; o.tyr = cur.tyr; }
+        if (cur.ov > o.ov)   { sendCompanion(val(s + (compFirstOverlord ? '_ov' : '_1o'))); compFirstOverlord = true; o.ov = cur.ov; }
+        if (cur.st > o.st)   { sendCompanion(val(s + '_st')); o.st = cur.st; }
+        if (cur.so > o.so)   { sendCompanion(val(s + '_so')); o.so = cur.so; }
+        if (cur.td > o.td)   { sendCompanion(val(s + '_td')); o.td = cur.td; }
+      });
+
+      compIsFirstFetch = false;
+    }).catch(function () {}).then(function () { compBusy = false; });
+  }
+
+  /* ════════════════════ Edit tab ════════════════════
+     Three places must use the SAME selector string for an element to be
+     editable: the page's DOM/CSS, *_DEFAULTS below, and *_ELEMENTS below.
+     Saved overrides live in overlay_styles.json under the config's styleFile
+     and are injected by each page as !important rules (html/js/hok-core.js). */
+  var TOPBAR_DEFAULTS = {
+    '#tb-bg':            { left: 345,  top: 0,   width: 1575, height: 91 },
+    '#home-score':       { left: 345,  top: 5,   width: 57,  fontSize: 83 },
+    '#home-flag':        { left: 411,  top: 32,  width: 36,  height: 24 },
+    '#home-logo':        { left: 455,  top: 10,  width: 64,  height: 64 },
+    '#home-abbr-ingame': { left: 530,  top: 21,  width: 110, fontSize: 48 },
+    '#home-dragon':      { left: 629,  top: 53,  width: 60,  fontSize: 24 },
+    '#home-tower':       { left: 688,  top: 53,  width: 60,  fontSize: 24 },
+    '#home-gold':        { left: 750,  top: 53,  width: 80,  fontSize: 24 },
+    '#home-diff':        { left: 751,  top: 91,  width: 78,  height: 25, fontSize: 17 },
+    '#home-kill':        { left: 835,  top: 14,  width: 80,  fontSize: 69 },
+    '#tb-event-logo':    { left: 935,  top: 9,   width: 50,  height: 48 },
+    '#timer':            { left: 910,  top: 69,  width: 100, fontSize: 17 },
+    '#away-kill':        { left: 1009, top: 14,  width: 80,  fontSize: 69 },
+    '#away-gold':        { left: 1086, top: 53,  width: 80,  fontSize: 24 },
+    '#away-diff':        { left: 1087, top: 91,  width: 78,  height: 25, fontSize: 17 },
+    '#away-tower':       { left: 1169, top: 53,  width: 60,  fontSize: 24 },
+    '#away-dragon':      { left: 1228, top: 53,  width: 60,  fontSize: 24 },
+    '#away-abbr-ingame': { left: 1278, top: 21,  width: 110, fontSize: 48 },
+    '#away-logo':        { left: 1403, top: 10,  width: 64,  height: 64 },
+    '#away-flag':        { left: 1475, top: 32,  width: 36,  height: 24 },
+    '#away-score':       { left: 1520, top: 5,   width: 57,  fontSize: 83 },
+    '#tb-sponsor':       { left: 1600, top: 20,  width: 125, height: 50 },
+    '#tb-stage':         { left: 1760, top: 17,  width: 141, fontSize: 29 },
+    '#tb-game':          { left: 1760, top: 49,  width: 141, fontSize: 11.5 },
+    '#tb-series':        { left: 1760, top: 66,  width: 141, fontSize: 11.5 },
+  };
+  var TOPBAR_ELEMENTS = [
+    { group: 'Background', id: '#tb-bg', name: 'Top Bar Art' },
+    { group: 'Home Team',  id: '#home-score', name: 'Series Score' },
+    { group: 'Home Team',  id: '#home-flag', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Home Team',  id: '#home-logo', name: 'Logo' },
+    { group: 'Home Team',  id: '#home-abbr-ingame', name: 'Team Code' },
+    { group: 'Home Stats', id: '#home-dragon', name: 'Tyrant Count' },
+    { group: 'Home Stats', id: '#home-tower', name: 'Tower Count' },
+    { group: 'Home Stats', id: '#home-gold', name: 'Gold' },
+    { group: 'Home Stats', id: '#home-diff', name: 'Gold Lead' },
+    { group: 'Home Stats', id: '#home-kill', name: 'Kills' },
+    { group: 'Centre',     id: '#tb-event-logo', name: 'Event Logo' },
+    { group: 'Centre',     id: '#timer', name: 'Game Timer' },
+    { group: 'Away Stats', id: '#away-kill', name: 'Kills' },
+    { group: 'Away Stats', id: '#away-gold', name: 'Gold' },
+    { group: 'Away Stats', id: '#away-diff', name: 'Gold Lead' },
+    { group: 'Away Stats', id: '#away-tower', name: 'Tower Count' },
+    { group: 'Away Stats', id: '#away-dragon', name: 'Tyrant Count' },
+    { group: 'Away Team',  id: '#away-abbr-ingame', name: 'Team Code' },
+    { group: 'Away Team',  id: '#away-logo', name: 'Logo' },
+    { group: 'Away Team',  id: '#away-flag', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Away Team',  id: '#away-score', name: 'Series Score' },
+    { group: 'Right Panel', id: '#tb-sponsor', name: 'Sponsor Logo (1-ingame-overlay/sponsor.png)' },
+    { group: 'Right Panel', id: '#tb-stage', name: 'Stage (Match Info)' },
+    { group: 'Right Panel', id: '#tb-game', name: 'Match - Game (Match Board)' },
+    { group: 'Right Panel', id: '#tb-series', name: 'Series (Match Board)' },
+  ];
+
+  /* Kill & objective events: slot positions are measured per video (js/overlay-knc.js GEOM), not Edit-tab elements. */
+
+  var DRAFTPICK_DEFAULTS = {
+    '#bg-main':      { left: 0,    top: 763, width: 1920, height: 317 },
+    '#phase-text':   { left: 760,  top: 783, width: 400, fontSize: 48 },
+    '#match-text':   { left: 760,  top: 828, width: 400, fontSize: 19 },
+    '#home-logo':    { left: 488,  top: 781, width: 57, height: 57 },
+    '#home-abbr':    { left: 565,  top: 782, fontSize: 56 },
+    '#home-score':   { left: 722,  top: 780, fontSize: 60 },
+    '#away-score':   { left: 1198, top: 780, fontSize: 60 },
+    '#away-abbr':    { left: 1355, top: 782, fontSize: 56 },
+    '#away-logo':    { left: 1376, top: 781, width: 57, height: 57 },
+    '#home-bans':    { left: 12,   top: 778 },
+    '#away-bans':    { left: 1627, top: 778 },
+    '#home-players': { left: 0,    top: 855 },
+    '#away-players': { left: 1095, top: 855 },
+  };
+  var DRAFTPICK_ELEMENTS = [
+    { group: 'Background', id: '#bg-main', name: 'Draft Band Art' },
+    { group: 'Centre Text', id: '#phase-text', name: 'Stage (Match Board)' },
+    { group: 'Centre Text', id: '#match-text', name: 'Match - Game · Series (Match Board)' },
+    { group: 'Home Header', id: '#home-logo', name: 'Logo' },
+    { group: 'Home Header', id: '#home-abbr', name: 'Team Code' },
+    { group: 'Home Header', id: '#home-score', name: 'Series Score' },
+    { group: 'Away Header', id: '#away-score', name: 'Series Score' },
+    { group: 'Away Header', id: '#away-abbr', name: 'Team Code (right-aligned)' },
+    { group: 'Away Header', id: '#away-logo', name: 'Logo' },
+    { group: 'Home Bans', id: '#home-bans', name: 'Ban Row (4)' },
+    { group: 'Away Bans', id: '#away-bans', name: 'Ban Row (4)' },
+    { group: 'Home Players', id: '#home-players', name: 'Player Row (5)' },
+    { group: 'Away Players', id: '#away-players', name: 'Player Row (5)' },
+  ];
+  for (var ri = 0; ri < 5; ri++) {
+    DRAFTPICK_DEFAULTS['#hr-icon-' + ri] = { left: ri * 165 + 12, top: 866, width: 28, height: 28 };
+    DRAFTPICK_DEFAULTS['#ar-icon-' + ri] = { left: 1880 - ri * 165, top: 866, width: 28, height: 28 };
+  }
+  ['Clash', 'Jungle', 'Mid', 'Farm', 'Roam'].forEach(function (r, i) { DRAFTPICK_ELEMENTS.push({ group: 'Home Role Icons', id: '#hr-icon-' + i, name: r + ' Icon' }); });
+  ['Clash', 'Jungle', 'Mid', 'Farm', 'Roam'].forEach(function (r, i) { DRAFTPICK_ELEMENTS.push({ group: 'Away Role Icons', id: '#ar-icon-' + i, name: r + ' Icon' }); });
+
+  var DRAFTLED_DEFAULTS = {
+    '#home-bans':  { left: 0,   top: 0 },
+    '#away-bans':  { left: 242, top: 0 },
+    '#home-picks': { left: 482, top: 0 },
+    '#away-picks': { left: 484, top: 256 },
+  };
+  /* Fullscreen SHARED layer (header + stand-in ticker) — same selectors in
+     every fullscreen config, so moving them in one moves them for all scenes. */
+  var FS_SHARED_DEFAULTS = {
+    '#fs-result-l':   { left: 52,   top: 78,  width: 300, height: 120, fontSize: 118 },
+    '#fs-flag-l':     { left: 375,  top: 120, width: 50,  height: 24 },
+    '#fs-logo-l':     { left: 452,  top: 72,  width: 118, height: 118 },
+    '#fs-abbr-l':     { left: 578,  top: 82,  width: 170, fontSize: 84 },
+    '#fs-score-l':    { left: 760,  top: 70,  width: 72,  height: 116, fontSize: 104 },
+    '#fs-event-logo': { left: 872,  top: 34,  width: 176, height: 186 },
+    '#fs-score-r':    { left: 1088, top: 70,  width: 72,  height: 116, fontSize: 104 },
+    '#fs-abbr-r':     { left: 1172, top: 82,  width: 170, fontSize: 84 },
+    '#fs-logo-r':     { left: 1350, top: 72,  width: 118, height: 118 },
+    '#fs-flag-r':     { left: 1495, top: 120, width: 50,  height: 24 },
+    '#fs-result-r':   { left: 1568, top: 78,  width: 300, height: 120, fontSize: 118 },
+    '#fs-fins':       { left: 1731, top: 34,  width: 89,  height: 23 },
+    '#fs-year':       { left: 1700, top: 24,  width: 190, fontSize: 36 },
+    '#fs-ticker':     { left: 0,    top: 1038, width: 1920, height: 42 },
+  };
+  // Shared GAME TIME | GAME n block (Post Stats, Post Gold Graph)
+  var FS_GAMEINFO_DEFAULTS = {
+    '#fs-gtime-lbl': { left: 776, top: 242, width: 200, fontSize: 16 },
+    '#fs-gtime':     { left: 776, top: 260, width: 200, fontSize: 54 },
+    '#fs-gdivider':  { left: 962, top: 248, width: 2,   height: 60 },
+    '#fs-game':      { left: 992, top: 250, width: 200, fontSize: 27 },
+    '#fs-gseries':   { left: 992, top: 280, width: 200, fontSize: 27 },
+  };
+  // Shared MATCH n / series block (Post Hexagon, Post Items)
+  var FS_MATCHINFO_DEFAULTS = {
+    '#fs-match':   { left: 760, top: 250, width: 400, fontSize: 38 },
+    '#fs-mseries': { left: 760, top: 296, width: 400, fontSize: 22 },
+  };
+  var FS_MATCHINFO_ELEMENTS = [
+    { group: 'Shared · Match Info', id: '#fs-match', name: 'Match Number' },
+    { group: 'Shared · Match Info', id: '#fs-mseries', name: 'Series Format' },
+  ];
+  var FS_GAMEINFO_ELEMENTS = [
+    { group: 'Shared · Game Info', id: '#fs-gtime-lbl', name: '"Game Time" Label' },
+    { group: 'Shared · Game Info', id: '#fs-gtime', name: 'Game Time' },
+    { group: 'Shared · Game Info', id: '#fs-gdivider', name: 'Divider' },
+    { group: 'Shared · Game Info', id: '#fs-game', name: 'Game Number' },
+    { group: 'Shared · Game Info', id: '#fs-gseries', name: 'Series Format' },
+  ];
+  var FS_SHARED_ELEMENTS = [
+    { group: 'Shared · Home Header', id: '#fs-result-l', name: 'Victory / Defeat' },
+    { group: 'Shared · Home Header', id: '#fs-flag-l', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Shared · Home Header', id: '#fs-logo-l', name: 'Team Logo' },
+    { group: 'Shared · Home Header', id: '#fs-abbr-l', name: 'Team Code' },
+    { group: 'Shared · Home Header', id: '#fs-score-l', name: 'Series Score' },
+    { group: 'Shared · Event Logo', id: '#fs-event-logo', name: 'Event Logo (knc_logo.png)' },
+    { group: 'Shared · Away Header', id: '#fs-score-r', name: 'Series Score' },
+    { group: 'Shared · Away Header', id: '#fs-abbr-r', name: 'Team Code' },
+    { group: 'Shared · Away Header', id: '#fs-logo-r', name: 'Team Logo' },
+    { group: 'Shared · Away Header', id: '#fs-flag-r', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Shared · Away Header', id: '#fs-result-r', name: 'Victory / Defeat' },
+    { group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' },
+    { group: 'Shared · Year', id: '#fs-year', name: 'Year' },
+    { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' },
+  ];
+
+  var PHX_DEFAULTS = {
+    '#phx-panel':     { left: 503,  top: 350, width: 917, height: 655 },
+    '#phx-radar':     { left: 752,  top: 430, width: 420, height: 420 },
+    '#phx-stat-0': { left: 812, top: 342 },
+    '#phx-stat-1': { left: 1020, top: 406 },
+    '#phx-stat-2': { left: 1078, top: 590 },
+    '#phx-stat-3': { left: 1022, top: 809 },
+    '#phx-stat-4': { left: 812, top: 878 },
+    '#phx-stat-5': { left: 608, top: 809 },
+    '#phx-stat-6': { left: 548, top: 590 },
+    '#phx-stat-7': { left: 613, top: 406 },
+    '#phx-hero-l':      { left: 41,   top: 258, width: 413, height: 486 },
+    '#phx-photo-l':     { left: 27,   top: 294, width: 760, height: 760 },
+    '#phx-items-l':     { left: 22,   top: 760 },
+    '#phx-plate-l':     { left: 165,  top: 892, width: 481, height: 127 },
+    '#phx-roleicon-l':  { left: 240,  top: 903, width: 54,  height: 54 },
+    '#phx-name-l':      { left: 316,  top: 905, width: 330, fontSize: 53 },
+    '#phx-herolbl-l':   { left: 235,  top: 985, width: 160, fontSize: 18 },
+    '#phx-heroname-l':  { left: 410,  top: 983, width: 200, fontSize: 23 },
+    '#phx-hero-r':      { left: 1464, top: 254, width: 413, height: 486 },
+    '#phx-photo-r':     { left: 1135, top: 294, width: 760, height: 760 },
+    '#phx-items-r':     { left: 1760, top: 760 },
+    '#phx-plate-r':     { left: 1276, top: 894, width: 481, height: 127 },
+    '#phx-roleicon-r':  { left: 1631, top: 903, width: 54,  height: 54 },
+    '#phx-name-r':      { left: 1274, top: 907, width: 330, fontSize: 53 },
+    '#phx-herolbl-r':   { left: 1526, top: 987, width: 160, fontSize: 18 },
+    '#phx-heroname-r':  { left: 1312, top: 985, width: 200, fontSize: 23 },
+  };
+  var PHX_ELEMENTS = [
+    { group: 'Centre Panel', id: '#phx-panel', name: 'Panel Backing' },
+    { group: 'Radar', id: '#phx-radar', name: 'Radar Chart' },
+    { group: 'Stat Slots', id: '#phx-stat-0', name: 'Slot 1 (top)' },
+    { group: 'Stat Slots', id: '#phx-stat-1', name: 'Slot 2 (top-right)' },
+    { group: 'Stat Slots', id: '#phx-stat-2', name: 'Slot 3 (right)' },
+    { group: 'Stat Slots', id: '#phx-stat-3', name: 'Slot 4 (bottom-right)' },
+    { group: 'Stat Slots', id: '#phx-stat-4', name: 'Slot 5 (bottom)' },
+    { group: 'Stat Slots', id: '#phx-stat-5', name: 'Slot 6 (bottom-left)' },
+    { group: 'Stat Slots', id: '#phx-stat-6', name: 'Slot 7 (left)' },
+    { group: 'Stat Slots', id: '#phx-stat-7', name: 'Slot 8 (top-left)' },
+    { group: 'Home Player', id: '#phx-hero-l', name: 'Hero Art Card' },
+    { group: 'Home Player', id: '#phx-photo-l', name: 'Player Photo' },
+    { group: 'Home Player', id: '#phx-items-l', name: 'Items (6)' },
+    { group: 'Home Nameplate', id: '#phx-plate-l', name: 'Name Plate' },
+    { group: 'Home Nameplate', id: '#phx-roleicon-l', name: 'Role Icon' },
+    { group: 'Home Nameplate', id: '#phx-name-l', name: 'Player Name' },
+    { group: 'Home Nameplate', id: '#phx-herolbl-l', name: '"Hero Used" Label' },
+    { group: 'Home Nameplate', id: '#phx-heroname-l', name: 'Hero Name' },
+    { group: 'Away Player', id: '#phx-hero-r', name: 'Hero Art Card' },
+    { group: 'Away Player', id: '#phx-photo-r', name: 'Player Photo' },
+    { group: 'Away Player', id: '#phx-items-r', name: 'Items (6)' },
+    { group: 'Away Nameplate', id: '#phx-plate-r', name: 'Name Plate' },
+    { group: 'Away Nameplate', id: '#phx-roleicon-r', name: 'Role Icon' },
+    { group: 'Away Nameplate', id: '#phx-name-r', name: 'Player Name' },
+    { group: 'Away Nameplate', id: '#phx-herolbl-r', name: '"Hero Used" Label' },
+    { group: 'Away Nameplate', id: '#phx-heroname-r', name: 'Hero Name' },
+  ];
+
+  var PST_DEFAULTS = {
+    '#pst-banner-h': { left: 97, top: 304, width: 1703, height: 86 },
+    '#pst-blogo-h':  { left: 142, top: 325, width: 52,  height: 52 },
+    '#pst-tname-h':  { left: 208, top: 336, width: 240, fontSize: 39 },
+    '#pst-colhdr-h': { left: 450, top: 329, width: 1348, height: 56 },
+    '#pst-rows-h':   { left: 108, top: 385 },
+    '#pst-banner-a': { left: 97, top: 647, width: 1703, height: 86 },
+    '#pst-blogo-a':  { left: 142, top: 668, width: 52,  height: 52 },
+    '#pst-tname-a':  { left: 208, top: 679, width: 240, fontSize: 39 },
+    '#pst-colhdr-a': { left: 450, top: 672, width: 1348, height: 56 },
+    '#pst-rows-a':   { left: 108, top: 728 },
+  };
+  var PST_ELEMENTS = [
+    { group: 'Home Table', id: '#pst-banner-h', name: 'Banner + Header Bar (art)' },
+    { group: 'Home Table', id: '#pst-blogo-h', name: 'Team Logo' },
+    { group: 'Home Table', id: '#pst-tname-h', name: 'Team Name' },
+    { group: 'Home Table', id: '#pst-colhdr-h', name: 'Column Headers' },
+    { group: 'Home Table', id: '#pst-rows-h', name: 'Player Rows (5)' },
+    { group: 'Away Table', id: '#pst-banner-a', name: 'Banner + Header Bar (art)' },
+    { group: 'Away Table', id: '#pst-blogo-a', name: 'Team Logo' },
+    { group: 'Away Table', id: '#pst-tname-a', name: 'Team Name' },
+    { group: 'Away Table', id: '#pst-colhdr-a', name: 'Column Headers' },
+    { group: 'Away Table', id: '#pst-rows-a', name: 'Player Rows (5)' },
+  ];
+
+  var PGG_DEFAULTS = {
+    '#pgg-panel':   { left: 0,    top: 325, width: 1920, height: 710 },
+    '#pgg-logo-h':  { left: 68,   top: 480, width: 124, height: 112 },
+    '#pgg-logo-a':  { left: 68,   top: 670, width: 124, height: 112 },
+    '#pgg-stats-h': { left: 194,  top: 386 },
+    '#pgg-stats-a': { left: 194,  top: 806 },
+    '#pgg-graph':   { left: 210,  top: 515, width: 1650, height: 240 },
+    '#pgg-times':   { left: 210,  top: 750, fontSize: 26 },
+    '#pgg-ylabels': { left: 1765, top: 515, fontSize: 26 },
+  };
+  var PGG_ELEMENTS = [
+    { group: 'Panel', id: '#pgg-panel', name: 'Panel Backing' },
+    { group: 'Home', id: '#pgg-logo-h', name: 'Team Logo' },
+    { group: 'Home', id: '#pgg-stats-h', name: 'Stat Row (8)' },
+    { group: 'Away', id: '#pgg-logo-a', name: 'Team Logo' },
+    { group: 'Away', id: '#pgg-stats-a', name: 'Stat Row (8)' },
+    { group: 'Graph', id: '#pgg-graph', name: 'Gold Graph' },
+    { group: 'Graph', id: '#pgg-times', name: 'Time Labels' },
+    { group: 'Graph', id: '#pgg-ylabels', name: 'Scale Labels' },
+  ];
+
+  var PIT_DEFAULTS = {
+    '#pit-cards-h': { left: 52,   top: 239 },
+    '#pit-vs':      { left: 911,  top: 519, width: 99,  height: 146 },
+    '#pit-cards-a': { left: 1081, top: 239 },
+  };
+  var PIT_ELEMENTS = [
+    { group: 'Home Cards', id: '#pit-cards-h', name: 'Card Row (5)' },
+    { group: 'VS', id: '#pit-vs', name: 'VS' },
+    { group: 'Away Cards', id: '#pit-cards-a', name: 'Card Row (5)' },
+  ];
+
+  var DRAFTLED_ELEMENTS = [
+    { group: 'Home Bans',  id: '#home-bans',  name: 'Ban Column (4)' },
+    { group: 'Away Bans',  id: '#away-bans',  name: 'Ban Column (4)' },
+    { group: 'Home Picks', id: '#home-picks', name: 'Pick Row (5)' },
+    { group: 'Away Picks', id: '#away-picks', name: 'Pick Row (5)' },
+  ];
+
+  var VSL_DEFAULTS = {
+    '#vsl-flag-h':     { left: 210,  top: 154, width: 58,  height: 30 },
+    '#vsl-logo-h':     { left: 286,  top: 106, width: 136, height: 124 },
+    '#vsl-abbr-h':     { left: 440,  top: 129, width: 180, fontSize: 84 },
+    '#vsl-score-h':    { left: 640,  top: 100, width: 80,  height: 131, fontSize: 110 },
+    '#vsl-event-logo': { left: 905,  top: 70,  width: 110, height: 104 },
+    '#vsl-stage':      { left: 710,  top: 181, width: 500, fontSize: 72 },
+    '#vsl-series':     { left: 760,  top: 252, width: 400, fontSize: 31 },
+    '#vsl-score-a':    { left: 1205, top: 100, width: 80,  height: 131, fontSize: 110 },
+    '#vsl-abbr-a':     { left: 1286, top: 129, width: 180, fontSize: 84 },
+    '#vsl-logo-a':     { left: 1486, top: 106, width: 136, height: 124 },
+    '#vsl-flag-a':     { left: 1637, top: 154, width: 58,  height: 30 },
+    '#vsl-vtag':       { left: 25,   top: 626 },
+    '#vsl-team-h':     { left: 80,   top: 332 },
+    '#vsl-vs':         { left: 912,  top: 535, width: 99,  height: 146 },
+    '#vsl-team-a':     { left: 1040, top: 332 },
+  };
+  // Head to Head (own header like Versus Slide). Rows inside #h2h-box are positioned by class.
+  var H2H_DEFAULTS = {
+    '#h2h-photo-h': { left: -426, top: -6, width: 1500, height: 1500 },
+    '#h2h-photo-a': { left: 878,  top: -6, width: 1500, height: 1500 },
+    '#h2h-title':   { left: 460, top: 76, width: 1000, fontSize: 231 },
+    '#h2h-role':    { left: 760, top: 296, width: 400, height: 46 },
+    '#h2h-box':     { left: 650, top: 393, width: 627, height: 503 },
+    '#h2h-plate-h': { left: 176, top: 772, width: 428, height: 86 },
+    '#h2h-plate-a': { left: 1330, top: 772, width: 428, height: 86 },
+    '#h2h-vtag':    { left: 25, top: 626 },
+  };
+  var H2H_ELEMENTS = [
+    { group: 'Centre', id: '#h2h-title', name: 'Title' },
+    { group: 'Centre', id: '#h2h-role', name: 'Role (icon + name)' },
+    { group: 'Centre', id: '#h2h-box', name: 'Stats Box (4 rows)' },
+    { group: 'Centre', id: '#h2h-vtag', name: 'Vertical Tag' },
+    { group: 'Home (left)', id: '#h2h-photo-h', name: 'Photo' },
+    { group: 'Home (left)', id: '#h2h-plate-h', name: 'Name Plate' },
+    { group: 'Away (right)', id: '#h2h-photo-a', name: 'Photo' },
+    { group: 'Away (right)', id: '#h2h-plate-a', name: 'Name Plate' },
+  ];
+  var VSL_ELEMENTS = [
+    { group: 'Home Header', id: '#vsl-flag-h', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Home Header', id: '#vsl-logo-h', name: 'Team Logo' },
+    { group: 'Home Header', id: '#vsl-abbr-h', name: 'Team Code' },
+    { group: 'Home Header', id: '#vsl-score-h', name: 'Series Score' },
+    { group: 'Centre', id: '#vsl-event-logo', name: 'Event Logo' },
+    { group: 'Centre', id: '#vsl-stage', name: 'Stage (Match Board)' },
+    { group: 'Centre', id: '#vsl-series', name: 'Series (Match Board)' },
+    { group: 'Centre', id: '#vsl-vs', name: 'VS' },
+    { group: 'Away Header', id: '#vsl-score-a', name: 'Series Score' },
+    { group: 'Away Header', id: '#vsl-abbr-a', name: 'Team Code' },
+    { group: 'Away Header', id: '#vsl-logo-a', name: 'Team Logo' },
+    { group: 'Away Header', id: '#vsl-flag-a', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Centre', id: '#vsl-vtag', name: 'Vertical Tag' },
+    { group: 'Line-ups', id: '#vsl-team-h', name: 'Home Frame + Cards' },
+    { group: 'Line-ups', id: '#vsl-team-a', name: 'Away Frame + Cards' },
+  ];
+
+  // In-Game Item Check (BOTTOM quadrant): the whole panel moves; rows are positioned inside it
+  var IC_DEFAULTS = { '#ic-panel': { left: 515, top: 873, width: 893, height: 207 } };
+  var IC_ELEMENTS = [{ group: 'Item Check', id: '#ic-panel', name: 'Panel (5 rows)' }];
+
+  // In-Game Damage Rank (RIGHT quadrant): the whole panel moves; title + rows are positioned inside it
+  var DR_DEFAULTS = { '#dr-panel': { left: 1507, top: 196, width: 413, height: 784 } };
+  var DR_ELEMENTS = [{ group: 'Damage Rank', id: '#dr-panel', name: 'Panel (title + 10 rows)' }];
+  var GR_DEFAULTS = { '#gr-panel': { left: 1507, top: 196, width: 413, height: 784 } };
+  var GR_ELEMENTS = [{ group: 'Gold Rank', id: '#gr-panel', name: 'Panel (title + coin + 10 rows)' }];
+
+  /* label · file · styleFile (bucket in overlay_styles.json) · size · editCss
+     (forces the scene visible in the edit iframe) · call (page function that
+     puts sample content on screen) */
+  var EDIT_CONFIGS = {
+    topbar: { label: 'Top Bar · In-Game Overlay', file: 'overlay.html', styleFile: 'overlay', defaultsKey: 'hok_edit_defaults_topbar',
+      elements: TOPBAR_ELEMENTS, defaults: TOPBAR_DEFAULTS,
+      editCss: '#top-bar{transform:none!important;transition:none!important}#home-diff,#away-diff{opacity:1!important}' },
+    itemcheck: { label: 'Item Check · In-Game Overlay', file: 'overlay.html', styleFile: 'overlay', defaultsKey: 'hok_edit_defaults_itemcheck',
+      elements: IC_ELEMENTS, defaults: IC_DEFAULTS, call: ['previewTrigger', 'itemcheck', 'show'],
+      editCss: '#ic-panel{transform:none!important;transition:none!important}' },
+    damagerank: { label: 'Damage Rank · In-Game Overlay', file: 'overlay.html', styleFile: 'overlay', defaultsKey: 'hok_edit_defaults_damagerank',
+      elements: DR_ELEMENTS, defaults: DR_DEFAULTS, call: ['previewTrigger', 'damagerank', 'show'],
+      editCss: '#dr-panel{transform:none!important;transition:none!important}' },
+    goldrank: { label: 'Gold Rank · In-Game Overlay', file: 'overlay.html', styleFile: 'overlay', defaultsKey: 'hok_edit_defaults_goldrank',
+      elements: GR_ELEMENTS, defaults: GR_DEFAULTS, call: ['previewTrigger', 'goldrank', 'show'],
+      editCss: '#gr-panel{transform:none!important;transition:none!important}' },
+    draftpick: { label: 'Draft Pick', file: 'draftpick.html', styleFile: 'draftpick', defaultsKey: 'hok_edit_defaults_draftpick',
+      elements: DRAFTPICK_ELEMENTS, defaults: DRAFTPICK_DEFAULTS, editCss: '#canvas{opacity:1!important}' },
+    posthexagon: { label: 'Post Hexagon · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_posthexagon',
+      elements: FS_SHARED_ELEMENTS.concat(FS_MATCHINFO_ELEMENTS, PHX_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_MATCHINFO_DEFAULTS, PHX_DEFAULTS), call: ['previewTrigger', 'posthexagon', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#phx-page{display:block!important;opacity:1!important}#phx-radar .phx-poly{transform:scale(1)!important}' },
+    poststats: { label: 'Post Stats · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_poststats',
+      elements: FS_SHARED_ELEMENTS.concat(FS_GAMEINFO_ELEMENTS, PST_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_GAMEINFO_DEFAULTS, PST_DEFAULTS), call: ['previewTrigger', 'poststats', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pst-page{display:block!important;opacity:1!important}#pst-page .pst-fill{transform:scaleX(1)!important}' },
+    postgoldgraph: { label: 'Post Gold Graph · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_postgoldgraph',
+      elements: FS_SHARED_ELEMENTS.concat(FS_GAMEINFO_ELEMENTS, PGG_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_GAMEINFO_DEFAULTS, PGG_DEFAULTS), call: ['previewTrigger', 'postgoldgraph', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pgg-page{display:block!important;opacity:1!important}#pgg-graph .pgg-reveal{transform:scaleX(1)!important}' },
+    postitems: { label: 'Post Items · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_postitems',
+      elements: FS_SHARED_ELEMENTS.concat(FS_MATCHINFO_ELEMENTS, PIT_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_MATCHINFO_DEFAULTS, PIT_DEFAULTS), call: ['previewTrigger', 'postitems', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pit-page{display:block!important;opacity:1!important}#pit-page .pit-card,#pit-page .pit-card *,#pit-vs{transition:none!important;opacity:1!important;translate:0 0!important;scale:1!important}#pit-page .pit-card{transform:none!important}' },
+    versusslide: { label: 'Versus Slide · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_versusslide',
+      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }, { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' }].concat(VSL_ELEMENTS),
+      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'], '#fs-ticker': FS_SHARED_DEFAULTS['#fs-ticker'] }, VSL_DEFAULTS), call: ['previewTrigger', 'versusslide', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-ticker{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#fs-ticker-track{animation:none!important}#vsl-page{display:block!important;opacity:1!important}#vsl-page *{transition:none!important}#vsl-page .vsl-hdr,#vsl-page .vsl-team,#vsl-page .vsl-card,#vsl-page .vsl-photo,#vsl-vs{opacity:1!important;translate:0 0!important;scale:1!important}' },
+    headtohead: { label: 'Head to Head · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_headtohead',
+      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }, { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' }].concat(H2H_ELEMENTS),
+      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'], '#fs-ticker': FS_SHARED_DEFAULTS['#fs-ticker'] }, H2H_DEFAULTS), call: ['previewTrigger', 'headtohead', 'show'],
+      editCss: '#fs-bg-video,#fs-header,#fs-ticker{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#fs-ticker-track{animation:none!important}#h2h-page{display:block!important;opacity:1!important}#h2h-page *{transition:none!important}#h2h-page>*,#h2h-page .h2h-row{opacity:1!important;translate:0 0!important;scale:1!important}' },
+    draftled: { label: 'Draft LED (1764x1024)', file: 'draft-led.html', styleFile: 'draftled', defaultsKey: 'hok_edit_defaults_draftled', size: [1764, 1024],
+      elements: DRAFTLED_ELEMENTS, defaults: DRAFTLED_DEFAULTS, editCss: '#canvas{opacity:1!important}' },
+  };
+
+  var cfgSelect = $('edit-config-select');
+  Object.keys(EDIT_CONFIGS).forEach(function (k) { var o = el('option', '', EDIT_CONFIGS[k].label); o.value = k; cfgSelect.appendChild(o); });
+  cfgSelect.addEventListener('change', function () { loadConfig(cfgSelect.value); });
+
+  var SB_ELEMENTS = [], SB_DEFAULTS = {}, USER_DEFAULTS_KEY = '';
+  var currentConfigKey = null;
+  var editValues = {};
+  var editHistory = [];
+  var selectedElId = null, selectedGroupName = null;
+  var editIfLoaded = false;
+  var editElemBtns = {}, groupElemBtns = {}, editInputRefs = {};
+  var editIframe = $('edit-iframe');
+  var groupOffsetDX = 0, groupOffsetDY = 0, groupOffsetDXInput = null, groupOffsetDYInput = null;
+  var groupDragBaseDX = 0, groupDragBaseDY = 0;
+  var r1 = function (v) { return Math.round(v * 10) / 10; };
+
+  // Exposed for the code injected into the edit iframe (same origin).
+  window.getEditValues = function () { return editValues; };
+  window.getSelectedGroupName = function () { return selectedGroupName; };
+  window.getSelectedElId = function () { return selectedElId; };
+
+  function currentSize() { return (EDIT_CONFIGS[currentConfigKey] && EDIT_CONFIGS[currentConfigKey].size) || [1920, 1080]; }
+  function scaleEditIframe() {
+    var wrap = $('edit-frame-wrap'), size = currentSize();
+    editIframe.style.width = size[0] + 'px';
+    editIframe.style.height = size[1] + 'px';
+    var scale = Math.min(wrap.clientWidth / size[0], wrap.clientHeight / size[1]);
+    editIframe.style.transform = 'scale(' + scale + ')';
+    editIframe.style.left = Math.round((wrap.clientWidth - size[0] * scale) / 2) + 'px';
+    editIframe.style.top = Math.round((wrap.clientHeight - size[1] * scale) / 2) + 'px';
+  }
+  window.addEventListener('resize', function () { if ($('page-edit').classList.contains('active')) scaleEditIframe(); });
+
+  function iframeDoc() { return editIfLoaded ? editIframe.contentDocument : null; }
+  function markInIframe(cls, ids) {
+    var doc = iframeDoc(); if (!doc) return;
+    SB_ELEMENTS.forEach(function (e) { var n = doc.querySelector(e.id); if (n) n.classList.toggle(cls, ids.indexOf(e.id) !== -1); });
+  }
+
+  function applyToEditIframe() {
+    var doc = iframeDoc(); if (!doc || !doc.head) return;
+    var css = Object.keys(editValues).map(function (sel) {
+      var p = editValues[sel], d = [];
+      if (p.left !== undefined) d.push('left:' + p.left + 'px !important');
+      if (p.top !== undefined) d.push('top:' + p.top + 'px !important');
+      if (p.width !== undefined) d.push('width:' + p.width + 'px !important');
+      if (p.height !== undefined) d.push('height:' + p.height + 'px !important');
+      if (p.fontSize !== undefined) d.push('font-size:' + p.fontSize + 'px !important');
+      if (p.visible === false) d.push('display:none !important');
+      return sel + '{' + d.join(';') + '}';
+    }).join('\n');
+    var s = doc.getElementById('sb-live-edit');
+    if (!s) { s = doc.createElement('style'); s.id = 'sb-live-edit'; doc.head.appendChild(s); }
+    s.textContent = css;
+  }
+
+  /* ── History (3 undo steps) ── */
+  function pushHistory() { editHistory.push(deepClone(editValues)); if (editHistory.length > 3) editHistory.shift(); }
+  function replaceEditValues(next) {
+    Object.keys(editValues).forEach(function (k) { delete editValues[k]; });
+    Object.keys(next).forEach(function (k) { editValues[k] = next[k]; });
+  }
+  window.pushHistory = pushHistory;
+  window.sbEditUndo = function () {
+    if (!editHistory.length) return;
+    replaceEditValues(editHistory.pop());
+    applyToEditIframe();
+    if (selectedElId) showEditControls(selectedElId);
+  };
+
+  /* ── Groups ── */
+  function groupMembers(g) { return SB_ELEMENTS.filter(function (e) { return e.group === g; }); }
+  function updateGroupOffsetInputs() {
+    if (groupOffsetDXInput) groupOffsetDXInput.value = r1(groupOffsetDX);
+    if (groupOffsetDYInput) groupOffsetDYInput.value = r1(groupOffsetDY);
+  }
+  function moveGroupByDelta(g, dx, dy) {
+    groupMembers(g).forEach(function (m) {
+      var defs = SB_DEFAULTS[m.id] || {}, vals = editValues[m.id] || (editValues[m.id] = {});
+      if (dx && 'left' in defs) vals.left = r1((vals.left !== undefined ? vals.left : defs.left) + dx);
+      if (dy && 'top' in defs) vals.top = r1((vals.top !== undefined ? vals.top : defs.top) + dy);
+    });
+    applyToEditIframe();
+  }
+  window.sbEditGroupMove = function (dx, dy) {
+    if (!selectedGroupName) return;
+    groupOffsetDX += dx; groupOffsetDY += dy;
+    moveGroupByDelta(selectedGroupName, dx, dy);
+    updateGroupOffsetInputs();
+  };
+  window.sbEditGroupDragStart = function () { groupDragBaseDX = groupOffsetDX; groupDragBaseDY = groupOffsetDY; };
+  window.sbEditGroupDragDelta = function (start, dx, dy) {
+    Object.keys(start).forEach(function (id) {
+      var v = editValues[id] || (editValues[id] = {});
+      if (start[id].left !== undefined) v.left = r1(start[id].left + dx);
+      if (start[id].top !== undefined) v.top = r1(start[id].top + dy);
+    });
+    groupOffsetDX = groupDragBaseDX + dx; groupOffsetDY = groupDragBaseDY + dy;
+    updateGroupOffsetInputs();
+    applyToEditIframe();
+  };
+
+  function clearSelectionUI() {
+    Object.keys(editElemBtns).forEach(function (k) { editElemBtns[k].classList.remove('active'); });
+    Object.keys(groupElemBtns).forEach(function (k) { groupElemBtns[k].classList.remove('active'); });
+  }
+
+  function selectGroup(g) {
+    selectedElId = null; selectedGroupName = g;
+    groupOffsetDX = groupOffsetDY = 0;
+    clearSelectionUI();
+    if (groupElemBtns[g]) groupElemBtns[g].classList.add('active');
+    markInIframe('sb-selected', []);
+    markInIframe('sb-group-selected', groupMembers(g).map(function (m) { return m.id; }));
+
+    var ctrl = $('edit-controls');
+    ctrl.innerHTML = '';
+    ctrl.appendChild(el('div', 'edit-ctrl-title', g + ' · Group'));
+    var members = groupMembers(g).length;
+    var note = el('div', '', members + ' element' + (members !== 1 ? 's' : '') + ' · offset resets to 0 on select');
+    note.style.cssText = 'font-size:10px;color:#444;margin-bottom:10px;';
+    ctrl.appendChild(note);
+    [['X Offset', true], ['Y Offset', false]].forEach(function (conf) {
+      var row = el('div', 'edit-ctrl-row');
+      var minus = el('button', 'edit-step-btn', '−'), plus = el('button', 'edit-step-btn', '+');
+      var inp = el('input', 'edit-ctrl-input'); inp.type = 'number'; inp.step = 1; inp.value = 0;
+      if (conf[1]) groupOffsetDXInput = inp; else groupOffsetDYInput = inp;
+      inp.addEventListener('focus', pushHistory);
+      inp.addEventListener('input', function () {
+        var target = parseFloat(inp.value); if (isNaN(target)) return;
+        var delta = conf[1] ? target - groupOffsetDX : target - groupOffsetDY;
+        if (conf[1]) groupOffsetDX = target; else groupOffsetDY = target;
+        moveGroupByDelta(selectedGroupName, conf[1] ? delta : 0, conf[1] ? 0 : delta);
+      });
+      minus.addEventListener('click', function () { pushHistory(); window.sbEditGroupMove(conf[1] ? -1 : 0, conf[1] ? 0 : -1); });
+      plus.addEventListener('click', function () { pushHistory(); window.sbEditGroupMove(conf[1] ? 1 : 0, conf[1] ? 0 : 1); });
+      row.appendChild(el('div', 'edit-ctrl-label', conf[0])); row.appendChild(minus); row.appendChild(inp); row.appendChild(plus); row.appendChild(el('div', 'edit-ctrl-unit', 'px'));
+      ctrl.appendChild(row);
+    });
+  }
+
+  window.sbEditSelect = function (id) {
+    selectedGroupName = null;
+    clearSelectionUI();
+    if (editElemBtns[id]) editElemBtns[id].classList.add('active');
+    markInIframe('sb-group-selected', []);
+    markInIframe('sb-selected', [id]);
+    showEditControls(id);
+  };
+
+  window.sbEditDrag = function (id, left, top) {
+    var v = editValues[id] || (editValues[id] = {});
+    if (left !== undefined) v.left = left;
+    if (top !== undefined) v.top = top;
+    applyToEditIframe();
+    if (id === selectedElId) {
+      if (left !== undefined && editInputRefs.left) editInputRefs.left.value = left;
+      if (top !== undefined && editInputRefs.top) editInputRefs.top.value = top;
+    }
+  };
+
+  window.sbEditArrow = function (dx, dy) {
+    if (!selectedElId) return;
+    var vals = editValues[selectedElId] || {}, defs = SB_DEFAULTS[selectedElId] || {};
+    window.sbEditDrag(selectedElId,
+      'left' in defs ? r1((vals.left !== undefined ? vals.left : defs.left) + dx) : undefined,
+      'top' in defs ? r1((vals.top !== undefined ? vals.top : defs.top) + dy) : undefined);
+  };
+
+  var PROPS = [
+    { key: 'left', label: 'X (left)', step: 1 },
+    { key: 'top', label: 'Y (top)', step: 1 },
+    { key: 'width', label: 'Width', step: 1 },
+    { key: 'height', label: 'Height', step: 1 },
+    { key: 'fontSize', label: 'Font Size', step: 1 },
+  ];
+
+  function showEditControls(id) {
+    selectedElId = id;
+    editInputRefs = {};
+    var vals = editValues[id] || {}, defs = SB_DEFAULTS[id] || {};
+    var ctrl = $('edit-controls');
+    ctrl.innerHTML = '';
+    var meta = SB_ELEMENTS.find(function (e) { return e.id === id; });
+    ctrl.appendChild(el('div', 'edit-ctrl-title', (meta ? meta.group + ' · ' + meta.name : id)));
+
+    var aspectLocked = false, aspectRatio = null, aspectChks = {};
+    PROPS.forEach(function (prop) {
+      if (!(prop.key in defs)) return;
+      var row = el('div', 'edit-ctrl-row');
+      var minus = el('button', 'edit-step-btn', '−'), plus = el('button', 'edit-step-btn', '+');
+      var inp = el('input', 'edit-ctrl-input'); inp.type = 'number'; inp.step = prop.step;
+      inp.value = vals[prop.key] !== undefined ? vals[prop.key] : (defs[prop.key] || 0);
+      editInputRefs[prop.key] = inp;
+
+      function commit() {
+        var v = parseFloat(inp.value); if (isNaN(v)) return;
+        var ev = editValues[id] || (editValues[id] = {});
+        ev[prop.key] = v;
+        if (aspectLocked && aspectRatio && (prop.key === 'width' || prop.key === 'height')) {
+          var pk = prop.key === 'width' ? 'height' : 'width';
+          var pv = r1(prop.key === 'width' ? v / aspectRatio : v * aspectRatio);
+          ev[pk] = pv;
+          if (editInputRefs[pk]) editInputRefs[pk].value = pv;
+        }
+        applyToEditIframe();
+      }
+      inp.addEventListener('focus', pushHistory);
+      inp.addEventListener('input', commit);
+      minus.addEventListener('click', function () { pushHistory(); inp.value = Math.round((parseFloat(inp.value) - prop.step) * 1000) / 1000; commit(); });
+      plus.addEventListener('click', function () { pushHistory(); inp.value = Math.round((parseFloat(inp.value) + prop.step) * 1000) / 1000; commit(); });
+
+      row.appendChild(el('div', 'edit-ctrl-label', prop.label)); row.appendChild(minus); row.appendChild(inp); row.appendChild(plus); row.appendChild(el('div', 'edit-ctrl-unit', 'px'));
+      if ((prop.key === 'width' || prop.key === 'height') && 'width' in defs && 'height' in defs) {
+        var chk = el('input', 'edit-aspect-chk'); chk.type = 'checkbox'; chk.title = 'Lock width/height ratio';
+        aspectChks[prop.key] = chk;
+        chk.addEventListener('change', function () {
+          aspectLocked = chk.checked;
+          var w = parseFloat(editInputRefs.width.value), h = parseFloat(editInputRefs.height.value);
+          aspectRatio = aspectLocked && w && h ? w / h : null;
+          Object.keys(aspectChks).forEach(function (k) { aspectChks[k].checked = aspectLocked; });
+        });
+        row.appendChild(chk);
+      }
+      ctrl.appendChild(row);
+    });
+
+    // Visible toggle (every element can be hidden from the broadcast)
+    var vrow = el('div', 'edit-ctrl-row');
+    vrow.appendChild(el('div', 'edit-ctrl-label', 'Visible'));
+    var vchk = el('input'); vchk.type = 'checkbox'; vchk.checked = vals.visible !== false;
+    vchk.addEventListener('change', function () { pushHistory(); (editValues[id] || (editValues[id] = {})).visible = vchk.checked; applyToEditIframe(); });
+    vrow.appendChild(vchk);
+    ctrl.appendChild(vrow);
+  }
+
+  function buildEditList() {
+    var c = $('edit-elements');
+    c.innerHTML = ''; editElemBtns = {}; groupElemBtns = {};
+    var lastGroup = null;
+    SB_ELEMENTS.forEach(function (e) {
+      if (e.group !== lastGroup) {
+        var gb = el('button', 'edit-group-btn', e.group);
+        gb.addEventListener('click', function () { selectGroup(e.group); });
+        groupElemBtns[e.group] = gb; c.appendChild(gb); lastGroup = e.group;
+      }
+      var b = el('button', 'edit-elem-btn', e.name);
+      b.addEventListener('click', function () { window.sbEditSelect(e.id); });
+      editElemBtns[e.id] = b; c.appendChild(b);
+    });
+  }
+
+  /* Injected into the edit iframe: outlines, click-select, drag, arrow keys, undo. */
+  function injectEditInteraction(config) {
+    var doc = editIframe.contentDocument;
+    if (!doc || !doc.head) return;
+    var P = window;
+    var st = doc.createElement('style');
+    st.id = 'sb-edit-mode';
+    st.textContent = (config.editCss || '') +
+      '.sb-editable{pointer-events:all!important;cursor:move!important;outline:1px dashed rgba(80,100,255,0.45)!important;outline-offset:3px;}' +
+      '.sb-editable:hover{outline:1px solid rgba(100,130,255,0.85)!important;}' +
+      '.sb-editable.sb-selected{outline:2px solid #6677ff!important;}' +
+      '.sb-editable.sb-group-selected{outline:2px solid #ffaa33!important;}';
+    doc.head.appendChild(st);
+
+    doc.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); P.sbEditUndo(); return; }
+      var d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      var step = e.shiftKey ? 10 : 1;
+      if (!e.repeat) P.pushHistory();
+      if (P.getSelectedGroupName()) P.sbEditGroupMove(d[0] * step, d[1] * step);
+      else P.sbEditArrow(d[0] * step, d[1] * step);
+    });
+
+    SB_ELEMENTS.forEach(function (elem) {
+      var node = doc.querySelector(elem.id);
+      if (!node) return;
+      node.classList.add('sb-editable');
+      node.addEventListener('mousedown', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        // The drag follows whatever is ALREADY selected (so packed elements
+        // can't steal it); a plain click (no movement) selects the clicked one.
+        var lockedGroup = P.getSelectedGroupName(), lockedId = P.getSelectedElId();
+        var startX = e.clientX, startY = e.clientY, moved = false, mode = null;
+        var startPositions, dragId, hasL, hasT, startLeft, startTop;
+        function beginElem(id) {
+          mode = 'elem'; dragId = id;
+          var defs = SB_DEFAULTS[id] || {}, vals = P.getEditValues()[id] || {};
+          hasL = 'left' in defs; hasT = 'top' in defs;
+          startLeft = vals.left !== undefined ? vals.left : (defs.left || 0);
+          startTop = vals.top !== undefined ? vals.top : (defs.top || 0);
+        }
+        if (lockedGroup) {
+          mode = 'group'; P.sbEditGroupDragStart(); startPositions = {};
+          groupMembers(lockedGroup).forEach(function (m) {
+            var gv = P.getEditValues()[m.id] || {}, gd = SB_DEFAULTS[m.id] || {};
+            startPositions[m.id] = {
+              left: 'left' in gd ? (gv.left !== undefined ? gv.left : gd.left) : undefined,
+              top: 'top' in gd ? (gv.top !== undefined ? gv.top : gd.top) : undefined,
+            };
+          });
+        } else if (lockedId) beginElem(lockedId);
+
+        // Mouse coords inside the (CSS-scaled) iframe are already canvas pixels.
+        function onMove(ev) {
+          var dx = (ev.clientX - startX), dy = (ev.clientY - startY);
+          if (!moved) {
+            if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
+            moved = true; P.pushHistory();
+            if (!mode) beginElem(elem.id);
+          }
+          if (mode === 'group') P.sbEditGroupDragDelta(startPositions, r1(dx), r1(dy));
+          else P.sbEditDrag(dragId, hasL ? r1(startLeft + dx) : undefined, hasT ? r1(startTop + dy) : undefined);
+        }
+        function onUp() {
+          doc.removeEventListener('mousemove', onMove);
+          doc.removeEventListener('mouseup', onUp);
+          if (!moved) P.sbEditSelect(elem.id);
+        }
+        doc.addEventListener('mousemove', onMove);
+        doc.addEventListener('mouseup', onUp);
+      });
+    });
+  }
+
+  function loadIframe(config) {
+    editIfLoaded = false;
+    editIframe.src = '/html/' + config.file + '?t=' + Date.now() + '&preview=1';
+    editIframe.addEventListener('load', function () {
+      editIfLoaded = true;
+      applyToEditIframe();
+      injectEditInteraction(config);
+      if (config.call) { try { var w = editIframe.contentWindow; w[config.call[0]].apply(w, config.call.slice(1)); } catch (e) {} }
+      if (selectedElId) markInIframe('sb-selected', [selectedElId]);
+      requestAnimationFrame(scaleEditIframe);
+    }, { once: true });
+  }
+
+  function parseNum(v) { return typeof v === 'number' ? v : parseFloat(v); }
+  function mergeSaved(saved) {
+    Object.keys(saved || {}).forEach(function (sel) {
+      var s = saved[sel], v = editValues[sel] || (editValues[sel] = {});
+      ['left', 'top', 'width', 'height', 'fontSize'].forEach(function (k) { if (s[k] !== undefined) v[k] = parseNum(s[k]); });
+      if (s.display !== undefined) v.visible = s.display !== 'none';
+    });
+  }
+
+  function loadConfig(key) {
+    var config = EDIT_CONFIGS[key];
+    if (!config) return;
+    currentConfigKey = key;
+    if (cfgSelect.value !== key) cfgSelect.value = key;
+    SB_ELEMENTS = config.elements; SB_DEFAULTS = config.defaults; USER_DEFAULTS_KEY = config.defaultsKey;
+    editValues = deepClone(SB_DEFAULTS);
+    editHistory = []; selectedElId = null; selectedGroupName = null;
+    $('edit-controls').innerHTML = '<div class="edit-no-sel">Select an element to edit</div>';
+    buildEditList();
+    getJSON('/api/overlay-styles?file=' + encodeURIComponent(config.styleFile))
+      .then(function (saved) { mergeSaved(saved); loadIframe(config); })
+      .catch(function () { loadIframe(config); });
+  }
+
+  function flash(id, text, color) { var s = $(id); s.textContent = text; s.style.color = color; setTimeout(function () { s.textContent = ''; }, 2200); }
+
+  $('edit-btn-defaults').addEventListener('click', function () {
+    pushHistory();
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem(USER_DEFAULTS_KEY)); } catch (e) {}
+    replaceEditValues(deepClone(user || SB_DEFAULTS));
+    if (selectedElId) showEditControls(selectedElId);
+    applyToEditIframe();
+    flash('edit-save-status', user ? 'Loaded saved default ✓' : 'Loaded factory default ✓', '#8888cc');
+  });
+
+  $('edit-btn-save-default').addEventListener('click', function () {
+    if (!confirm('Overwrite your saved default for "' + EDIT_CONFIGS[currentConfigKey].label + '" (this browser only)?')) return;
+    try { localStorage.setItem(USER_DEFAULTS_KEY, JSON.stringify(editValues)); } catch (e) {}
+    flash('edit-default-status', 'Default saved ✓', '#aacc44');
+  });
+
+  $('edit-btn-save').addEventListener('click', function () {
+    var out = {};
+    Object.keys(editValues).forEach(function (sel) {
+      var v = editValues[sel], o = out[sel] = {};
+      ['left', 'top', 'width', 'height', 'fontSize'].forEach(function (k) { if (v[k] !== undefined) o[k] = v[k] + 'px'; });
+      if (v.visible === false) o.display = 'none';
+    });
+    var config = EDIT_CONFIGS[currentConfigKey];
+    // Several configs share one style file (Top Bar + event configs → "overlay"):
+    // merge into what's saved instead of replacing it.
+    getJSON('/api/overlay-styles?file=' + encodeURIComponent(config.styleFile))
+      .then(function (existing) { return postJSON('/api/overlay-styles', { file: config.styleFile, styles: Object.assign({}, existing || {}, out) }); })
+      .then(function () {
+        flash('edit-save-status', 'Saved ✓', '#44cc88');
+        // The server's 'reload' broadcast also reloads this iframe — re-arm it.
+        setTimeout(function () { loadIframe(config); }, 300);
+      })
+      .catch(function () { flash('edit-save-status', 'Error', '#ff4455'); });
+  });
+
+  /* ════════════════════ Boot ════════════════════ */
+  setLocked(true);
+  loadInitialData().then(function () { checkCompanionConnection(); });
+  loadLiveState();
+  checkStatus();
+  setInterval(checkStatus, 2000);
+  setInterval(companionAutoTriggerLoop, 500);
+  currentConfigKey = cfgSelect.value;
+})();
+</script>
+</body>
+</html>

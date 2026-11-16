@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOK Draft Pick</title>
+    <link rel="stylesheet" href="css/2-draftpick.css">
+</head>
+<body>
+    <div id="canvas">
+        <!-- Latar Belakang Draft -->
+        <img id="bg-main" src="assets/images/0.draft-phase/background.png" alt="BG">
+
+        <!-- Team Home (Kiri) -->
+        <div id="home-players" class="player-container home"></div>
+        
+        <!-- Team Away (Kanan) -->
+        <div id="away-players" class="player-container away"></div>
+
+        <!-- OVERLAY DEPAN (Teks, Ban, Logo, dll) -->
+        <div id="front-overlay">
+            <div id="phase-text">REGULAR SEASON</div>
+            <div id="match-text">MATCH 3 - BO 5</div>
+            
+            <div id="home-score">0</div>
+            <img id="home-logo" src="">
+            <div id="home-abbr">HOME</div>
+            
+            <div id="away-score">0</div>
+            <img id="away-logo" src="">
+            <div id="away-abbr">AWAY</div>
+
+            <!-- Ban Boxes -->
+            <div id="home-bans" class="ban-container home-ban"></div>
+            <div id="away-bans" class="ban-container away-ban"></div>
+
+            <!-- STATE VIDEO (Menggantikan Timer, Teks Status, dan Arrow WebM) -->
+            <video id="state-vid" src="" autoplay muted></video>
+        </div>
+    </div>
+
+    <script src="js/2-draftpick.js"></script>
+</body>
+</html>

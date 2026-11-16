@@ -1,0 +1,59 @@
+/* In-Game Overlay — Top Bar.
+   Every element is absolutely positioned in 1920x1080 canvas coordinates
+   with its own id rule, so the dashboard Edit tab can move/resize each one
+   (defaults mirrored in dashboard.html TOPBAR_DEFAULTS — keep in sync). */
+html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+body.test-bg { background: url('/assets/images/BG-test.png') no-repeat 0 0 / 1920px 1080px; }
+#canvas { position: relative; width: 1920px; height: 1080px; }
+
+/* Show/hide: the whole box slides up out of frame (default hidden). */
+#top-bar {
+  position: absolute; top: 0; left: 0; width: 1920px; height: 1080px;
+  transform: translateY(-150px);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+#top-bar.show { transform: translateY(0); }
+
+#top-bar > * { position: absolute; white-space: nowrap; line-height: 1; }
+.tb-logo, .tb-flag { object-fit: contain; }
+.tb-text { text-align: center; color: #ffffff; }
+.tb-score, .tb-kill, .tb-abbr, .tb-stage { font-family: 'KIC2025', sans-serif; font-weight: 700; color: #ffffff; }
+.tb-stats, .tb-timer, .tb-sub { font-family: 'Radikal', sans-serif; font-weight: 500; }
+.tb-stats { color: #ffffff; }
+/* Gold lead: yellow tag under the leading team's gold (hidden when even) */
+.tb-diff { font-family: 'Radikal', sans-serif; font-weight: 700; color: #0c1744; background: #ffff6f; text-align: center; opacity: 0; transition: opacity 0.3s; }
+
+/* Bar art (score boxes, stat icons, divider baked in): 1575x91 */
+#tb-bg            { left: 345px;  top: 0;     width: 1575px; height: 91px; }
+
+/* HOME (left) */
+#home-score       { left: 345px;  top: 5px;   width: 57px;  font-size: 83px; }
+#home-flag        { left: 411px;  top: 32px;  width: 36px;  height: 24px; }
+#home-logo        { left: 455px;  top: 10px;  width: 64px;  height: 64px; }
+#home-abbr-ingame { left: 530px;  top: 21px;  width: 110px; font-size: 48px; text-align: left; }
+#home-dragon      { left: 629px;  top: 53px;  width: 60px;  font-size: 24px; }
+#home-tower       { left: 688px;  top: 53px;  width: 60px;  font-size: 24px; }
+#home-gold        { left: 750px;  top: 53px;  width: 80px;  font-size: 24px; }
+#home-diff        { left: 751px;  top: 91px;  width: 78px;  height: 25px; line-height: 29px; font-size: 17px; }
+#home-kill        { left: 835px;  top: 14px;  width: 80px;  font-size: 69px; }
+
+/* Centre */
+#tb-event-logo    { left: 935px;  top: 9px;   width: 50px;  height: 48px; }
+#timer            { left: 910px;  top: 69px;  width: 100px; font-size: 17px; }
+
+/* AWAY (right) */
+#away-kill        { left: 1009px; top: 14px;  width: 80px;  font-size: 69px; }
+#away-gold        { left: 1086px; top: 53px;  width: 80px;  font-size: 24px; }
+#away-diff        { left: 1087px; top: 91px;  width: 78px;  height: 25px; line-height: 29px; font-size: 17px; }
+#away-tower       { left: 1169px; top: 53px;  width: 60px;  font-size: 24px; }
+#away-dragon      { left: 1228px; top: 53px;  width: 60px;  font-size: 24px; }
+#away-abbr-ingame { left: 1278px; top: 21px;  width: 110px; font-size: 48px; text-align: right; }
+#away-logo        { left: 1403px; top: 10px;  width: 64px;  height: 64px; }
+#away-flag        { left: 1475px; top: 32px;  width: 36px;  height: 24px; }
+#away-score       { left: 1520px; top: 5px;   width: 57px;  font-size: 83px; }
+
+/* Right panel: sponsor logo slot + stage / game / series (right-aligned) */
+#tb-sponsor       { left: 1600px; top: 20px;  width: 125px; height: 50px; object-fit: contain; }
+#tb-stage         { left: 1760px; top: 17px;  width: 141px; font-size: 29px; text-align: right; color: #ffffff; }
+#tb-game          { left: 1760px; top: 49px;  width: 141px; font-size: 11.5px; text-align: right; color: #ffffff; font-weight: 700; text-transform: uppercase; }
+#tb-series        { left: 1760px; top: 66px;  width: 141px; font-size: 11.5px; text-align: right; color: #ffffff; font-weight: 700; text-transform: uppercase; }

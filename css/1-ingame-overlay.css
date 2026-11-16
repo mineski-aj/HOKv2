@@ -1,0 +1,114 @@
+@font-face {
+    font-family: 'Superline';
+    src: url('../assets/fonts/Superline-NoLiga.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Oblivion';
+    src: url('../assets/fonts/OBLIVION.TTF') format('truetype');
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+#canvas {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+}
+
+/* CONTAINER TOP BAR */
+#top-bar {
+    position: absolute;
+    top: 0;
+    right: 0; /* Background di pojok kanan atas kanvas */
+    width: 1920px;
+    height: 1080px;
+    /* Animasi Keluar ke Atas */
+    transform: translateY(-150px);
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Animasi Masuk ke Bawah */
+#top-bar.show {
+    transform: translateY(0);
+}
+
+.bg-img {
+    position: absolute;
+    top: 0;
+    right: 0; /* Align ke Kanan */
+    width: 1575px;
+    height: 92px;
+}
+
+.logo {
+    position: absolute;
+    width: 89px;
+    height: 89px;
+    transform: translateX(0%); /* Sesuai request Anda */
+    object-fit: contain;
+}
+
+.text {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #fff4f2;
+    white-space: nowrap;
+}
+
+/* PENGATURAN UKURAN FONT */
+.score { font-family: 'Superline', sans-serif; font-size: 70pt; }
+.kill { font-family: 'Superline', sans-serif; font-size: 60pt; }
+.stats { font-family: 'Oblivion', sans-serif; font-size: 16pt; }
+.timer { font-family: 'Oblivion', sans-serif; font-size: 14pt; }
+.diff {
+    font-family: 'Oblivion', sans-serif;
+    font-size: 10pt;
+    color: #efca7c;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
+}
+
+/* CLASS BARU UNTUK NAMA TIM */
+.team-abbr-ingame {
+    position: absolute;
+    font-family: 'Superline', sans-serif;
+    font-size: 42pt;
+    color: #ffffff;
+    white-space: nowrap;
+    top: 10px; /* Posisi Y: 20px */
+}
+
+/* ===================================================================
+   POSISI KOORDINAT (X, Y) SETIAP ELEMEN
+   =================================================================== */
+
+/* HOME (KIRI) */
+#home-score  { left: 372px;  top: -15px; }
+#home-logo   { left: 403px;  top: 1px; }
+#home-abbr-ingame { left: 525px; text-align: left; } /* Nama Tim Kiri */
+#home-dragon { left: 618px;  top: 52px; }
+#home-tower  { left: 677px;  top: 52px; }
+#home-gold   { left: 748px;  top: 52px; }
+#home-diff   { left: 748px;  top: 74px; }
+#home-kill   { left: 835px;  top: -5px; }
+
+/* CENTER */
+#timer       { left: 960px;  top: -68px; }
+
+/* AWAY (KANAN) */
+#away-kill   { left: 1088px; top: -5px; }
+#away-gold   { left: 1172px; top: 52px; }
+#away-diff   { left: 1172px; top: 74px; }
+#away-tower  { left: 1244px; top: 52px; }
+#away-dragon { left: 1303px; top: 52px; }
+#away-logo   { left: 1430px; top: 1px; }
+#away-abbr-ingame { left: 1395px; transform: translateX(-100%); text-align: right; } /* Nama Tim Kanan (Mundur 100% agar rata kanan di x:1415px) */
+#away-score  { left: 1547px; top: -15px; }

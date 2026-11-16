@@ -1,0 +1,40 @@
+/* Draft LED — 1764x1024 LED wall source. Edit-tab elements: the four
+   containers (defaults mirrored in dashboard.html DRAFTLED_DEFAULTS). */
+html, body { margin: 0; padding: 0; width: 1764px; height: 1024px; overflow: hidden; background: transparent; }
+
+#canvas { position: relative; width: 1764px; height: 1024px; transition: opacity 0.4s ease; }
+#canvas.scene-hidden { opacity: 0; }
+
+/* Bans: two columns of 4 (242 x 257 each) */
+.ban-container { position: absolute; display: flex; flex-direction: column; }
+#home-bans { left: 0;     top: 0; }
+#away-bans { left: 242px; top: 0; }
+
+.ban-box { width: 242px; height: 257px; background-image: url('/assets/images/5-draft-led/base-ban.png'); position: relative; overflow: hidden; }
+.ban-hero { position: absolute; width: 257px; height: 257px; top: 0; left: -6px; opacity: 0; transform: scale(2); transition: all 0.3s ease-out; }
+.ban-hero.banned { opacity: 1; transform: scale(1); }
+.ban-hero.grayscale { filter: grayscale(100%); transition: filter 0.5s ease; }
+.ban-fg { position: absolute; top: 0; left: 0; width: 242px; height: 257px; z-index: 5; background-image: url('/assets/images/5-draft-led/frame-ban.png'); }
+
+/* Picks: two rows of 5 (256 x 256 each) */
+.pick-container { position: absolute; display: flex; transition: opacity 0.5s ease; }
+#home-picks { left: 482px; top: 0; }
+#away-picks { left: 484px; top: 256px; width: 1280px; flex-direction: row-reverse; }
+
+.pick-box { width: 256px; height: 256px; position: relative; overflow: hidden; background-image: url('/assets/images/5-draft-led/bg-default.png'); }
+.pick-box.picking { background-image: url('/assets/images/5-draft-led/bg-pick.png'); }
+
+/* POV cam mode (GET /overlay/led_pickbox/hide): drop pick backgrounds + photos */
+.hide-pov-bg .pick-box { background-image: none !important; }
+.hide-pov-bg .pick-photo { opacity: 0 !important; }
+
+.pick-photo { position: absolute; width: 414px; height: 414px; top: -12px; left: -79px; z-index: 1; transition: opacity 0.3s ease; }
+.pick-hero { position: absolute; width: 256px; height: 566px; top: -46px; left: 0; z-index: 2; opacity: 0; transform: translateY(256px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pick-hero.picked { opacity: 1; transform: translateY(0); }
+
+.pick-fg { position: absolute; top: 0; left: 0; width: 256px; height: 256px; z-index: 3; background-image: url('/assets/images/5-draft-led/fg-default.png'); }
+.pick-box.picking .pick-fg { background-image: url('/assets/images/5-draft-led/fg-picking.png'); }
+#away-picks .pick-fg { transform: scaleX(-1); }
+
+.role-icon { position: absolute; width: 50px; height: 50px; top: 165px; left: 50%; transform: translateX(-50%); z-index: 4; filter: brightness(0) invert(1); }
+.player-name { position: absolute; width: 100%; top: 215px; left: 0; text-align: center; font-family: 'Oblivion', sans-serif; font-size: 20px; color: #ffffff; z-index: 5; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 10px; box-sizing: border-box; }

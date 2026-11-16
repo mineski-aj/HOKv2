@@ -1,0 +1,21 @@
+/* All broadcast fonts (files in assets/fonts). Font families:
+     'Superline', 'Oblivion'        — In-Game Overlay / Draft (v1 designs)
+     'KIC2025'   300 | 400 | 700    — display: titles, numbers, labels, names
+     'Radikal'   100 | 300 | 400 | 500 | 700 | 900 — geometric sans: sub-titles, small labels
+     'HOK Title' (bold), 'HOK Text' (regular) — HOK brand faces */
+@font-face { font-family: 'Superline'; src: url('/assets/fonts/Superline-NoLiga.ttf') format('truetype'); }
+@font-face { font-family: 'Oblivion';  src: url('/assets/fonts/OBLIVION.TTF') format('truetype'); }
+
+@font-face { font-family: 'KIC2025'; font-weight: 300; src: url('/assets/fonts/KIC2025-Light.ttf') format('truetype'); }
+@font-face { font-family: 'KIC2025'; font-weight: 400; src: url('/assets/fonts/KIC2025-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'KIC2025'; font-weight: 700; src: url('/assets/fonts/KIC2025-Bold.ttf') format('truetype'); }
+
+@font-face { font-family: 'Radikal'; font-weight: 100; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL%20THIN.OTF') format('opentype'); }
+@font-face { font-family: 'Radikal'; font-weight: 300; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL%20LIGHT.OTF') format('opentype'); }
+@font-face { font-family: 'Radikal'; font-weight: 400; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL.OTF') format('opentype'); }
+@font-face { font-family: 'Radikal'; font-weight: 500; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL%20MEDIUM.OTF') format('opentype'); }
+@font-face { font-family: 'Radikal'; font-weight: 700; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL%20BOLD.OTF') format('opentype'); }
+@font-face { font-family: 'Radikal'; font-weight: 900; src: url('/assets/fonts/NOOTYPE%20-%20RADIKAL%20BLACK.OTF') format('opentype'); }
+
+@font-face { font-family: 'HOK Title'; font-weight: 700; src: url('/assets/fonts/HOK-title.ttf') format('truetype'); }
+@font-face { font-family: 'HOK Text';  font-weight: 400; src: url('/assets/fonts/HOK-text.ttf') format('truetype'); }

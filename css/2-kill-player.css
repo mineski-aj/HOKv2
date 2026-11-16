@@ -1,0 +1,18 @@
+/* Container Utama (Hanya memunculkan/menyembunyikan, tidak ada efek fade) */
+#kp-container { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; z-index: 50; pointer-events: none; display: none; }
+#kp-container.show { display: block; }
+#kp-vid { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; object-fit: cover; z-index: 51; }
+
+/* Box Elemen (Efek Fade In/Out hanya berlaku di sini) */
+#kp-multi-box, #kp-ace-box { position: absolute; display: none; opacity: 0; transition: opacity 0.3s ease; z-index: 52; }
+#kp-multi-box.active, #kp-ace-box.active { display: block; }
+#kp-multi-box.show-content, #kp-ace-box.show-content { opacity: 1; }
+
+/* MULTI KILL (FB, Double, Triple, Quadra, Penta) */
+#kp-multi-photo { position: absolute; width: 315px; height: 315px; left: 992px; top: 780px; object-fit: cover; -webkit-mask-image: url('../assets/images/2-killevent/masking-foto.png'); -webkit-mask-size: 243px 331px; -webkit-mask-position: 36px -101px; -webkit-mask-repeat: no-repeat; }
+#kp-multi-logo { position: absolute; width: 61px; height: 61px; left: 770px; top: 961px; object-fit: contain; }
+#kp-multi-name { position: absolute; left: 930px; top: 798px; font-family: 'Superline', sans-serif; font-size: 38pt; font-style: italic; color: #ffffff; white-space: nowrap; transform-origin: left center; }
+
+/* ACE */
+#kp-ace-logo { position: absolute; width: 170px; height: 170px; left: 923px; top: 865px; object-fit: contain; }
+#kp-ace-name { position: absolute; left: 1065px; top: 812px; font-family: 'Superline', sans-serif; font-size: 32pt; font-style: italic; color: #ffffff; white-space: nowrap; text-align: center; transform: translateX(-50%); transform-origin: center center; }

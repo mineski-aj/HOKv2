@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK Draft Pick</title>
+  <!-- 1920x1080 browser source. Live control:
+         Whole scene  GET /overlay/draftpick/show | hide   (SSE 'draftpick', default shown)
+       ?preview=1 starts hidden and follows only window.previewTrigger('draftpick', 'show'|'hide'). -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/draftpick.css">
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="canvas">
+    <img id="bg-main" src="/assets/images/0.draft-phase/background_clean.png" alt="" onerror="this.onerror=null;this.src='/assets/images/0.draft-phase/background.png'">
+
+    <div id="home-players" class="player-container"></div>
+    <div id="away-players" class="player-container"></div>
+
+    <div id="front-overlay">
+      <div id="phase-text">REGULAR SEASON</div>
+      <div id="match-text">MATCH 1 - BO 5</div>
+
+      <img class="hdr-logo" id="home-logo" alt="">
+      <div class="hdr-abbr" id="home-abbr">HOME</div>
+      <div class="hdr-score" id="home-score">0</div>
+
+      <div class="hdr-score" id="away-score">0</div>
+      <div class="hdr-abbr" id="away-abbr">AWAY</div>
+      <img class="hdr-logo" id="away-logo" alt="">
+
+      <div id="home-bans" class="ban-container"></div>
+      <div id="away-bans" class="ban-container"></div>
+
+      <img class="role-icon" id="hr-icon-0" alt=""><img class="role-icon" id="hr-icon-1" alt=""><img class="role-icon" id="hr-icon-2" alt=""><img class="role-icon" id="hr-icon-3" alt=""><img class="role-icon" id="hr-icon-4" alt="">
+      <img class="role-icon" id="ar-icon-0" alt=""><img class="role-icon" id="ar-icon-1" alt=""><img class="role-icon" id="ar-icon-2" alt=""><img class="role-icon" id="ar-icon-3" alt=""><img class="role-icon" id="ar-icon-4" alt="">
+
+      <!-- Turn indicator, HTML fallback (shown only if the animated timer video can't load) -->
+      <div id="turn-num">--</div>
+      <svg class="turn-arrow" id="turn-arrow-l" viewBox="0 0 46 32"><path fill="#ff9a1a" d="M20 2 L6 16 L20 30 H28 L14 16 L28 2Z"/><path fill="#ffc23a" d="M38 2 L24 16 L38 30 H46 L32 16 L46 2Z"/></svg>
+      <svg class="turn-arrow" id="turn-arrow-r" viewBox="0 0 46 32"><path fill="#ffc23a" d="M0 2 L14 16 L0 30 H8 L22 16 L8 2Z"/><path fill="#ff9a1a" d="M18 2 L32 16 L18 30 H26 L40 16 L26 2Z"/></svg>
+      <div id="turn-status"></div>
+
+      <!-- Turn timer bars (full-frame, transparent): 25 s ban / 40 s pick, L = home side, R = away side.
+           Preloaded; only the active one plays. -->
+      <video class="turn-bar" id="turn-bar-25-L" src="/assets/webm/draftpick/BAR_25_L.webm?v=2" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-25-R" src="/assets/webm/draftpick/BAR_25_R.webm?v=2" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-40-L" src="/assets/webm/draftpick/BAR_40_L.webm?v=2" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-40-R" src="/assets/webm/draftpick/BAR_40_R.webm?v=2" muted playsinline preload="auto"></video>
+
+      <!-- Animated turn timers (full-frame, transparent, centre bottom): countdown + arrows +
+           BANNING/PICKING baked in. BAN = 25 s, PICK = 40 s; L = home on the clock, R = away. -->
+      <video class="turn-timer" id="turn-timer-BAN-L"  src="/assets/webm/draftpick/TIMER_BAN_L.webm?v=2"  muted playsinline preload="auto"></video>
+      <video class="turn-timer" id="turn-timer-BAN-R"  src="/assets/webm/draftpick/TIMER_BAN_R.webm?v=2"  muted playsinline preload="auto"></video>
+      <video class="turn-timer" id="turn-timer-PICK-L" src="/assets/webm/draftpick/TIMER_PICK_L.webm?v=2" muted playsinline preload="auto"></video>
+      <video class="turn-timer" id="turn-timer-PICK-R" src="/assets/webm/draftpick/TIMER_PICK_R.webm?v=2" muted playsinline preload="auto"></video>
+    </div>
+  </div>
+
+  <script src="/html/js/draftpick.js"></script>
+  <script>
+  (function () {
+    var canvas = document.getElementById('canvas');
+    function apply(shown) { canvas.classList.toggle('scene-hidden', !shown); }
+
+    var sse = createOverlaySSE();
+    sse.addEventListener('reload', function () { location.reload(); });
+    sse.addEventListener('csv', function () { hokCsv.reload(); });
+    sse.addEventListener('appstate', function () { HokPoll.now(); });
+
+    if (HOK_PREVIEW) {
+      apply(false);
+    } else {
+      fetch('/overlay/check-overlays', { cache: 'no-store' }).then(function (r) { return r.json(); })
+        .then(function (d) { apply(d.draftpick !== false); }).catch(function () {});
+      sse.addEventListener('draftpick', function (e) {
+        try { apply(JSON.parse(e.data).action === 'show'); } catch (err) {}
+      });
+    }
+
+    window.previewTrigger = function (event, action) {
+      if (event === 'draftpick') apply(action === 'show');
+    };
+
+    HokStyles.load('draftpick');
+    HokPoll.start({ sources: ['state', 'draft'], interval: 500 });
+  })();
+  </script>
+</body>
+</html>

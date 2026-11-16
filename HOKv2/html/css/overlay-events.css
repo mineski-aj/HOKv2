@@ -1,0 +1,26 @@
+/* In-Game Overlay — kill & objective events (knckill video set, see
+   js/overlay-knc.js). One container for both categories. Slot POSITIONS are
+   set inline per event type from measurements of each video (HokKnc.GEOM);
+   sizes, clipping and look are here. Content fades with the video's slots. */
+
+#knc-container { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 50; pointer-events: none; display: none; }
+#knc-container.show { display: block; }
+#knc-vid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; z-index: 51; }
+
+#knc-square, #knc-name, #knc-tablogo { position: absolute; z-index: 52; opacity: 0; transition: opacity 0.15s ease; }
+#knc-container.knc-in #knc-square, #knc-container.knc-in #knc-name, #knc-container.knc-in #knc-tablogo { opacity: 1; }
+
+/* Yellow parallelogram (200x160 box at the measured square position) */
+#knc-square { width: 200px; height: 160px; overflow: hidden;
+  clip-path: polygon(29px 20px, 60px 4px, 196px 4px, 166px 157px, 0 158px); }
+#knc-photo { position: absolute; left: -20px; top: -6px; width: 240px; height: 240px; object-fit: contain; }
+#knc-sqlogo { position: absolute; left: 40px; top: 22px; width: 116px; height: 116px; object-fit: contain; display: none; }
+#knc-container.knc-ace #knc-photo { display: none; }
+#knc-container.knc-ace #knc-sqlogo { display: block; }
+
+/* Orange name plate */
+#knc-name { font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 38px; color: #12266e;
+  text-align: center; white-space: nowrap; transform-origin: center center; }
+
+/* Blue tab: team logo */
+#knc-tablogo { width: 64px; height: 64px; object-fit: contain; }
