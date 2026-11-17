@@ -1,0 +1,44 @@
+/* Mic Check Home / Away (1920x1080, transparent). Coordinates measured from
+   assets/images/michcheck/michcheck_png.png (the frame, drawn ABOVE the cells):
+   hero cells x 119-294 (176 wide), photo cells x 298-527 (230 wide), five rows. */
+html, body { margin: 0; background: transparent; overflow: hidden; }
+#mc-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+#mc-page > *, #mc-rows { position: absolute; }
+#mc-rows { left: 0; top: 0; width: 1920px; height: 1080px; }
+#mc-frame { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 5; pointer-events: none; }
+
+/* header banner: flag · logo · team name */
+#mc-flag { left: 167px; top: 152px; width: 42px; height: 30px; object-fit: contain; z-index: 6; }
+#mc-logo { left: 223px; top: 132px; width: 74px; height: 72px; object-fit: contain; z-index: 6; }
+#mc-team { left: 331px; top: 127px; width: 218px; height: 80px; display: flex; align-items: center; z-index: 6;
+  font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 54px; line-height: 1; color: #0c1744; white-space: nowrap; text-transform: uppercase; transform-origin: left center; }
+#mc-team.two { font-size: 38px; line-height: 30px; white-space: normal; }   /* long team names wrap to two lines instead of squeezing */
+/* stage + match line, right-aligned to x 1222 */
+#mc-stage { left: 822px; top: 168px; width: 400px; height: 56px; text-align: right; z-index: 6;
+  font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 54px; line-height: 56px; color: #ffffff; white-space: nowrap; text-transform: uppercase; }
+#mc-match { left: 822px; top: 226px; width: 400px; height: 28px; text-align: right; z-index: 6;
+  font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 22px; line-height: 28px; letter-spacing: 0.5px; color: #ffffff; white-space: nowrap; text-transform: uppercase; }
+
+/* rows */
+.mc-hero { position: absolute; left: 119px; width: 176px; height: 156px; overflow: hidden; background: #0d1f66; }
+.mc-hero.empty { background: #fe6001; }
+.mc-hero img { position: absolute; left: 0; top: 0; width: 176px; height: 156px; object-fit: cover; object-position: 50% 20%; }  /* 128x128 KOTAK scaled to 176 wide, ~20 px cropped off the height */
+.mc-hero .shade { position: absolute; left: 0; bottom: 0; width: 176px; height: 60px; background: linear-gradient(to bottom, rgba(5,12,45,0), rgba(5,12,45,0.75)); }
+.mc-hname { position: absolute; left: 119px; width: 176px; text-align: center; z-index: 6; line-height: 22px;
+  font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 20px; color: #fff; text-transform: uppercase; white-space: pre-line; text-shadow: 0 1px 4px rgba(0,0,0,0.85); transform-origin: center bottom; }
+/* bottom-anchored (set by JS): a one-line name sits centred at cell y +142, a long one ("FLOWBORN (ASSASSIN)" → two lines) grows upward */
+
+/* photo cell: nice background (navy-blue gradient + orange glow from below) + half-body photo */
+.mc-pcell { position: absolute; left: 298px; width: 230px; height: 158px; overflow: hidden; }
+.mc-pbg { position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 100%, rgba(255,128,20,0.65), rgba(255,128,20,0) 70%),
+    linear-gradient(160deg, #2a5bd8 0%, #12308f 52%, #0a1a5c 100%); }
+.mc-photo { position: absolute; left: -20px; top: -6px; width: 270px; height: 270px; object-fit: contain; }
+.mc-pcell.nophoto .mc-pbg, .mc-pcell.nophoto .mc-photo { display: none; }   /* one switch hides photo + background */
+
+/* name strip (art: y +128..+158 of each photo row): role icon + player name */
+.mc-role { position: absolute; left: 354px; width: 22px; height: 22px; z-index: 6; background: #12204f;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.mc-pname { position: absolute; left: 394px; width: 128px; height: 30px; line-height: 30px; z-index: 6;
+  font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 17px; color: #12204f; text-transform: uppercase; white-space: nowrap; transform-origin: left center; }

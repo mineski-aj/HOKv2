@@ -22,6 +22,8 @@
       <div id="phase-text">REGULAR SEASON</div>
       <div id="match-text">MATCH 1 - BO 5</div>
 
+      <img class="hdr-flag" id="home-flag" alt="">
+      <img class="hdr-flag" id="away-flag" alt="">
       <img class="hdr-logo" id="home-logo" alt="">
       <div class="hdr-abbr" id="home-abbr">HOME</div>
       <div class="hdr-score" id="home-score">0</div>
@@ -36,6 +38,9 @@
       <img class="role-icon" id="hr-icon-0" alt=""><img class="role-icon" id="hr-icon-1" alt=""><img class="role-icon" id="hr-icon-2" alt=""><img class="role-icon" id="hr-icon-3" alt=""><img class="role-icon" id="hr-icon-4" alt="">
       <img class="role-icon" id="ar-icon-0" alt=""><img class="role-icon" id="ar-icon-1" alt=""><img class="role-icon" id="ar-icon-2" alt=""><img class="role-icon" id="ar-icon-3" alt=""><img class="role-icon" id="ar-icon-4" alt="">
 
+      <!-- Animated title head (TITLE HEAD.mov, 440x180 crop at 740/730, VP9 alpha, 5 s loop): overlaid on the badge, under the timers -->
+      <video id="title-head" src="/assets/webm/draftpick/TITLE_HEAD.webm?v=1" autoplay loop muted playsinline preload="auto"></video>
+
       <!-- Turn indicator, HTML fallback (shown only if the animated timer video can't load) -->
       <div id="turn-num">--</div>
       <svg class="turn-arrow" id="turn-arrow-l" viewBox="0 0 46 32"><path fill="#ff9a1a" d="M20 2 L6 16 L20 30 H28 L14 16 L28 2Z"/><path fill="#ffc23a" d="M38 2 L24 16 L38 30 H46 L32 16 L46 2Z"/></svg>
@@ -44,10 +49,12 @@
 
       <!-- Turn timer bars (full-frame, transparent): 25 s ban / 40 s pick, L = home side, R = away side.
            Preloaded; only the active one plays. -->
-      <video class="turn-bar" id="turn-bar-25-L" src="/assets/webm/draftpick/BAR_25_L.webm?v=2" muted playsinline preload="auto"></video>
-      <video class="turn-bar" id="turn-bar-25-R" src="/assets/webm/draftpick/BAR_25_R.webm?v=2" muted playsinline preload="auto"></video>
-      <video class="turn-bar" id="turn-bar-40-L" src="/assets/webm/draftpick/BAR_40_L.webm?v=2" muted playsinline preload="auto"></video>
-      <video class="turn-bar" id="turn-bar-40-R" src="/assets/webm/draftpick/BAR_40_R.webm?v=2" muted playsinline preload="auto"></video>
+      <img class="turn-track" id="turn-track-L" src="/assets/images/0.draft-phase/bar_track_L.png?v=2" alt="">
+      <img class="turn-track" id="turn-track-R" src="/assets/images/0.draft-phase/bar_track_R.png?v=2" alt="">
+      <video class="turn-bar" id="turn-bar-25-L" src="/assets/webm/draftpick/BAR_25_L_REV.webm?v=3" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-25-R" src="/assets/webm/draftpick/BAR_25_R_REV.webm?v=3" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-40-L" src="/assets/webm/draftpick/BAR_40_L_REV.webm?v=3" muted playsinline preload="auto"></video>
+      <video class="turn-bar" id="turn-bar-40-R" src="/assets/webm/draftpick/BAR_40_R_REV.webm?v=3" muted playsinline preload="auto"></video>
 
       <!-- Animated turn timers (full-frame, transparent, centre bottom): countdown + arrows +
            BANNING/PICKING baked in. BAN = 25 s, PICK = 40 s; L = home on the clock, R = away. -->
