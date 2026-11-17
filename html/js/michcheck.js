@@ -13,11 +13,11 @@
   (function build() {
     var html = '';
     for (var i = 0; i < 5; i++) {
-      html += '<div class="mc-hero empty" id="mc-hero-' + i + '" style="top:' + HERO_TOP[i] + 'px"><img id="mc-heroimg-' + i + '" alt=""><div class="shade"></div></div>' +
+      html += '<div class="mc-hero empty" id="mc-hero-' + i + '" style="top:' + HERO_TOP[i] + 'px"><img id="mc-heroimg-' + i + '" alt=""></div>' +
         '<div class="mc-hname" id="mc-hname-' + i + '" style="bottom:' + (1080 - HERO_TOP[i] - 156 + 3) + 'px"></div>' +
         '<div class="mc-pcell" id="mc-pcell-' + i + '" style="top:' + ROW_TOP[i] + 'px"><div class="mc-pbg"></div><img class="mc-photo" id="mc-photo-' + i + '" alt=""></div>' +
-        '<div class="mc-role" id="mc-role-' + i + '" style="top:' + (ROW_TOP[i] + 132) + 'px;--icon:url(\'/assets/images/role/' + ROLE_ICON[i] + '.png\')"></div>' +
-        '<div class="mc-pname" id="mc-pname-' + i + '" style="top:' + (ROW_TOP[i] + 128) + 'px"></div>';
+        '<div class="mc-strip" style="top:' + (ROW_TOP[i] + 128) + 'px"><div class="mc-role" id="mc-role-' + i + '" style="--icon:url(\'/assets/images/role/' + ROLE_ICON[i] + '.png\')"></div>' +
+        '<div class="mc-pname" id="mc-pname-' + i + '"></div></div>';
     }
     $('mc-rows').innerHTML = html;
   })();
@@ -51,7 +51,7 @@
       fitTeam(); squeeze($('mc-stage'));
     };
     go();
-    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('700 20px Radikal'), document.fonts.load('700 54px KIC2025')]).then(go, go);
+    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('700 19px Radikal'), document.fonts.load('700 51px KIC2025')]).then(go, go);
   }
 
   // Cell shows photo + background when the page switch is ON, or when that player's cam is marked down (force).
