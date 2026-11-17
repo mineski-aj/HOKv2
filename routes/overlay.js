@@ -103,6 +103,7 @@ router.get('/api/logos', (req, res) => {
   const list = (d, prefix) => { try { return fs.readdirSync(d).filter((f) => /\.png$/i.test(f)).map((f) => prefix + f); } catch (e) { return []; } };
   noStore(res).json({ files: list(dir, '').concat(list(path.join(dir, 'LIGA'), 'LIGA/')) });
 });
+router.get('/api/led-events', (req, res) => noStore(res).json(require('../lib/ledEvents').build()));
 router.get('/api/michcheck', (req, res) => noStore(res).json(require('../lib/micCheck').build(req.query.side)));
 router.get('/api/versus-slide', (req, res) => noStore(res).json(require('../lib/versusSlide').build({ draftOnly: req.query.draftOnly === '1' })));
 router.get('/api/post-gold-graph', (req, res) => noStore(res).json(require('../lib/postGoldGraph').build()));

@@ -41,6 +41,10 @@
     label, .lbl { display: block; margin-bottom: 4px; font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.05em; }
     input[type=text], input[type=number], select { width: 100%; height: 34px; padding: 6px 10px; background: rgba(255,255,255,0.04); border: 1px solid #2c2c3c; border-radius: 5px; color: #eee; font-family: Consolas, monospace; font-size: 13px; outline: none; }
     input:focus, select:focus { border-color: #4455aa; }
+    /* Native dropdown lists: some Chrome builds ignore the select's colours and draw its light text on a white list.
+       Tell the browser the page is dark and colour the options explicitly. */
+    html { color-scheme: dark; }
+    select option, select optgroup { background-color: #16161e; color: #eeeeee; }
     input[readonly] { background: #0b0b10; color: #555; cursor: not-allowed; }
     .hint { font-size: 11px; color: #555; margin-top: 4px; line-height: 1.5; }
     hr.sep { border: none; border-top: 1px solid #222232; margin: 14px 0; }
@@ -1516,6 +1520,11 @@
     if (ov.ledEventsTester) {
       body.appendChild(el('div', 'features-label', 'Always live — follows Draft Pick (a pick spans the whole table, holds ~2 s, matte out)'));
       body.appendChild(el('div', 'features-label', 'Pick animation test — ◈ preview only (1–5 = different sample heroes)'));
+      body.appendChild(micToggle('Home / Away tables', 'ledevents_swap', '⇄ SWAPPED (manual override)', 'Auto (Home = Match Board Team 1)', false));
+      var mh = el('div', 'hint', 'HOME (top table) is always Match Board Team 1, even when they play the other side. The side comes from Draft LED Control → First Pick (first-pick team = camp 1). Swap flips it by hand if it is wrong. In MANUAL draft mode the tables follow the Draft tab HOME / AWAY inputs and Swap just exchanges the two tables.');
+      mh.style.margin = '0';
+      body.appendChild(mh);
+      body.appendChild(el('div', 'divider'));
       body.appendChild(micToggle('Crop Guide (outlines both tables + 5 player columns)', 'ledevents_guide', '● Guide ON', '○ Guide OFF', false));
       body.appendChild(el('div', 'divider'));
       [['home', 'HOME table (top)'], ['away', 'AWAY table (bottom)']].forEach(function (t) {

@@ -80,10 +80,14 @@
   }
 
   // ── Draft sync ──
-  var warm = {}, seen = { home: {}, away: {} };
+  var warm = {}, seen = { home: {}, away: {} };   // (seen/queue are re-created when the camp mapping changes)
   var GONE_MS = 6000;               // a hero must be absent this long before re-entering counts as a new pick
   var prev = null, busy = false, again = false, lastFetch = 0;
+  var mapKey = null;
   function apply(data) {
+    // First Pick / swap changed = the heroes just moved between tables, not new picks: re-baseline silently.
+    if (mapKey !== null && mapKey !== (data.homeCamp + ':' + data.manual)) { prev = null; seen = { home: {}, away: {} }; queue = { home: [], away: [] }; }
+    mapKey = data.homeCamp + ':' + data.manual;
     var cur = { home: {}, away: {} }, heroes = { home: [], away: [] };
     [['home', data.home], ['away', data.away]].forEach(function (t) {
       ((t[1] && t[1].players) || []).forEach(function (p, i) {
@@ -109,7 +113,7 @@
   function fetchData() {
     if (busy) { again = true; return; }   // a save arrived mid-request: re-read right after it
     busy = true; lastFetch = Date.now();
-    fetch('/api/versus-slide?draftOnly=1', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(apply).catch(function () {}).then(function () {
+    fetch('/api/led-events', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(apply).catch(function () {}).then(function () {
       busy = false;
       if (again) { again = false; fetchData(); }
     });
