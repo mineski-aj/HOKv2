@@ -138,20 +138,22 @@
 
   function playerBox(i, side) {
     return '<div class="player-box" id="' + side + '-box-' + i + '">' +
+      '<video class="pick-element" id="' + side + '-pickel-' + i + '" src="/assets/webm/draftpick/PICK_ELEMENT.webm?v=2" muted loop playsinline preload="auto"></video>' +
       '<img class="player-photo" id="' + side + '-photo-' + i + '" src="' + HOK_DEFAULT_PHOTO + '">' +
+      // Two layers, each with its own gradient: PLAYER (photo + orange) underneath, HERO (art + dark)
+      // on top — the matte reveals the hero layer with its dark fade over the player + orange.
+      '<img class="player-front" id="' + side + '-front-' + i + '" src="/assets/images/0.draft-phase/pick-front.png">' +
       '<div class="hero-pick" id="' + side + '-hero-' + i + '">' +
         '<img class="hero-pick-img" id="' + side + '-heroimg-' + i + '">' +
         '<video class="hero-pick-vid" id="' + side + '-herovid-' + i + '" muted loop playsinline autoplay></video>' +
+        '<img class="hero-front" src="/assets/images/0.draft-phase/standby-front.png">' +
       '</div>' +
       '<div class="stats-box" id="' + side + '-statsbox-' + i + '">' +
         '<div class="stats-hero-name" id="' + side + '-sname-' + i + '">HERO</div>' +
-        '<div class="stats-rates-container">' +
-          '<div class="stats-rate-value" id="' + side + '-sbr-' + i + '">0%</div>' +
-          '<div class="stats-rate-value" id="' + side + '-spr-' + i + '">0%</div>' +
-          '<div class="stats-rate-value" id="' + side + '-swr-' + i + '">0%</div>' +
-        '</div>' +
+        '<div class="stats-rate-value r0" id="' + side + '-sbr-' + i + '">0%</div>' +
+        '<div class="stats-rate-value r1" id="' + side + '-spr-' + i + '">0%</div>' +
+        '<div class="stats-rate-value r2" id="' + side + '-swr-' + i + '">0%</div>' +
       '</div>' +
-      '<img class="player-front" id="' + side + '-front-' + i + '" src="/assets/images/0.draft-phase/standby-front.png">' +
       '<div class="player-name" id="' + side + '-name-' + i + '">PLAYER</div>' +
     '</div>';
   }
@@ -184,26 +186,46 @@
 
   }
 
+  // Shrink text until it fits its box (values: one line in 66px; name: ≤ 2 lines in 114x40).
+  function shrinkToFit(el, maxPx, minPx, fits) {
+    for (var px = maxPx; px >= minPx; px--) {
+      el.style.fontSize = px + 'px';
+      el.style.lineHeight = Math.round(px * 1.13) + 'px';
+      if (fits()) return;
+    }
+  }
+  function fitStats(side, index) {
+    ['sbr', 'spr', 'swr'].forEach(function (k) {
+      var v = $(side + '-' + k + '-' + index);
+      v.style.fontSize = '';
+      for (var px = 40; px >= 20 && v.scrollWidth > v.clientWidth; px--) v.style.fontSize = px + 'px';
+    });
+    var n = $(side + '-sname-' + index);
+    shrinkToFit(n, 15, 10, function () { return n.scrollHeight <= n.clientHeight + 1 && n.scrollWidth <= n.clientWidth + 1; });
+  }
+
   function triggerStatsAnimation(side, index, heroId) {
     var data = csvDatabase[heroId] || { name: 'UNKNOWN', banRate: '-', pickRate: '-', winRate: '-' };
     $(side + '-sname-' + index).innerText = data.name;
     $(side + '-sbr-' + index).innerText = data.banRate;
     $(side + '-spr-' + index).innerText = data.pickRate;
     $(side + '-swr-' + index).innerText = data.winRate;
+    fitStats(side, index);
+    if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('700 40px KIC2025'), document.fonts.load('700 15px Radikal')]).then(function () { fitStats(side, index); });
     var box = $(side + '-statsbox-' + index);
     setTimeout(function () {
       box.classList.add('show-stats');
       setTimeout(function () { box.classList.remove('show-stats'); }, 4000);
-    }, 1000);
+    }, 1700);   // after the 1.5 s matte reveal (css .hero-pick.picked) so the hero is seen first
   }
 
   HokPoll.register(function (data) {
     var state = data.state || {}, draft = data.draft || {};
 
-    // Match Board → Match Info (lib/matchInfo.js): GROUP STAGE / MATCH 1 - GAME 3 · BEST OF 5
+    // Match Board → Match Info (lib/matchInfo.js): GROUP STAGE / MATCH 3 - BO 5
     var mi = state.match_info || {};
     hokSetText($('phase-text'), mi.stageText || '');
-    hokSetText($('match-text'), mi.fullText || '');
+    hokSetText($('match-text'), mi.matchBoText || '');
     hokSetText($('home-score'), state.team_1_score || 0);
     hokSetText($('away-score'), state.team_2_score || 0);
     hokSetText($('home-abbr'), state.team_1_abbr || 'HOME');
@@ -270,11 +292,13 @@
 
       var heroEl = $(side + '-hero-' + pIdx);
       var boxEl = $(side + '-box-' + pIdx);
-      var frontEl = $(side + '-front-' + pIdx);
       var doubleStart = currentLength === 5 || currentLength === 7 || currentLength === 15;
       var active = i === currentLength || (doubleStart && i === currentLength + 1);
       boxEl.classList.toggle('picking', active);
-      hokSetSrc(frontEl, '/assets/images/0.draft-phase/' + (active ? 'pick-front.png' : 'standby-front.png'));
+      // Flame element behind the player: only decode/play on the slot that's picking.
+      var pickEl = $(side + '-pickel-' + pIdx);
+      if (active && pickEl.paused) pickEl.play().catch(function () {});
+      else if (!active && !pickEl.paused) pickEl.pause();
 
       var key = side + '-' + pIdx;
       if (show > 0) {

@@ -16,7 +16,7 @@ const noStore = (res) => res.set({ 'Cache-Control': 'no-store' });
 // match_info = on-air stage / match / series strings (lib/matchInfo.js), computed — never saved.
 router.get('/api/state', (req, res) => {
   const s = appState.get();
-  noStore(res).json(Object.assign({}, s, { match_info: require('../lib/matchInfo').build(s) }));
+  noStore(res).json(Object.assign({}, s, { match_info: require('../lib/matchInfo').build(s), team_countries: dataStore.teamCountryMap() }));
 });
 
 router.post('/api/state', (req, res) => {

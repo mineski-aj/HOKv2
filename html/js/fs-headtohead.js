@@ -31,9 +31,11 @@ var HeadToHead = (function () {
     if (img.dataset.chain === key) return;
     img.dataset.chain = key;
     var i = 0;
-    img.style.visibility = urls.length ? '' : 'hidden';
-    if (!urls.length) { img.removeAttribute('src'); return; }
-    img.onerror = function () { i++; if (i < urls.length) img.src = urls[i]; else { img.onerror = null; img.style.visibility = 'hidden'; } };
+    // Inside a name plate a missing image collapses (display none) so the flex group stays centred.
+    var gone = function () { if (img.closest('.h2h-plate')) img.style.display = 'none'; else img.style.visibility = 'hidden'; };
+    img.style.visibility = ''; img.style.display = '';
+    if (!urls.length) { img.removeAttribute('src'); gone(); return; }
+    img.onerror = function () { i++; if (i < urls.length) img.src = urls[i]; else { img.onerror = null; gone(); } };
     img.src = urls[0];
   }
   function photoUrls(name, side) {
@@ -49,7 +51,7 @@ var HeadToHead = (function () {
   }
   function squeeze(span) {
     span.style.transform = 'none';
-    var max = span.parentNode.clientWidth;
+    var max = parseFloat(getComputedStyle(span.parentNode).maxWidth) || span.parentNode.clientWidth;
     if (max && span.scrollWidth > max) span.style.transform = 'scaleX(' + (max / span.scrollWidth).toFixed(3) + ')';
   }
   function fitAll() {
@@ -68,7 +70,7 @@ var HeadToHead = (function () {
     [['h', d.home || {}], ['a', d.away || {}]].forEach(function (t) {
       var s = t[0], p = t[1];
       setChain($('h2h-photo-' + s), photoUrls(p.name, s));
-      setChain($('h2h-flag-' + s), p.abbr ? [hokAsset('images/flags/' + p.abbr + '.png')] : []);
+      setChain($('h2h-flag-' + s), p.country ? [hokAsset('images/flags/' + p.country + '.png')] : []);
       setChain($('h2h-logo-' + s), p.abbr ? [hokLogo(p.abbr)] : []);
       hokSetText($('h2h-name-' + s), p.name || '');
     });

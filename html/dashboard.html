@@ -1649,7 +1649,7 @@
   var TOPBAR_ELEMENTS = [
     { group: 'Background', id: '#tb-bg', name: 'Top Bar Art' },
     { group: 'Home Team',  id: '#home-score', name: 'Series Score' },
-    { group: 'Home Team',  id: '#home-flag', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Home Team',  id: '#home-flag', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Home Team',  id: '#home-logo', name: 'Logo' },
     { group: 'Home Team',  id: '#home-abbr-ingame', name: 'Team Code' },
     { group: 'Home Stats', id: '#home-dragon', name: 'Tyrant Count' },
@@ -1666,7 +1666,7 @@
     { group: 'Away Stats', id: '#away-dragon', name: 'Tyrant Count' },
     { group: 'Away Team',  id: '#away-abbr-ingame', name: 'Team Code' },
     { group: 'Away Team',  id: '#away-logo', name: 'Logo' },
-    { group: 'Away Team',  id: '#away-flag', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Away Team',  id: '#away-flag', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Away Team',  id: '#away-score', name: 'Series Score' },
     { group: 'Right Panel', id: '#tb-sponsor', name: 'Sponsor Logo (1-ingame-overlay/sponsor.png)' },
     { group: 'Right Panel', id: '#tb-stage', name: 'Stage (Match Info)' },
@@ -1719,7 +1719,7 @@
     '#home-picks': { left: 482, top: 0 },
     '#away-picks': { left: 484, top: 256 },
   };
-  /* Fullscreen SHARED layer (header + stand-in ticker) — same selectors in
+  /* Fullscreen SHARED layer (header) — same selectors in
      every fullscreen config, so moving them in one moves them for all scenes. */
   var FS_SHARED_DEFAULTS = {
     '#fs-result-l':   { left: 52,   top: 78,  width: 300, height: 120, fontSize: 118 },
@@ -1735,7 +1735,6 @@
     '#fs-result-r':   { left: 1568, top: 78,  width: 300, height: 120, fontSize: 118 },
     '#fs-fins':       { left: 1731, top: 34,  width: 89,  height: 23 },
     '#fs-year':       { left: 1700, top: 24,  width: 190, fontSize: 36 },
-    '#fs-ticker':     { left: 0,    top: 1038, width: 1920, height: 42 },
   };
   // Shared GAME TIME | GAME n block (Post Stats, Post Gold Graph)
   var FS_GAMEINFO_DEFAULTS = {
@@ -1763,7 +1762,7 @@
   ];
   var FS_SHARED_ELEMENTS = [
     { group: 'Shared · Home Header', id: '#fs-result-l', name: 'Victory / Defeat' },
-    { group: 'Shared · Home Header', id: '#fs-flag-l', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Shared · Home Header', id: '#fs-flag-l', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Shared · Home Header', id: '#fs-logo-l', name: 'Team Logo' },
     { group: 'Shared · Home Header', id: '#fs-abbr-l', name: 'Team Code' },
     { group: 'Shared · Home Header', id: '#fs-score-l', name: 'Series Score' },
@@ -1771,11 +1770,10 @@
     { group: 'Shared · Away Header', id: '#fs-score-r', name: 'Series Score' },
     { group: 'Shared · Away Header', id: '#fs-abbr-r', name: 'Team Code' },
     { group: 'Shared · Away Header', id: '#fs-logo-r', name: 'Team Logo' },
-    { group: 'Shared · Away Header', id: '#fs-flag-r', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Shared · Away Header', id: '#fs-flag-r', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Shared · Away Header', id: '#fs-result-r', name: 'Victory / Defeat' },
     { group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' },
     { group: 'Shared · Year', id: '#fs-year', name: 'Year' },
-    { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' },
   ];
 
   var PHX_DEFAULTS = {
@@ -1938,7 +1936,7 @@
     { group: 'Away (right)', id: '#h2h-plate-a', name: 'Name Plate' },
   ];
   var VSL_ELEMENTS = [
-    { group: 'Home Header', id: '#vsl-flag-h', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Home Header', id: '#vsl-flag-h', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Home Header', id: '#vsl-logo-h', name: 'Team Logo' },
     { group: 'Home Header', id: '#vsl-abbr-h', name: 'Team Code' },
     { group: 'Home Header', id: '#vsl-score-h', name: 'Series Score' },
@@ -1949,7 +1947,7 @@
     { group: 'Away Header', id: '#vsl-score-a', name: 'Series Score' },
     { group: 'Away Header', id: '#vsl-abbr-a', name: 'Team Code' },
     { group: 'Away Header', id: '#vsl-logo-a', name: 'Team Logo' },
-    { group: 'Away Header', id: '#vsl-flag-a', name: 'Flag (flags/<CODE>.png)' },
+    { group: 'Away Header', id: '#vsl-flag-a', name: 'Flag (flags/<COUNTRY>.png)' },
     { group: 'Centre', id: '#vsl-vtag', name: 'Vertical Tag' },
     { group: 'Line-ups', id: '#vsl-team-h', name: 'Home Frame + Cards' },
     { group: 'Line-ups', id: '#vsl-team-a', name: 'Away Frame + Cards' },
@@ -1985,24 +1983,24 @@
       elements: DRAFTPICK_ELEMENTS, defaults: DRAFTPICK_DEFAULTS, editCss: '#canvas{opacity:1!important}' },
     posthexagon: { label: 'Post Hexagon · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_posthexagon',
       elements: FS_SHARED_ELEMENTS.concat(FS_MATCHINFO_ELEMENTS, PHX_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_MATCHINFO_DEFAULTS, PHX_DEFAULTS), call: ['previewTrigger', 'posthexagon', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#phx-page{display:block!important;opacity:1!important}#phx-radar .phx-poly{transform:scale(1)!important}' },
+      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo{opacity:1!important}#phx-page{display:block!important;opacity:1!important}#phx-radar .phx-poly{transform:scale(1)!important}' },
     poststats: { label: 'Post Stats · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_poststats',
       elements: FS_SHARED_ELEMENTS.concat(FS_GAMEINFO_ELEMENTS, PST_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_GAMEINFO_DEFAULTS, PST_DEFAULTS), call: ['previewTrigger', 'poststats', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pst-page{display:block!important;opacity:1!important}#pst-page .pst-fill{transform:scaleX(1)!important}' },
+      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo{opacity:1!important}#pst-page{display:block!important;opacity:1!important}#pst-page .pst-fill{transform:scaleX(1)!important}' },
     postgoldgraph: { label: 'Post Gold Graph · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_postgoldgraph',
       elements: FS_SHARED_ELEMENTS.concat(FS_GAMEINFO_ELEMENTS, PGG_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_GAMEINFO_DEFAULTS, PGG_DEFAULTS), call: ['previewTrigger', 'postgoldgraph', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pgg-page{display:block!important;opacity:1!important}#pgg-graph .pgg-reveal{transform:scaleX(1)!important}' },
+      editCss: '#fs-bg-video,#fs-header,#fs-gameinfo{opacity:1!important}#pgg-page{display:block!important;opacity:1!important}#pgg-graph .pgg-reveal{transform:scaleX(1)!important}' },
     postitems: { label: 'Post Items · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_postitems',
       elements: FS_SHARED_ELEMENTS.concat(FS_MATCHINFO_ELEMENTS, PIT_ELEMENTS), defaults: Object.assign({}, FS_SHARED_DEFAULTS, FS_MATCHINFO_DEFAULTS, PIT_DEFAULTS), call: ['previewTrigger', 'postitems', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo,#fs-ticker{opacity:1!important}#fs-ticker-track{animation:none!important}#pit-page{display:block!important;opacity:1!important}#pit-page .pit-card,#pit-page .pit-card *,#pit-vs{transition:none!important;opacity:1!important;translate:0 0!important;scale:1!important}#pit-page .pit-card{transform:none!important}' },
+      editCss: '#fs-bg-video,#fs-header,#fs-matchinfo{opacity:1!important}#pit-page{display:block!important;opacity:1!important}#pit-page .pit-card,#pit-page .pit-card *,#pit-vs{transition:none!important;opacity:1!important;translate:0 0!important;scale:1!important}#pit-page .pit-card{transform:none!important}' },
     versusslide: { label: 'Versus Slide · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_versusslide',
-      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }, { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' }].concat(VSL_ELEMENTS),
-      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'], '#fs-ticker': FS_SHARED_DEFAULTS['#fs-ticker'] }, VSL_DEFAULTS), call: ['previewTrigger', 'versusslide', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-ticker{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#fs-ticker-track{animation:none!important}#vsl-page{display:block!important;opacity:1!important}#vsl-page *{transition:none!important}#vsl-page .vsl-hdr,#vsl-page .vsl-team,#vsl-page .vsl-card,#vsl-page .vsl-photo,#vsl-vs{opacity:1!important;translate:0 0!important;scale:1!important}' },
+      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }].concat(VSL_ELEMENTS),
+      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'] }, VSL_DEFAULTS), call: ['previewTrigger', 'versusslide', 'show'],
+      editCss: '#fs-bg-video,#fs-header{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#vsl-page{display:block!important;opacity:1!important}#vsl-page *{transition:none!important}#vsl-page .vsl-hdr,#vsl-page .vsl-team,#vsl-page .vsl-card,#vsl-page .vsl-photo,#vsl-vs{opacity:1!important;translate:0 0!important;scale:1!important}' },
     headtohead: { label: 'Head to Head · Fullscreen', file: 'fullscreen.html', styleFile: 'fullscreen', defaultsKey: 'hok_edit_defaults_headtohead',
-      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }, { group: 'Shared · Ticker', id: '#fs-ticker', name: 'Stand-in Ticker (shown when BG video is off)' }].concat(H2H_ELEMENTS),
-      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'], '#fs-ticker': FS_SHARED_DEFAULTS['#fs-ticker'] }, H2H_DEFAULTS), call: ['previewTrigger', 'headtohead', 'show'],
-      editCss: '#fs-bg-video,#fs-header,#fs-ticker{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#fs-ticker-track{animation:none!important}#h2h-page{display:block!important;opacity:1!important}#h2h-page *{transition:none!important}#h2h-page>*,#h2h-page .h2h-row{opacity:1!important;translate:0 0!important;scale:1!important}' },
+      elements: [{ group: 'Shared · Year', id: '#fs-fins', name: 'Fin Grid' }, { group: 'Shared · Year', id: '#fs-year', name: 'Year' }].concat(H2H_ELEMENTS),
+      defaults: Object.assign({ '#fs-fins': FS_SHARED_DEFAULTS['#fs-fins'], '#fs-year': FS_SHARED_DEFAULTS['#fs-year'] }, H2H_DEFAULTS), call: ['previewTrigger', 'headtohead', 'show'],
+      editCss: '#fs-bg-video,#fs-header{opacity:1!important}#fs-header>:not(#fs-year):not(#fs-fins){opacity:0!important}#h2h-page{display:block!important;opacity:1!important}#h2h-page *{transition:none!important}#h2h-page>*,#h2h-page .h2h-row{opacity:1!important;translate:0 0!important;scale:1!important}' },
     draftled: { label: 'Draft LED (1764x1024)', file: 'draft-led.html', styleFile: 'draftled', defaultsKey: 'hok_edit_defaults_draftled', size: [1764, 1024],
       elements: DRAFTLED_ELEMENTS, defaults: DRAFTLED_DEFAULTS, editCss: '#canvas{opacity:1!important}' },
   };

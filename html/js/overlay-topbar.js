@@ -111,11 +111,13 @@
 
     if (leftAbbr)  hokSetSrc($('home-logo'), hokLogo(leftAbbr));
     if (rightAbbr) hokSetSrc($('away-logo'), hokLogo(rightAbbr));
-    // Flags: assets/images/flags/<CODE>.png — hidden while missing
+    // Flags: assets/images/flags/<COUNTRY>.png (team → country from /api/state team_countries) — hidden while missing
+    var flagOf = function (abbr) { var c = (state.team_countries || {})[abbr]; return c ? hokAsset('images/flags/' + c + '.png') : ''; };
     [['home-flag', leftAbbr], ['away-flag', rightAbbr]].forEach(function (t) {
       var img = $(t[0]);
       if (!img.dataset.wired) { img.dataset.wired = '1'; img.addEventListener('error', function () { img.style.visibility = 'hidden'; }); img.addEventListener('load', function () { img.style.visibility = ''; }); }
-      if (t[1]) hokSetSrc(img, hokAsset('images/flags/' + t[1] + '.png'));
+      var f = t[1] ? flagOf(t[1]) : '';
+      if (f) hokSetSrc(img, f); else img.style.visibility = 'hidden';
     });
     // Right panel (Match Board → Match Info, built server-side by lib/matchInfo.js):
     // GROUP STAGE / MATCH 1 - GAME 3 / BEST OF 5

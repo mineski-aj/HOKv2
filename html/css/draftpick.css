@@ -45,11 +45,26 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
 #away-players { left: 1095px; top: 855px; flex-direction: row-reverse; }
 
 .player-box { width: 165px; height: 225px; position: relative; background-image: url('/assets/images/0.draft-phase/bg-player.png'); overflow: hidden; }
-.player-box.picking { background-image: url('/assets/images/0.draft-phase/bg-pick.png'); }
+.player-box.picking { background-image: url('/assets/images/0.draft-phase/bg-player.png'); }   /* the flame element replaces bg-pick.png's wings */
+/* Picking element: assets/webm/draftpick/PICK_ELEMENT.webm (330x450 = 2x the slot, VP9 alpha,
+   5 s loop, made from ELEMENT.mov — premultiplied ProRes un-premultiplied on conversion).
+   Behind the player photo, only on the slot that's picking; mirrored on the AWAY side. */
+.pick-element { position: absolute; left: 0; top: 0; width: 165px; height: 225px; z-index: 0; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+.player-box.picking .pick-element { opacity: 1; }
+#home-players .pick-element { transform: scaleX(-1); }   /* flame mirrored per operator: HOME sweeps up-left, AWAY up-right (the source direction) */
 
 .player-photo { position: absolute; width: 297px; height: 297px; left: 50%; transform: translateX(-50%); top: 0; z-index: 1; }
-.hero-pick { position: absolute; width: 165px; height: 364px; left: 50%; top: 0; transform: translateX(-50%) translateY(225px); z-index: 2; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); opacity: 0; }
-.hero-pick.picked { transform: translateX(-50%) translateY(0); opacity: 1; }
+.hero-pick { position: absolute; width: 165px; height: 364px; left: 50%; top: 0; transform: translateX(-50%); z-index: 2; opacity: 0; }
+/* Pick reveal = MATTE transition: hero_matte_<L|R>.png is a vertical strip of 46 mask frames
+   (165x225 each, 30 fps = 1.5 s, made from MATTE 2.mov: centre 792x1080 portrait crop, alpha
+   only) stepped through with mask-position. Flipped per operator: HOME uses the mirrored strip (_R), AWAY the original (_L). */
+.hero-pick.picked { opacity: 1;
+  -webkit-mask: url('/assets/images/0.draft-phase/hero_matte_R.png') 0 0 / 165px 10350px no-repeat;
+          mask: url('/assets/images/0.draft-phase/hero_matte_R.png') 0 0 / 165px 10350px no-repeat;
+  animation: heroMatte 1.5s steps(45) forwards; }
+#away-players .hero-pick.picked {
+  -webkit-mask-image: url('/assets/images/0.draft-phase/hero_matte_L.png'); mask-image: url('/assets/images/0.draft-phase/hero_matte_L.png'); }
+@keyframes heroMatte { from { -webkit-mask-position: 0 0; mask-position: 0 0; } to { -webkit-mask-position: 0 -10125px; mask-position: 0 -10125px; } }
 .hero-pick-img, .hero-pick-vid { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 .hero-pick-img:not([src]) { visibility: hidden; }
 .hero-pick-vid { object-fit: cover; opacity: 0; }
@@ -58,21 +73,33 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
 /* Hero stats slide-up (name, ban/pick/win rate from the CSV) */
 .stats-box {
   position: absolute; bottom: 0; left: 0; width: 165px; height: 225px;
-  background-image: url('/assets/images/0.draft-phase/bg-stats.png'); background-size: cover;
+  /* bg-stats_orange.png = bg-stats.png (dark red, labels baked in) recoloured to a dark→mid orange
+     (texture kept from the original's brightness, alpha raised to ≥0.85, white labels untouched). */
+  background-image: url('/assets/images/0.draft-phase/bg-stats_orange.png'); background-size: cover;
   z-index: 4; transform: translateY(225px); transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-  display: flex; flex-direction: column; align-items: center; padding-top: 5px; box-sizing: border-box;
 }
 .stats-box.show-stats { transform: translateY(0); }
-.stats-hero-name {
-  font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 16px; color: #fff4f2; text-align: center; width: 150px; line-height: 1.2;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  margin-bottom: auto; text-transform: uppercase; word-wrap: break-word;
-}
-.stats-rates-container { width: 135px; text-align: right; margin-bottom: 55px; }
-.stats-rate-value { font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 40px; color: #fff4f2; line-height: 1; }
+/* Hero name: up to 2 lines, kept clear of the role icon (top-left on HOME
+   slots x 12–40, top-right on AWAY); font shrinks to fit (draftpick.js fitStats) */
+.stats-hero-name { position: absolute; top: 5px; left: 44px; width: 114px; height: 40px;
+  display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden;
+  font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 15px; line-height: 17px; color: #fff4f2; text-transform: uppercase; }
+#away-players .stats-hero-name { left: 7px; }
+/* Values: right of the labels baked into bg-stats.png (labels x 26–84, rows
+   centred y 62 / 108 / 150); 66px column, font shrinks to fit (fitStats) */
+.stats-rate-value { position: absolute; right: 8px; width: 66px; height: 40px; text-align: right; white-space: nowrap;
+  font-family: 'KIC2025', sans-serif; font-weight: 700; font-size: 40px; color: #fff4f2; line-height: 40px; }
+.stats-rate-value.r0 { top: 42px; }
+.stats-rate-value.r1 { top: 88px; }
+.stats-rate-value.r2 { top: 130px; }
 
-.player-front { position: absolute; top: 0; left: 0; width: 165px; height: 225px; z-index: 3; }
-#away-players .player-front { transform: scaleX(-1); }
+/* Gradients live on their own layers (never swapped):
+     .player-front = pick-front.png (orange) over the player photo — z 1, after the photo in the DOM
+     .hero-front   = standby-front.png (dark) inside .hero-pick, over the hero art — so the matte
+                     reveal brings the hero AND its dark fade in together over the player + orange. */
+.player-front { position: absolute; top: 0; left: 0; width: 165px; height: 225px; z-index: 1; }
+.hero-front { position: absolute; top: 0; left: 0; width: 165px; height: 225px; }
+#away-players .player-front, #away-players .hero-front { transform: scaleX(-1); }
 
 .player-name {
   position: absolute; bottom: 8px; width: 100%; left: 0; padding: 0 6px; box-sizing: border-box; text-align: center;
@@ -102,6 +129,10 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
    Top layer; only the active one is visible. */
 .turn-bar, .turn-timer { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 40; pointer-events: none; opacity: 0; transition: opacity 0.25s ease; }
 .turn-bar.on, .turn-timer.on { opacity: 1; }
+/* The timer art (countdown + arrows + BANNING/PICKING, all baked into the video) reaches
+   x 854–1065 at full size, 4–5 px from the badge's orange edges (x 850 / 1070). Shrink the
+   whole video to 90% around the centre of its content so the arrows clear the orange (~15 px). */
+.turn-timer { transform: scale(0.9); transform-origin: 960px 1027px; }
 #front-overlay.draft-done .turn-bar, #front-overlay.draft-done .turn-timer { opacity: 0; }
 
 /* The animated timer videos replace the HTML countdown/arrows/label; those

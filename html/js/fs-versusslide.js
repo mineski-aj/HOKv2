@@ -70,7 +70,7 @@ var VersusSlide = (function () {
       hokSetText($('vsl-abbr-' + s), team.abbr || '');
       hokSetText($('vsl-score-' + s), team.score || 0);
       setChain($('vsl-logo-' + s), team.abbr ? [hokLogo(team.abbr)] : []);
-      setChain($('vsl-flag-' + s), team.abbr ? [hokAsset('images/flags/' + team.abbr + '.png')] : []);
+      setChain($('vsl-flag-' + s), team.country ? [hokAsset('images/flags/' + team.country + '.png')] : []);
       var players = team.players || [];
       for (var i = 0; i < 5; i++) fillCard('vsl-' + s + i, players[i]);
     });

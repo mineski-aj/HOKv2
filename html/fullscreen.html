@@ -9,7 +9,7 @@
        ?preview=1 (dashboard iframes) ignores real show/hide and follows only
        window.previewTrigger(event, action).
 
-       SHARED layer (background video, match header, stand-in ticker) is NOT
+       SHARED layer (background video, match header) is NOT
        part of any scene: it stays up while switching scenes, so only each
        scene's own elements fade. See FsShared below.
 
@@ -145,7 +145,7 @@
       <div id="h2h-vtag"><span class="vsl-vtext">HONOR OF KINGS NATION CLASH</span><span class="vsl-chevs"><i style="--n:0"></i><i style="--n:0"></i><i style="--n:1"></i><i style="--n:1"></i><i style="--n:2"></i><i style="--n:2"></i></span></div>
     </div>
 
-    <!-- ═══ SHARED: match header, game info, stand-in ticker (above the scenes) ═══ -->
+    <!-- ═══ SHARED: match header, game info (above the scenes) ═══ -->
     <div id="fs-header">
       <div class="fs-result" id="fs-result-l"></div>
       <img class="fs-flag" id="fs-flag-l" alt="">
@@ -172,12 +172,11 @@
       <div id="fs-match"></div>
       <div id="fs-mseries"></div>
     </div>
-    <div id="fs-ticker"><div id="fs-ticker-track"></div></div>
   </div>
 
   <script>
-  /* FsShared — the layer every scene shares (background video, match header,
-     stand-in ticker). Seamless scene changes:
+  /* FsShared — the layer every scene shares (background video, match header).
+     Seamless scene changes:
        scene.show(): FsShared.claim(name) right away (cancels a pending
                      release, so nothing shared fades), then
                      FsShared.reveal(name, data) once its content is ready
@@ -190,14 +189,10 @@
   var FsShared = (function () {
     var SRC = '/assets/webm/FHD_BG_LOOP_RT.webm';
     var RELEASE_MS = 300;
-    var TICKER_TEXT = 'HONOR OF KINGS <b>NATION CLASH</b> 2026 &nbsp;///';
     var $ = function (id) { return document.getElementById(id); };
-    var v = $('fs-bg-video'), header = $('fs-header'), ticker = $('fs-ticker'), gameinfo = $('fs-gameinfo'), matchinfo = $('fs-matchinfo');
+    var v = $('fs-bg-video'), header = $('fs-header'), gameinfo = $('fs-gameinfo'), matchinfo = $('fs-matchinfo');
     var enabled = true, visible = false, claims = {}, releaseTimer = null, pauseTimer = null;
 
-    var spans = '';
-    for (var n = 0; n < 8; n++) spans += '<span>' + TICKER_TEXT + '</span>';
-    $('fs-ticker-track').innerHTML = spans + spans; // two copies → seamless -50% loop
 
     function render() {
       document.documentElement.classList.toggle('fs-bg-on', enabled);
@@ -206,7 +201,6 @@
       header.classList.toggle('fs-own', wants('ownHeader'));   // scene draws its own header (year stays)
       gameinfo.classList.toggle('on', visible && wants('gameInfo'));
       matchinfo.classList.toggle('on', visible && wants('matchInfo'));
-      ticker.classList.toggle('on', visible && !enabled);
       clearTimeout(pauseTimer);
       if (visible && enabled) {
         if (!v.getAttribute('src')) v.src = SRC;
@@ -233,7 +227,8 @@
         hokSetText($('fs-result-' + s), team.result || '');
         $('fs-result-' + s).classList.toggle('defeat', team.result === 'DEFEAT');
         if (team.abbr) setLogo($('fs-logo-' + s), hokLogo(team.abbr));
-        if (team.abbr) setLogo($('fs-flag-' + s), hokAsset('images/flags/' + team.abbr + '.png'));   // hidden until flag art exists
+        if (team.country) setLogo($('fs-flag-' + s), hokAsset('images/flags/' + team.country + '.png'));   // flags/<COUNTRY>.png
+        else $('fs-flag-' + s).style.visibility = 'hidden';
         hokSetText($('fs-abbr-' + s), team.abbr || '');
         hokSetText($('fs-score-' + s), team.score || 0);
       });

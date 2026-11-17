@@ -46,10 +46,15 @@
 .h2h-plate { width: 428px; height: 86px; background: url('/assets/images/head_to_head/h2h_nameplate.png') 0 0 / 100% 100% no-repeat; }
 #h2h-plate-h { left: 176px;  top: 772px; }
 #h2h-plate-a { left: 1330px; top: 772px; }
-.h2h-plate > * { position: absolute; }
-.h2h-flag { left: 26px; top: 40px; width: 30px; height: 20px; object-fit: cover; }
-.h2h-logo { left: 64px; top: 22px; width: 48px; height: 48px; object-fit: contain; }
-.h2h-pname { left: 119px; top: 26px; width: 272px; height: 36px; overflow: hidden; }
+.h2h-plate { display: flex; align-items: center; justify-content: center; gap: 10px; box-sizing: border-box;
+  padding: 21px 52px 10px 24px; }   /* content box = the plate's blue band (x 24–376, y 21–76) → group centred on it */
+.h2h-plate > * { position: static; flex: none; }
+/* Plate's blue band = y 21–76 (centre 48.5); its left edge slants (x 34 at the top → x 14 at
+   the bottom) and the right edge ends ~x 368. Flag / logo / name are centred on y 48.5 and
+   kept inside the blue. */
+.h2h-flag { width: 30px; height: 21px; object-fit: contain; }   /* 3:2 (CN, ID) and 2:1 (MY, PH) flags, never cropped */
+.h2h-logo { width: 43px; height: 43px; object-fit: contain; }
+.h2h-pname { max-width: 240px; height: 36px; overflow: hidden; padding-top: 10px; box-sizing: content-box; }   /* padding: Radikal caps sit high in their line box → caps centred on the band (measured) */
 .h2h-pname span { display: inline-block; white-space: nowrap; transform-origin: left center;
   font-family: 'Radikal', sans-serif; font-weight: 500; font-size: 31px; line-height: 36px; color: #ffffff; text-transform: uppercase; }
 
