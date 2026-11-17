@@ -1,6 +1,7 @@
 @echo off
-title HOK API Dashboard Server
+title HOK Overlay Server v2
+chcp 65001 >nul
 cd /d "%~dp0"
-if not exist "node_modules" ( npm install express axios cors dotenv )
+if not exist "node_modules" ( npm install )
 node server.js
 pause

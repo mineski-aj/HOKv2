@@ -5,43 +5,43 @@
     "battle_id": "1793546455_252_169279768",
     "ob_open_id": "14721625020824982866",
     "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJRHnuFOLhp3Mtdn39WTnt5kdgtK3V0eIANo1-FQtRgauqwr7ucDj16NLctODpDLNS6WEDnODnsW_B/pub?output=csv",
-    "team_1_abbr": "DMT",
-    "team_1_score": 0,
+    "team_1_abbr": "KAGE",
+    "team_1_score": 2,
     "team_1_players": [
+        "KAGE.Saule",
+        "KAGE.Fei",
+        "KAGE.Senkooo",
+        "KAGE.Zaan",
+        "KAGE.Lu"
+    ],
+    "team_2_abbr": "DMT",
+    "team_2_score": 1,
+    "team_2_players": [
         "DMT.Tufz",
         "DMT.Cy",
         "DMT.JerL",
         "DMT.Clean",
         "DMT.eL"
     ],
-    "team_2_abbr": "OG",
-    "team_2_score": 0,
-    "team_2_players": [
-        "OG.Jon",
-        "OG.DaoDao",
-        "OG.FlyArthur",
-        "OG.Ahem",
-        "OG.663"
-    ],
     "draft_phase_text": "PLAYOFF",
     "draft_match_text": "BEST OF 7",
     "draft_mode": "MANUAL",
     "home_ban_override": [
-        106,
-        112,
+        509,
+        585,
         0,
         0
     ],
     "away_ban_override": [
-        107,
-        141,
+        0,
+        0,
         0,
         0
     ],
     "home_role_swap": [
-        142,
-        0,
-        0,
+        124,
+        585,
+        583,
         0,
         0
     ],
@@ -53,21 +53,21 @@
         0
     ],
     "team_1_uids": [
+        "15386513400443639771",
+        "571451020912618902",
+        "17145562027324768716",
+        "13473981453798442148",
+        "10028229355941122752"
+    ],
+    "team_2_uids": [
         "17350073008320665752",
         "12650574915437443102",
         "6889871781961395133",
         "17952029454513194406",
         "5919703914464565561"
     ],
-    "team_2_uids": [
-        "7795320944357289237",
-        "10033086545591072431",
-        "17382932645564261202",
-        "10227822632546805396",
-        "1522718909899208750"
-    ],
-    "last_updated": 1794843416117,
-    "draft_hide_pick": false,
+    "last_updated": 1794879922549,
+    "draft_hide_pick": true,
     "comp_url": "",
     "draft_first_pick": "AWAY",
     "draft_led_home": "OG",
@@ -113,5 +113,9 @@
     "season_ids": "MKL2026Spring",
     "datacenter_url": "https://hok-esports.playerinfinite.com",
     "dc_app_id": "hok-thirdparty-met",
-    "dc_app_secret": "12b9233212fb476b4b6b438343a9d5d2234baddc"
+    "dc_app_secret": "12b9233212fb476b4b6b438343a9d5d2234baddc",
+    "fullscreen_bg_off": false,
+    "match_best_of": 3,
+    "match_stage": "GROUP STAGE",
+    "match_day": 1
 }
