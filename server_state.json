@@ -8,7 +8,7 @@
     "team_1_abbr": "KAGE",
     "team_1_score": 2,
     "team_1_players": [
-        "KAGE.Saule",
+        "KAGE.Wiraww",
         "KAGE.Fei",
         "KAGE.Senkooo",
         "KAGE.Zaan",
@@ -27,33 +27,33 @@
     "draft_match_text": "BEST OF 7",
     "draft_mode": "MANUAL",
     "home_ban_override": [
-        105,
-        111,
+        108,
+        113,
         0,
         0
     ],
     "away_ban_override": [
-        105,
-        154,
+        112,
+        107,
         0,
         0
     ],
     "home_role_swap": [
-        170,
+        192,
         0,
         0,
         0,
         0
     ],
     "away_role_swap": [
-        502,
-        585,
+        0,
+        0,
         0,
         0,
         0
     ],
     "team_1_uids": [
-        "15386513400443639771",
+        "15127817982839932518",
         "571451020912618902",
         "17145562027324768716",
         "13473981453798442148",
@@ -66,7 +66,7 @@
         "17952029454513194406",
         "5919703914464565561"
     ],
-    "last_updated": 1794885424365,
+    "last_updated": 1794896943726,
     "draft_hide_pick": true,
     "comp_url": "",
     "draft_first_pick": "AWAY",
@@ -117,5 +117,6 @@
     "fullscreen_bg_off": true,
     "match_best_of": 3,
     "match_stage": "GROUP STAGE",
-    "match_day": 1
+    "match_day": 1,
+    "match_number": 1
 }
