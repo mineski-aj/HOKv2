@@ -22,7 +22,11 @@ html, body { margin: 0; background: transparent; overflow: hidden; }
 /* rows */
 .mc-hero { position: absolute; left: 119px; width: 176px; height: 156px; overflow: hidden; background: #0d1f66; }
 .mc-hero.empty { background: #fe6001; }
-.mc-hero img { position: absolute; left: 0; top: 0; width: 176px; height: 156px; object-fit: cover; object-position: 50% 20%; }  /* 128x128 KOTAK scaled to 176 wide, ~20 px cropped off the height */
+.mc-hero img { position: absolute; left: 0; top: 0; width: 176px; height: 156px; object-fit: cover; object-position: 50% 20%; }
+/* FHD splash (16:9), zoomed out so the face stays clear of the 2-line hero name at the bottom; a shade under the name keeps it readable */
+.mc-hero img[src*='_FHD'] { left: -43px; top: 0; width: 262px; height: 147px; object-fit: fill; }
+.mc-hero::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 58px; background: linear-gradient(to top, rgba(8,16,60,0.92), rgba(8,16,60,0)); z-index: 1; pointer-events: none; }
+.mc-hero.empty::after { display: none; }  /* 128x128 KOTAK scaled to 176 wide, ~20 px cropped off the height */
 .mc-hname { position: absolute; left: 119px; width: 176px; text-align: center; z-index: 6; line-height: 22px;
   font-family: 'Radikal', sans-serif; font-weight: 700; font-size: 19.5px; color: #fff; text-transform: uppercase; white-space: pre-line; text-shadow: 0 1px 4px rgba(0,0,0,0.85); transform-origin: center bottom; }
 /* bottom-anchored (set by JS): a one-line name sits centred at cell y +142, a long one ("FLOWBORN (ASSASSIN)" → two lines) grows upward */

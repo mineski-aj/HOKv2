@@ -65,14 +65,14 @@
     hokSetText($('mc-team'), t.fullName || t.abbr || '');
     hokSetText($('mc-stage'), d.stageText || '');
     hokSetText($('mc-match'), d.matchLine || '');
-    setChain($('mc-logo'), t.abbr ? [hokLogo(t.abbr)] : []);
+    setChain($('mc-logo'), t.abbr ? [hokAsset('images/logo/' + t.abbr + '.png')] : []);
     setChain($('mc-flag'), t.country ? [hokAsset('images/flags/' + t.country + '.png')] : []);
     var players = t.players || [];
     for (var i = 0; i < 5; i++) {
       var p = players[i] || {}, name = p.name || '';
       var hero = $('mc-hero-' + i);
       hero.classList.toggle('empty', !p.heroId);
-      setChain($('mc-heroimg-' + i), p.heroId ? [hokAsset('hero/square/' + p.heroId + '_KOTAK.png'), hokAsset('hero/draftpick/' + p.heroId + '_TINGGI.png')] : []);
+      setChain($('mc-heroimg-' + i), p.heroId ? [hokAsset('hero/full/' + p.heroId + '_FHD.png'), hokAsset('hero/square/' + p.heroId + '_KOTAK.png'), hokAsset('hero/draftpick/' + p.heroId + '_TINGGI.png')] : []);
       hokSetText($('mc-hname-' + i), (p.heroName || '').replace(/\s*\(([^)]*)\)\s*/, '\n$1'));   // "Flowborn (Assassin)" → two lines
       hokSetText($('mc-pname-' + i), name);
       var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
