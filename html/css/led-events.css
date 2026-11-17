@@ -8,29 +8,32 @@ html, body { margin: 0; background: transparent; overflow: hidden; }
 #le-home { top: 0; }
 #le-away { top: 349.0909px; }
 
-/* Hero + flat colour blocks live in .le-inner so the matte-out mask and the impact shake don't fight */
+/* The hero is revealed by MATTE 6 and wiped away by MATTE 2 (played in reverse). Both mattes are always attached as two
+   mask layers (multiplied), so both 700 KB strips are loaded long before they play; each layer rests on its fully
+   opaque last frame, except the reveal layer which rests on its empty first frame until a pick starts. */
 .le-inner { position: absolute; inset: 0;
-  -webkit-mask-size: 100% 4600%; mask-size: 100% 4600%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: 0 100%; mask-position: 0 100%; }   /* last frame = fully opaque */
+  -webkit-mask-size: 100% 4100%, 100% 4600%; mask-size: 100% 4100%, 100% 4600%;
+  -webkit-mask-repeat: no-repeat, no-repeat; mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+  -webkit-mask-position: 0 0, 0 100%; mask-position: 0 0, 0 100%; }
+/* HOME uses the mirrored strips (_R), AWAY the originals (_L) — same pairing as Draft Pick. */
+#le-home .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_in_R.png'), url('/assets/images/led-events/led_matte_R.png'); mask-image: url('/assets/images/led-events/led_in_R.png'), url('/assets/images/led-events/led_matte_R.png'); }
+#le-away .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_in_L.png'), url('/assets/images/led-events/led_matte_L.png'); mask-image: url('/assets/images/led-events/led_in_L.png'), url('/assets/images/led-events/led_matte_L.png'); }
 /* full 1920x1080 splash covering the 1408x256 table: shows a horizontal band; object-position picks which one (25% = about head and chest) */
-.le-hero { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; opacity: 0; }
-/* flat colour sweeps (no gradients, no shine) over the hero on the way in */
-.le-bar { position: absolute; top: -10%; height: 120%; width: 38%; left: 0; opacity: 0; }
-.le-bar.o { background: #ff5f00; }
-.le-bar.c { background: #3dd5f5; }
-.le-bar.y { background: #ffd23a; }
-/* edge pulse on landing */
-.le-edge { position: absolute; inset: 0; box-shadow: inset 0 0 0 8px #ff5f00; opacity: 0; pointer-events: none; }
+/* .le-shake is slightly oversized so shaking the image never exposes the table edge */
+.le-shake { position: absolute; inset: -14px; }
+.le-hero { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
 
-/* Matte out (MATTE 2.mov → assets/images/led-events/led_matte_L|R.png: 46 mask frames, 960x175, stacked,
-   the whole 16:9 matte squashed to the table shape). HOME uses _R, AWAY _L (same pairing as Draft Pick).
-   Played in reverse: opaque → empty. */
-/* The mask is ALWAYS applied (resting on its fully opaque last frame) so the 700 KB strip is loaded long before the matte-out; attaching it only when the out starts popped/flickered. */
-#le-home .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_matte_R.png'); mask-image: url('/assets/images/led-events/led_matte_R.png'); }
-#le-away .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_matte_L.png'); mask-image: url('/assets/images/led-events/led_matte_L.png'); }
+/* IN = MATTE 6 (41 frames @ 30 fps, 1.35 s): empty -> opaque. OUT = MATTE 2 reversed (46 frames, 1.5 s): opaque -> empty. */
+.le-inner.in  { animation: leMatteIn 1.35s steps(40, end) forwards; }
 .le-inner.out { animation: leMatteOut 1.5s steps(45, end) forwards; }
+@keyframes leMatteIn {
+  from { -webkit-mask-position: 0 0, 0 100%;    mask-position: 0 0, 0 100%; }
+  to   { -webkit-mask-position: 0 100%, 0 100%; mask-position: 0 100%, 0 100%; }
+}
 @keyframes leMatteOut {
-  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
-  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
+  from { -webkit-mask-position: 0 100%, 0 100%; mask-position: 0 100%, 0 100%; }
+  to   { -webkit-mask-position: 0 100%, 0 0;    mask-position: 0 100%, 0 0; }
 }
 
 /* Crop guide: top layer, off by default (state key ledevents_guide). Flat outlines only. */

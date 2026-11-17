@@ -1,23 +1,21 @@
 // html/js/led-events.js — LED Events. Always live.
 // Synced with Draft Pick: data = GET /api/versus-slide (same hero rule as Draft Pick: dashboard
 // role-swap override once the draft is complete / MANUAL, else the camp's i-th pick), re-read at most
-// once a second. A hero that ENTERS a side's picked set plays across that side's WHOLE LED table: flat colour sweeps + hero slam-in ->
+// once a second. A hero that ENTERS a side's picked set plays across that side's WHOLE LED table: MATTE 6 reveal ->
 // hold ~2 s -> matte out (reverse of MATTE 2.mov). The first read after load is a baseline (a reload
 // mid-draft stays silent); swaps/reorders never replay. No show/hide.
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var HOLD_MS = 2000;               // time the hero stays after it has landed
-  var IN_MS = 770;                  // longest in-animation end (delay + duration)
+  var IN_MS = 1000;                 // MATTE 6 is fully open at ~0.75 s; the hold starts here
+  var ZOOM_TO = 1.1;                // slow push-in over the hero's whole time on screen
+  var SHAKE_AT_MS = 800;            // small shake as the MATTE 6 reveal completes
   var OUT_MS = 1500;                // matte-out length (46 frames @ 30 fps)
   var SAMPLE_HEROES = [142, 141, 111, 119, 521, 547];
-  var LOOK = ['y', 'c', 'o'];       // sweep bars: yellow, cyan, orange (flat brand colours)
 
   (function build() {
     ['home', 'away'].forEach(function (side) {
-      $('le-' + side).innerHTML = '<div class="le-inner" id="' + side + '-inner">' +
-        '<img class="le-hero" id="' + side + '-hero" alt="">' +
-        LOOK.map(function (k) { return '<div class="le-bar ' + k + '"></div>'; }).join('') +
-        '<div class="le-edge"></div></div>';
+      $('le-' + side).innerHTML = '<div class="le-inner" id="' + side + '-inner"><div class="le-shake" id="' + side + '-shake"><img class="le-hero" id="' + side + '-hero" alt=""></div></div>';
     });
   })();
 
@@ -26,56 +24,59 @@
   function decoded(img, ms) {
     return Promise.race([img.decode ? img.decode().catch(function () {}) : Promise.resolve(), new Promise(function (r) { setTimeout(r, ms); })]);
   }
-  function anim(el, frames, opts) {
-    try { return el.animate(frames, Object.assign({ fill: 'both' }, opts)); } catch (e) { return null; }
-  }
 
-  // The hero's FHD art spans the whole LED table of that side.
-  function play(side, heroId) {
-    var table = $('le-' + side), inner = $(side + '-inner'), img = $(side + '-hero');
+  // The hero's FHD art spans the whole LED table of that side: revealed by MATTE 6, held, wiped by MATTE 2 (reversed).
+  function play(side, heroId, done) {
+    var table = $('le-' + side), inner = $(side + '-inner'), shake = $(side + '-shake'), img = $(side + '-hero');
     var my = (tokens[side] = (tokens[side] || 0) + 1);
-    inner.getAnimations({ subtree: true }).forEach(function (a) { a.cancel(); });
-    inner.classList.remove('out');
+    inner.getAnimations().forEach(function (a) { a.cancel(); });
+    shake.getAnimations().forEach(function (a) { a.cancel(); });
+    img.getAnimations().forEach(function (a) { a.cancel(); });
+    inner.classList.remove('in', 'out');
     table.classList.remove('on');
     img.src = hokAsset('hero/full/' + heroId + '_FHD.png');
     decoded(img, 200).then(function () {
       if (tokens[side] !== my) return;
+      void inner.offsetWidth;                 // restart the mask animation from its first frame
+      inner.classList.add('in');
       table.classList.add('on');
-      void table.offsetWidth;
-      var bars = inner.querySelectorAll('.le-bar');
-      // flat colour blocks sweep left -> right across the table, 70 ms apart
-      for (var b = 0; b < bars.length; b++) {
-        anim(bars[b], [
-          { transform: 'translateX(-120%) skewX(-18deg)', opacity: 1 },
-          { transform: 'translateX(310%) skewX(-18deg)', opacity: 1 },
-        ], { duration: 600, delay: b * 70, easing: 'cubic-bezier(.6,0,.3,1)' });
-      }
-      // hero lands from a big, skewed, blurred start (overshoots a touch, then settles)
-      anim(img, [
-        { opacity: 0, transform: 'translateX(-60px) scale(1.3) skewX(7deg)', filter: 'blur(7px)', offset: 0 },
-        { opacity: 1, filter: 'blur(0px)', offset: 0.34 },
-        { opacity: 1, transform: 'translateX(6px) scale(0.975) skewX(-1deg)', filter: 'blur(0px)', offset: 0.74 },
-        { opacity: 1, transform: 'translateX(0) scale(1) skewX(0)', filter: 'blur(0px)', offset: 1 },
-      ], { duration: 650, delay: 120, easing: 'cubic-bezier(.16,1,.3,1)' });
-      // impact: short shake + edge pulse as it lands
-      anim(inner.querySelector('.le-edge'), [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }, { opacity: 0.75 }, { opacity: 0 }], { duration: 560, delay: 330 });
-      anim(inner, [
-        { transform: 'translate(0,0)' }, { transform: 'translate(-9px,4px)' }, { transform: 'translate(7px,-4px)' },
-        { transform: 'translate(-4px,2px)' }, { transform: 'translate(0,0)' },
-      ], { duration: 280, delay: 400 });
-      // hold, then matte out
-      setTimeout(function () {
+      // Not-still: a slow push-in on the hero for its whole time on screen (reveal + hold + wipe),
+      // and one small shake as the reveal completes.
+      try {
+        img.animate([{ transform: 'scale(1)' }, { transform: 'scale(' + ZOOM_TO + ')' }], { duration: IN_MS + HOLD_MS + OUT_MS, easing: 'linear', fill: 'both' });
+        shake.animate([   // shakes the IMAGE only (its wrapper), never the table / matte
+          { transform: 'translate(0,0)' }, { transform: 'translate(-7px,3px)' }, { transform: 'translate(6px,-4px)' },
+          { transform: 'translate(-4px,2px)' }, { transform: 'translate(2px,-1px)' }, { transform: 'translate(0,0)' },
+        ], { duration: 360, delay: SHAKE_AT_MS, easing: 'ease-out', fill: 'both' });
+      } catch (e) {}
+      setTimeout(function () {                // hold, then matte out
         if (tokens[side] !== my) return;
-        inner.getAnimations().forEach(function (a) { a.cancel(); });
+        inner.classList.remove('in');
         inner.classList.add('out');
         setTimeout(function () {
           if (tokens[side] !== my) return;
           table.classList.remove('on');
           inner.classList.remove('out');
-          inner.getAnimations({ subtree: true }).forEach(function (a) { a.cancel(); });
+          inner.getAnimations().forEach(function (a) { a.cancel(); });
+          shake.getAnimations().forEach(function (a) { a.cancel(); });
+          img.getAnimations().forEach(function (a) { a.cancel(); });
+          if (done) done();
         }, OUT_MS + 60);
       }, IN_MS + HOLD_MS);
     });
+  }
+
+  // ── Queue: one hero at a time per LED table. Two picks at once (same side) play one after the other. ──
+  var queue = { home: [], away: [] }, running = { home: false, away: false };
+  function next(side) {
+    var h = queue[side].shift();
+    if (!h) { running[side] = false; return; }
+    running[side] = true;
+    play(side, h, function () { next(side); });
+  }
+  function enqueue(side, heroId) {
+    if (queue[side].indexOf(heroId) < 0) queue[side].push(heroId);
+    if (!running[side]) next(side);
   }
 
   // ── Draft sync ──
@@ -91,11 +92,16 @@
         if (h) cur[t[0]][h] = true;
       });
     });
-    if (prev) {
-      ['home', 'away'].forEach(function (side) {
-        heroes[side].forEach(function (h, i) { if (h && !prev[side][h]) play(side, h); });
+    // A hero only counts as NEW if it hasn't been in the set for GONE_MS. A single bad read (file mid-write,
+    // a slot briefly empty) used to drop a hero and then "re-pick" it on the next read = the animation replayed.
+    var now = Date.now();
+    ['home', 'away'].forEach(function (side) {
+      heroes[side].forEach(function (h) {
+        if (!h) return;
+        if (prev && !(now - (seen[side][h] || 0) < GONE_MS)) enqueue(side, h);
+        seen[side][h] = now;
       });
-    }
+    });
     // warm the cache for heroes already in the draft; and for every NEW hero the 2.4 MB FHD is the slowest part
     ['home', 'away'].forEach(function (side) { heroes[side].forEach(function (h) { if (h && !warm[h]) { warm[h] = new Image(); warm[h].src = hokAsset('hero/full/' + h + '_FHD.png'); } }); });
     prev = cur;
@@ -123,6 +129,6 @@
   window.previewTrigger = function (event, action) {
     if (event !== 'ledpick') return;
     var p = String(action || '').split(':'), side = p[0] === 'away' ? 'away' : 'home', i = Math.max(0, Math.min(4, parseInt(p[1], 10) || 0));
-    play(side, SAMPLE_HEROES[(i + (side === 'away' ? 1 : 0)) % SAMPLE_HEROES.length]);
+    enqueue(side, SAMPLE_HEROES[(i + (side === 'away' ? 1 : 0)) % SAMPLE_HEROES.length]);
   };
 })();
