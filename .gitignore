@@ -1,0 +1,8 @@
+# Live state written while the server runs (don't commit)
+server_state.json
+data/ban_pick_list.json
+data/battle_detail.json
+data/event_list.json
+data/player_list.json
+data/player_panel.json
+data/team_list.json
