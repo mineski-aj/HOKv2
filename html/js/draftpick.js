@@ -107,7 +107,7 @@
   // CSV "Hero" column are listed here by hero id.
   var VOICE_FILE = {
     119: 'Dr. Bian', 146: 'luna', 168: 'lapulapu', 152: 'Princess Frost', 153: 'Prince of Lanling',
-    163: 'Ukyo', 519: 'Loong', 581: 'Flowborn Tank', 582: 'Flowborn Mage', 583: 'YuanLiuAssassin',
+    163: 'Ukyo', 519: 'Loong', 581: 'Flowborn Tank', 582: 'Flowborn Mage', 583: 'Flowborn Assassin',
     584: 'Flowborn Marksman', 585: 'Flowborn Roamer'
   };
   function playHeroVoice(id) {
