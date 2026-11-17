@@ -4,69 +4,69 @@
     "base_url": "https://hok-sg-match.playerinfinite.com",
     "battle_id": "1793546455_252_169279768",
     "ob_open_id": "14721625020824982866",
-    "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJRHnuFOLhp3Mtdn39WTnt5kdgtK3V0eIANo1-FQtRgauqwr7ucDj16NLctODpDLNS6WEDnODnsW_B/pub?output=csv",
-    "team_1_abbr": "KAGE",
+    "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpr1b8fm3AT5v-cE9fTIt99-u48u3u7RgJuhsOxItvYl83TXLzTf6aMVRBgWiz2VvWlQsawlTYv5ol/pub?output=csv",
+    "team_1_abbr": "AURA",
     "team_1_score": 2,
     "team_1_players": [
-        "KAGE.Wiraww",
-        "KAGE.Fei",
-        "KAGE.Senkooo",
-        "KAGE.Zaan",
-        "KAGE.Lu"
+        "AURA.Zhihong",
+        "AURA.Siang",
+        "AURA.Yulong",
+        "AURA.JR",
+        "AURA.Saber"
     ],
-    "team_2_abbr": "DMT",
+    "team_2_abbr": "GKE",
     "team_2_score": 1,
     "team_2_players": [
-        "DMT.Tufz",
-        "DMT.Cy",
-        "DMT.JerL",
-        "DMT.Clean",
-        "DMT.eL"
+        "GKE.Guiyu",
+        "GKE.MusangKing",
+        "GKE.Shisan",
+        "GKE.Jem",
+        "GKE.Zhe"
     ],
     "draft_phase_text": "PLAYOFF",
     "draft_match_text": "BEST OF 7",
     "draft_mode": "MANUAL",
     "home_ban_override": [
-        108,
-        113,
+        0,
+        0,
         0,
         0
     ],
     "away_ban_override": [
-        112,
-        107,
+        0,
+        0,
         0,
         0
     ],
     "home_role_swap": [
-        192,
-        0,
-        0,
+        106,
+        153,
+        107,
         0,
         0
     ],
     "away_role_swap": [
-        0,
+        105,
         0,
         0,
         0,
         0
     ],
     "team_1_uids": [
-        "15127817982839932518",
-        "571451020912618902",
-        "17145562027324768716",
-        "13473981453798442148",
-        "10028229355941122752"
+        "14998166475188484557",
+        "3619810578627570848",
+        "15039408517097589709",
+        "6011818928594230244",
+        "6175966467583506455"
     ],
     "team_2_uids": [
-        "17350073008320665752",
-        "12650574915437443102",
-        "6889871781961395133",
-        "17952029454513194406",
-        "5919703914464565561"
+        "4191853978952190311",
+        "13695787710442909268",
+        "3878011476585090515",
+        "7567735765784506146",
+        "4711836779651504031"
     ],
-    "last_updated": 1794896943726,
+    "last_updated": 1794927031981,
     "draft_hide_pick": true,
     "comp_url": "",
     "draft_first_pick": "AWAY",
@@ -116,7 +116,18 @@
     "dc_app_secret": "12b9233212fb476b4b6b438343a9d5d2234baddc",
     "fullscreen_bg_off": true,
     "match_best_of": 3,
-    "match_stage": "GROUP STAGE",
+    "match_stage": "KNOCKOUTS",
     "match_day": 1,
-    "match_number": 1
+    "match_number": 1,
+    "ledevents_swap": true,
+    "team_countries": {
+        "DMT": "ID",
+        "KAGE": "ID",
+        "HERO": "CN",
+        "RW": "CN",
+        "GKE": "MY",
+        "AURA": "MY",
+        "BOOM": "PH",
+        "JGE": "PH"
+    }
 }
