@@ -1,0 +1,34 @@
+/* LED Events (1920x1080, transparent). Each LED player table is 1408x256 in its own coordinates and
+   scaled 1920/1408 to the canvas width (349 px tall); HOME on top, AWAY directly below. A picked
+   hero's FHD art spans the WHOLE table (not one player slot). */
+html, body { margin: 0; background: transparent; overflow: hidden; }
+#le-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+.le-table { position: absolute; left: 0; width: 1408px; height: 256px; overflow: hidden; transform-origin: 0 0; transform: scale(1.363636); visibility: hidden; }
+.le-table.on { visibility: visible; }
+#le-home { top: 0; }
+#le-away { top: 349.0909px; }
+
+/* Hero + flat colour blocks live in .le-inner so the matte-out mask and the impact shake don't fight */
+.le-inner { position: absolute; inset: 0;
+  -webkit-mask-size: 100% 4600%; mask-size: 100% 4600%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: 0 100%; mask-position: 0 100%; }   /* last frame = fully opaque */
+/* full 1920x1080 splash covering the 1408x256 table: shows a horizontal band; object-position picks which one (25% = about head and chest) */
+.le-hero { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; opacity: 0; }
+/* flat colour sweeps (no gradients, no shine) over the hero on the way in */
+.le-bar { position: absolute; top: -10%; height: 120%; width: 38%; left: 0; opacity: 0; }
+.le-bar.o { background: #ff5f00; }
+.le-bar.c { background: #3dd5f5; }
+.le-bar.y { background: #ffd23a; }
+/* edge pulse on landing */
+.le-edge { position: absolute; inset: 0; box-shadow: inset 0 0 0 8px #ff5f00; opacity: 0; pointer-events: none; }
+
+/* Matte out (MATTE 2.mov → assets/images/led-events/led_matte_L|R.png: 46 mask frames, 960x175, stacked,
+   the whole 16:9 matte squashed to the table shape). HOME uses _R, AWAY _L (same pairing as Draft Pick).
+   Played in reverse: opaque → empty. */
+/* The mask is ALWAYS applied (resting on its fully opaque last frame) so the 700 KB strip is loaded long before the matte-out; attaching it only when the out starts popped/flickered. */
+#le-home .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_matte_R.png'); mask-image: url('/assets/images/led-events/led_matte_R.png'); }
+#le-away .le-inner { -webkit-mask-image: url('/assets/images/led-events/led_matte_L.png'); mask-image: url('/assets/images/led-events/led_matte_L.png'); }
+.le-inner.out { animation: leMatteOut 1.5s steps(45, end) forwards; }
+@keyframes leMatteOut {
+  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
+}

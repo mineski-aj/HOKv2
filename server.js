@@ -37,6 +37,7 @@ app.get('/overlay', page('overlay.html'));
 app.get('/draftpick', page('draftpick.html'));
 app.get('/draft-led', page('draft-led.html'));
 app.get('/fullscreen', page('fullscreen.html'));
+app.get('/led-events', page('led-events.html'));
 app.get(['/michcheck-home', '/michcheck-away'], page('michcheck.html'));
 
 app.use(require('./routes/overlay'));
@@ -55,6 +56,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`  In-Game     → ${u}/overlay`);
   console.log(`  Draft Pick  → ${u}/draftpick`);
   console.log(`  Draft LED   → ${u}/draft-led   (1764x1024)`);
+  console.log(`  LED Events  → ${u}/led-events`);
   console.log(`  Mic Check   → ${u}/michcheck-home | /michcheck-away   (always live)`);
   console.log(`  vMix Data   → ${u}/api/vmix-output`);
   console.log(`  Assets from → ${ASSETS_DIR}`);

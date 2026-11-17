@@ -1114,6 +1114,10 @@
       ],
     },
     {
+      // Always live, synced with Draft Pick: a picked hero animates into its slot, holds, matte-outs.
+      id: 'ledevents', name: 'LED Events', file: 'led-events.html', ledEventsTester: true,
+    },
+    {
       // Always live (no show/hide). Both pages share the swap; photo/background switches are per page.
       id: 'michcheck_home', name: 'Mic Check Home', file: 'michcheck.html?side=home', micCheck: 'home',
     },
@@ -1509,6 +1513,23 @@
     if (ov.postHexagonRoles) buildPostHexagonRoles(body);
     if (ov.headToHeadRoles) buildHeadToHeadRoles(body);
     if (ov.micCheck) buildMicCheckControls(body, ov);
+    if (ov.ledEventsTester) {
+      body.appendChild(el('div', 'features-label', 'Always live — follows Draft Pick (a pick spans the whole table, holds ~2 s, matte out)'));
+      body.appendChild(el('div', 'features-label', 'Pick animation test — ◈ preview only (1–5 = different sample heroes)'));
+      [['home', 'HOME table (top)'], ['away', 'AWAY table (bottom)']].forEach(function (t) {
+        var fr = el('div', 'feature-row');
+        fr.appendChild(el('div', 'feature-name', t[1]));
+        var g = el('div', 'feature-btns');
+        for (var k = 0; k < 5; k++) (function (k) {
+          g.appendChild(btn('◈ ' + (k + 1), 'btn-preview-live', function () { previewCall('ledpick', t[0] + ':' + k); }));
+        })(k);
+        fr.appendChild(g);
+        body.appendChild(fr);
+      });
+      var lh = el('div', 'hint', 'Tables are 1408x256 scaled to 1920 wide and stacked (HOME on top, AWAY below). The FHD art of a picked hero spans the whole table of its side. Real picks also play in the preview. Page URL: /led-events');
+      lh.style.margin = '0';
+      body.appendChild(lh);
+    }
 
     /* Utility */
     body.appendChild(el('div', 'divider'));

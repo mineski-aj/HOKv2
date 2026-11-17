@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK LED Events</title>
+  <!-- LED Events (1920x1080, transparent). The two LED player tables (each 1408x256, scaled to the
+       1920 canvas width) stacked: HOME table on top, AWAY table below. Empty by default.
+       In sync with Draft Pick: when a hero is picked, its FHD art animates in across that side's whole table,
+       holds ~2 s, then wipes out with the matte (MATTE 2.mov). Always live — no show/hide.
+       Dashboard: Control → LED Events (◈ test buttons). Page URL: /led-events -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/led-events.css">
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="le-page">
+    <div class="le-table" id="le-home"></div>
+    <div class="le-table" id="le-away"></div>
+  </div>
+  <script src="/html/js/led-events.js"></script>
+</body>
+</html>
