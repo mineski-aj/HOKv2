@@ -97,6 +97,12 @@ router.get('/api/post-hexagon', async (req, res) => {
 });
 router.get('/api/post-stats', (req, res) => noStore(res).json(postHexagon.build()));
 router.get('/api/post-items', (req, res) => noStore(res).json(postHexagon.build()));
+// Logo manifest (names in assets/images/logo and its LIGA/ subfolder) so pages can pick the best existing file without 404s.
+router.get('/api/logos', (req, res) => {
+  const fs = require('fs'), path = require('path'), dir = path.join(require('../lib/config').ASSETS_DIR, 'images', 'logo');
+  const list = (d, prefix) => { try { return fs.readdirSync(d).filter((f) => /\.png$/i.test(f)).map((f) => prefix + f); } catch (e) { return []; } };
+  noStore(res).json({ files: list(dir, '').concat(list(path.join(dir, 'LIGA'), 'LIGA/')) });
+});
 router.get('/api/michcheck', (req, res) => noStore(res).json(require('../lib/micCheck').build(req.query.side)));
 router.get('/api/versus-slide', (req, res) => noStore(res).json(require('../lib/versusSlide').build({ draftOnly: req.query.draftOnly === '1' })));
 router.get('/api/post-gold-graph', (req, res) => noStore(res).json(require('../lib/postGoldGraph').build()));

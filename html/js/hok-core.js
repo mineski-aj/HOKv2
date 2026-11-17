@@ -8,7 +8,34 @@
 var HOK_PREVIEW = /[?&]preview=1(?:&|$)/.test(location.search);
 
 function hokAsset(p) { return '/assets/' + p.split('/').map(encodeURIComponent).join('/'); }
-function hokLogo(abbr)  { return hokAsset('images/logo/' + abbr + '.png'); }
+// Team logos. Default = the WHITE version (<ABBR>_2.png); Knockouts / Grand Finals (Match Board stage) use the
+// LIGA one (LIGA/<ABBR>.png). Anything missing falls back: LIGA -> white -> the original <ABBR>.png.
+// Which files exist comes from /api/logos (read once, synchronously, so the first logo is already right).
+var HOK_LOGO_FILES = null, HOK_LOGO_LIGA = false, HOK_LOGO_STAGE_AT = 0;
+(function () {
+  function sync(url) {
+    try { var x = new XMLHttpRequest(); x.open('GET', url, false); x.send(); return x.status === 200 ? JSON.parse(x.responseText) : null; } catch (e) { return null; }
+  }
+  var l = sync('/api/logos');
+  if (l && l.files) { HOK_LOGO_FILES = {}; l.files.forEach(function (f) { HOK_LOGO_FILES[f] = true; }); }
+})();
+function hokLogoStage(stage) {
+  HOK_LOGO_LIGA = /KNOCKOUT|GRAND\s*FINAL/i.test(stage || '');
+  HOK_LOGO_STAGE_AT = Date.now();
+}
+function hokLogo(abbr) {
+  // Pages without a state poll (fullscreen) re-read the stage here when it is stale (a show is rare, so a sync read is fine).
+  if (Date.now() - HOK_LOGO_STAGE_AT > 3000) {
+    HOK_LOGO_STAGE_AT = Date.now();
+    try { var x = new XMLHttpRequest(); x.open('GET', '/api/state', false); x.send(); if (x.status === 200) hokLogoStage(JSON.parse(x.responseText).match_stage); } catch (e) {}
+  }
+  var f = HOK_LOGO_FILES;
+  if (f) {
+    if (HOK_LOGO_LIGA && f['LIGA/' + abbr + '.png']) return hokAsset('images/logo/LIGA/' + abbr + '.png');
+    if (f[abbr + '_2.png']) return hokAsset('images/logo/' + abbr + '_2.png');
+  }
+  return hokAsset('images/logo/' + abbr + '.png');
+}
 function hokPhoto(name) { return hokAsset('images/photo/' + name + '.png'); }
 var HOK_DEFAULT_PHOTO = '/assets/images/photo/default.png';
 
@@ -48,6 +75,7 @@ var HokPoll = (function () {
     })).then(function (results) {
       var data = {};
       opts.sources.forEach(function (k, i) { data[k] = results[i] || last[k] || {}; if (results[i]) last[k] = results[i]; });
+      if (data.state && data.state.match_stage !== undefined) hokLogoStage(data.state.match_stage);   // keeps hokLogo's stage fresh
       handlers.forEach(function (fn) { try { fn(data); } catch (e) { console.error(e); } });
       if (!gotFirst) { gotFirst = true; readyFns.splice(0).forEach(function (fn) { try { fn(data); } catch (e) {} }); }
     }).finally(function () { busy = false; });
