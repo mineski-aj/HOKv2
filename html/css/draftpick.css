@@ -21,7 +21,9 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
 /* Team header (blue bar, y 771..846) */
 .hdr-abbr  { font-family: 'KIC2025', sans-serif; font-weight: 700; color: #ffffff; line-height: 1; white-space: nowrap; }
 .hdr-score { font-family: 'KIC2025', sans-serif; font-weight: 700; color: #ffffff; line-height: 1; transform: translateX(-50%); }
-.hdr-logo  { object-fit: contain; }
+.hdr-logo, .hdr-flag { object-fit: contain; }
+#home-flag  { left: 440px;  top: 796px; width: 42px; height: 28px; }
+#away-flag  { left: 1438px; top: 796px; width: 42px; height: 28px; }
 #home-logo  { left: 488px;  top: 781px; width: 57px; height: 57px; }
 #home-abbr  { left: 565px;  top: 782px; font-size: 56px; text-align: left; }
 #home-score { left: 722px;  top: 780px; font-size: 60px; }
@@ -127,6 +129,10 @@ html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hid
 /* Turn timer bar videos: full-frame transparent overlays (the bar is baked at
    y ~826..857, running outward from the centre badge along the orange line).
    Top layer; only the active one is visible. */
+#title-head { position: absolute; left: 740px; top: 730px; width: 440px; height: 180px; z-index: 37; pointer-events: none; }
+.turn-track { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 39; pointer-events: none; opacity: 0; transition: opacity 0.25s ease; }
+.turn-track.on { opacity: 1; }
+#front-overlay.draft-done .turn-track { opacity: 0; }
 .turn-bar, .turn-timer { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 40; pointer-events: none; opacity: 0; transition: opacity 0.25s ease; }
 .turn-bar.on, .turn-timer.on { opacity: 1; }
 /* The timer art (countdown + arrows + BANNING/PICKING, all baked into the video) reaches

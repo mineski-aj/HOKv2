@@ -1113,6 +1113,13 @@
         { name: 'Background Video (all scenes)', key: 'fsbg' },
       ],
     },
+    {
+      // Always live (no show/hide). Both pages share the swap; photo/background switches are per page.
+      id: 'michcheck_home', name: 'Mic Check Home', file: 'michcheck.html?side=home', micCheck: 'home',
+    },
+    {
+      id: 'michcheck_away', name: 'Mic Check Away', file: 'michcheck.html?side=away', micCheck: 'away',
+    },
   ];
 
   var layout = $('layout');
@@ -1180,7 +1187,7 @@
     buildControlBody(ov);
     $('preview-title').textContent = ov.name + ' — preview (local only, not on air)';
     $('preview-label').textContent = ov.file;
-    previewIframe.src = '/html/' + ov.file + '?t=' + Date.now() + '&preview=1';
+    previewIframe.src = '/html/' + ov.file + (ov.file.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now() + '&preview=1';
     layout.classList.add('split');
     requestAnimationFrame(scalePreview);
   }
@@ -1297,6 +1304,82 @@
     }));
     body.appendChild(infoRow);
     getJSON('/overlay/headtohead-state').then(function (d) { h2hRole = d.role || h2hRole; }).catch(function () {}).then(refreshH2hRoles);
+  }
+
+  /* ── Mic Check Home / Away ──
+     Always live. Saved in server_state.json (POST /api/state → pages pick it up within 0.5 s):
+       michcheck_swap                  one switch for both pages (Home page shows Team 2, Away page Team 1)
+       michcheck_<side>_photo_off      hide the player photo AND its background (empty cell: put a player cam underneath)
+     The preview iframe follows the same saved state. */
+  function micToggle(label, key, onText, offText, invert, after) {
+    var fr = el('div', 'feature-row');
+    fr.appendChild(el('div', 'feature-name', label));
+    var g = el('div', 'feature-btns');
+    var b = el('button', 'btn');
+    var paint = function () {
+      var on = invert ? !appState[key] : !!appState[key];
+      b.textContent = on ? onText : offText;
+      b.className = 'btn ' + (on ? 'btn-action' : 'btn-reset');
+    };
+    b.addEventListener('click', function () {
+      var v = !appState[key];
+      appState[key] = v;
+      var patch = {}; patch[key] = v;
+      pushState(patch);
+      paint();
+      if (after) after();
+    });
+    paint();
+    g.appendChild(b);
+    fr.appendChild(g);
+    return fr;
+  }
+  function buildMicCheckControls(body, ov) {
+    var side = ov.micCheck;
+    body.appendChild(el('div', 'features-label', 'Always live — no show / hide'));
+    body.appendChild(micToggle('Teams', 'michcheck_swap', '⇄ SWAPPED (Home page = Team 2)', 'Normal (Home = Team 1 on the Match Board)', false, function () { buildControlBody(ov); }));
+    body.appendChild(el('div', 'divider'));
+    body.appendChild(el('div', 'features-label', ov.name + ' — Player Cells'));
+    body.appendChild(micToggle('Player Photo + Background', 'michcheck_' + side + '_photo_off', '● Photo ON', '○ Photo OFF (cam mode)', true));
+    // Per-player: a dead cam falls back to the photo + background (only matters while Photo is OFF).
+    body.appendChild(el('div', 'divider'));
+    body.appendChild(el('div', 'features-label', ov.name + ' - Individual Cams'));
+    var forceKey = 'michcheck_' + side + '_photo_force';
+    var camRows = [];
+    for (var ci = 0; ci < 5; ci++) (function (i) {
+      var fr = el('div', 'feature-row');
+      var nm = el('div', 'feature-name', ROLE_ORDER[i]);
+      fr.appendChild(nm);
+      var g = el('div', 'feature-btns');
+      var b = el('button', 'btn');
+      var paint = function () {
+        var down = !!(appState[forceKey] || [])[i];
+        b.textContent = down ? '\u2715 Cam down - photo shown' : '\u25cf Cam live';
+        b.className = 'btn ' + (down ? 'btn-reset' : 'btn-action');
+      };
+      b.addEventListener('click', function () {
+        var arr = [0, 1, 2, 3, 4].map(function (k) { return !!(appState[forceKey] || [])[k]; });
+        arr[i] = !arr[i];
+        appState[forceKey] = arr;
+        var patch = {}; patch[forceKey] = arr;
+        pushState(patch);
+        paint();
+      });
+      paint();
+      g.appendChild(b);
+      fr.appendChild(g);
+      body.appendChild(fr);
+      camRows[i] = nm;
+    })(ci);
+    getJSON('/api/michcheck?side=' + side).then(function (d) {
+      ((d.team && d.team.players) || []).forEach(function (p, i) { if (p.name && camRows[i]) camRows[i].textContent = ROLE_ORDER[i] + ' - ' + p.name; });
+    }).catch(function () {});
+    var h = el('div', 'hint', 'Photo OFF hides the player photo and its background: empty cells, so a player cam placed underneath shows through. A player whose cam goes down: set their button to Cam down and only their cell shows the photo + background again. Swap applies to both Mic Check pages. Page URL: /michcheck-' + side);
+    h.style.margin = '0';
+    body.appendChild(h);
+    var row = el('div', 'row');
+    row.appendChild(copyBtn('/michcheck-' + side, ov.name + ' page', 'page URL'));
+    body.appendChild(row);
   }
 
   function buildControlBody(ov) {
@@ -1425,6 +1508,7 @@
     /* Post Hexagon: role pair to compare (players currently in the game) */
     if (ov.postHexagonRoles) buildPostHexagonRoles(body);
     if (ov.headToHeadRoles) buildHeadToHeadRoles(body);
+    if (ov.micCheck) buildMicCheckControls(body, ov);
 
     /* Utility */
     body.appendChild(el('div', 'divider'));
@@ -1681,11 +1765,13 @@
     '#phase-text':   { left: 760,  top: 783, width: 400, fontSize: 48 },
     '#match-text':   { left: 760,  top: 828, width: 400, fontSize: 19 },
     '#home-logo':    { left: 488,  top: 781, width: 57, height: 57 },
+    '#home-flag':    { left: 440,  top: 796, width: 42, height: 28 },
     '#home-abbr':    { left: 565,  top: 782, fontSize: 56 },
     '#home-score':   { left: 722,  top: 780, fontSize: 60 },
     '#away-score':   { left: 1198, top: 780, fontSize: 60 },
     '#away-abbr':    { left: 1355, top: 782, fontSize: 56 },
     '#away-logo':    { left: 1376, top: 781, width: 57, height: 57 },
+    '#away-flag':    { left: 1438, top: 796, width: 42, height: 28 },
     '#home-bans':    { left: 12,   top: 778 },
     '#away-bans':    { left: 1627, top: 778 },
     '#home-players': { left: 0,    top: 855 },
@@ -1696,11 +1782,13 @@
     { group: 'Centre Text', id: '#phase-text', name: 'Stage (Match Board)' },
     { group: 'Centre Text', id: '#match-text', name: 'Match - Game · Series (Match Board)' },
     { group: 'Home Header', id: '#home-logo', name: 'Logo' },
+    { group: 'Home Header', id: '#home-flag', name: 'Flag' },
     { group: 'Home Header', id: '#home-abbr', name: 'Team Code' },
     { group: 'Home Header', id: '#home-score', name: 'Series Score' },
     { group: 'Away Header', id: '#away-score', name: 'Series Score' },
     { group: 'Away Header', id: '#away-abbr', name: 'Team Code (right-aligned)' },
     { group: 'Away Header', id: '#away-logo', name: 'Logo' },
+    { group: 'Away Header', id: '#away-flag', name: 'Flag' },
     { group: 'Home Bans', id: '#home-bans', name: 'Ban Row (4)' },
     { group: 'Away Bans', id: '#away-bans', name: 'Ban Row (4)' },
     { group: 'Home Players', id: '#home-players', name: 'Player Row (5)' },

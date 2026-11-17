@@ -97,6 +97,7 @@ router.get('/api/post-hexagon', async (req, res) => {
 });
 router.get('/api/post-stats', (req, res) => noStore(res).json(postHexagon.build()));
 router.get('/api/post-items', (req, res) => noStore(res).json(postHexagon.build()));
+router.get('/api/michcheck', (req, res) => noStore(res).json(require('../lib/micCheck').build(req.query.side)));
 router.get('/api/versus-slide', (req, res) => noStore(res).json(require('../lib/versusSlide').build()));
 router.get('/api/post-gold-graph', (req, res) => noStore(res).json(require('../lib/postGoldGraph').build()));
 router.get('/overlay/posthexagon-state', (req, res) => noStore(res).json({ shown: state.checkOverlays.posthexagon, role: state.postHexagon.role }));

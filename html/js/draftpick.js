@@ -53,11 +53,14 @@
   function playBar(act, elapsedMs) {
     var side = act.camp === 1 ? 'L' : 'R';
     playOne('turn-bar', 'turn-bar-' + TURN_SECONDS[act.type] + '-' + side, elapsedMs);
+    // Grey wake: the full-bar silhouette sits under the shrinking bar, so the path it leaves turns grey.
+    document.querySelectorAll('.turn-track').forEach(function (t) { t.classList.toggle('on', t.id === 'turn-track-' + side); });
     var timerId = 'turn-timer-' + (act.type === 'B' ? 'BAN' : 'PICK') + '-' + side;
     $('front-overlay').classList.toggle('timer-fallback', !!$(timerId).error);
     playOne('turn-timer', timerId, elapsedMs);
   }
   function stopBars() {
+    document.querySelectorAll('.turn-track').forEach(function (t) { t.classList.remove('on'); });
     document.querySelectorAll('.turn-bar, .turn-timer').forEach(function (v) { v.classList.remove('on'); v.pause(); });
   }
   document.querySelectorAll('.turn-timer').forEach(function (v) {
@@ -97,7 +100,23 @@
   setInterval(renderTurn, 250);
   var csvDatabase = {};
   var revealedHeroes = {};
-  var playedHeroAudio = {};
+  var voicedHeroes = {};      // hero id -> true for every hero currently picked (voice already played)
+  var heroAudioPrimed = false; // first render after load = baseline (no voice for old picks)
+
+  // Hero voice line = assets/voice/<CSV hero name>.mp3. Files whose name differs from the
+  // CSV "Hero" column are listed here by hero id.
+  var VOICE_FILE = {
+    119: 'Dr. Bian', 146: 'luna', 168: 'lapulapu', 152: 'Princess Frost', 153: 'Prince of Lanling',
+    163: 'Ukyo', 519: 'Loong', 581: 'Flowborn Tank', 582: 'Flowborn Mage', 583: 'YuanLiuAssassin',
+    584: 'Flowborn Marksman', 585: 'Flowborn Roamer'
+  };
+  function playHeroVoice(id) {
+    var name = VOICE_FILE[id] || (csvDatabase[id] && csvDatabase[id].name);
+    if (!name || HOK_PREVIEW) return; // never from dashboard preview/edit iframes
+    var voice = new Audio(hokAsset('voice/' + name.trim() + '.mp3'));
+    voice.volume = 0.8;
+    voice.play().catch(function () {});
+  }
 
   var heroImg = function (id) { return hokAsset('hero/draftpick/' + id + '_TINGGI.png'); };
   var heroVid = function (id) { return hokAsset('hero/webm/' + id + '.webm'); };
@@ -232,6 +251,16 @@
     hokSetText($('away-abbr'), state.team_2_abbr || 'AWAY');
     if (state.team_1_abbr) hokSetSrc($('home-logo'), hokLogo(state.team_1_abbr));
     if (state.team_2_abbr) hokSetSrc($('away-logo'), hokLogo(state.team_2_abbr));
+    // Country flags (assets/images/flags/<COUNTRY>.png) — hidden while there's no country or no art.
+    var tc = state.team_countries || {};
+    [['home-flag', state.team_1_abbr], ['away-flag', state.team_2_abbr]].forEach(function (f) {
+      var fl = $(f[0]), c = f[1] && tc[String(f[1]).toUpperCase()];
+      if (!c) { fl.style.visibility = 'hidden'; return; }
+      fl.onerror = function () { fl.style.visibility = 'hidden'; };
+      fl.onload = function () { fl.style.visibility = ''; };
+      hokSetSrc(fl, hokAsset('images/flags/' + c + '.png'));
+      if (fl.complete && fl.naturalWidth) fl.style.visibility = '';
+    });
 
     var mode = state.draft_mode || 'API';
     var hSwap = state.home_role_swap || [];
@@ -263,6 +292,7 @@
     }
 
     var hBan = 0, aBan = 0, hPick = 0, aPick = 0;
+    var pickedNow = {};
     for (i = 0; i < 18; i++) {
       var act = SEQ[i];
       var hid = bpList[i];
@@ -303,25 +333,26 @@
       var key = side + '-' + pIdx;
       if (show > 0) {
         if (revealedHeroes[key] !== show) { revealedHeroes[key] = show; triggerStatsAnimation(side, pIdx, show); }
-        if (playedHeroAudio[key] !== show) {
-          playedHeroAudio[key] = show;
-          // Hero voice line on pick — never from dashboard preview/edit iframes.
-          if (!HOK_PREVIEW) {
-            var voice = new Audio(hokAsset('audio/heroes/' + show + '.mp3'));
-            voice.volume = 0.8;
-            voice.play().catch(function () {});
-          }
-        }
+        // Collect picked heroes; the voice plays below only for heroes new to the set.
+        if (hid > 0) pickedNow[hid] = true;
         hokSetSrc($(side + '-heroimg-' + pIdx), heroImg(show));
         setHeroVideo($(side + '-herovid-' + pIdx), heroVid(show));
         heroEl.classList.add('picked');
       } else {
         revealedHeroes[key] = 0;
-        playedHeroAudio[key] = 0;
         heroEl.classList.remove('picked');
         hokSetSrc($(side + '-heroimg-' + pIdx), '');
         setHeroVideo($(side + '-herovid-' + pIdx), '');
       }
+    }
+
+    // Baseline taken once real draft data has rendered: picks from now on get their voice line.
+    // Voice only for a hero that wasn't picked before — swaps/reorders keep the same set, so no replay.
+    // A poll with no draft data is skipped, so a hiccup doesn't re-voice every hero on the next one.
+    if (data.state && (mode === 'MANUAL' || data.draft)) {
+      for (var vh in pickedNow) if (!voicedHeroes[vh] && heroAudioPrimed) playHeroVoice(+vh);
+      voicedHeroes = pickedNow;
+      heroAudioPrimed = true;
     }
 
     // Turn indicator, once per step change (not restarted on the 2nd pick of a double pick).

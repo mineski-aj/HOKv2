@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HOK Mic Check</title>
+  <!-- Mic Check (1920x1080, transparent). ALWAYS LIVE — no show/hide.
+         /michcheck-home  = Match Board Team 1      /michcheck-away = Match Board Team 2
+         (or /html/michcheck.html?side=home|away). Dashboard Control → Mic Check Home / Away:
+         Swap Home/Away, player photo on/off, photo background on/off (both off = empty
+         cell, put a player cam underneath). -->
+  <link rel="stylesheet" href="/html/css/fonts.css">
+  <link rel="stylesheet" href="/html/css/michcheck.css">
+  <script src="/html/js/overlay-sse-shim.js"></script>
+  <script src="/html/js/hok-core.js"></script>
+</head>
+<body>
+  <div id="mc-page">
+    <div id="mc-rows"></div>
+    <img id="mc-frame" src="/assets/images/michcheck/michcheck_png.png" alt="">
+    <img id="mc-flag" alt=""><img id="mc-logo" alt="">
+    <div id="mc-team"></div>
+    <div id="mc-stage"></div>
+    <div id="mc-match"></div>
+  </div>
+  <script src="/html/js/michcheck.js"></script>
+</body>
+</html>
