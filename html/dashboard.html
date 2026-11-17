@@ -1516,6 +1516,8 @@
     if (ov.ledEventsTester) {
       body.appendChild(el('div', 'features-label', 'Always live — follows Draft Pick (a pick spans the whole table, holds ~2 s, matte out)'));
       body.appendChild(el('div', 'features-label', 'Pick animation test — ◈ preview only (1–5 = different sample heroes)'));
+      body.appendChild(micToggle('Crop Guide (outlines both tables + 5 player columns)', 'ledevents_guide', '● Guide ON', '○ Guide OFF', false));
+      body.appendChild(el('div', 'divider'));
       [['home', 'HOME table (top)'], ['away', 'AWAY table (bottom)']].forEach(function (t) {
         var fr = el('div', 'feature-row');
         fr.appendChild(el('div', 'feature-name', t[1]));

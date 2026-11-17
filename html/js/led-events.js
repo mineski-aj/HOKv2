@@ -110,7 +110,10 @@
   }
   // Same cadence as Draft Pick (every 500 ms poll) + an immediate re-read the moment the dashboard saves
   // (MANUAL mode picks arrive as a dashboard save, so waiting for the next tick was the visible delay).
-  HokPoll.register(function () { fetchData(); });
+  HokPoll.register(function (data) {
+    $('le-guide').classList.toggle('on', !!(data.state && data.state.ledevents_guide));   // crop guide (dashboard toggle)
+    fetchData();
+  });
   HokPoll.start({ sources: ['state'], interval: 500 });
   var sse = createOverlaySSE();
   sse.addEventListener('reload', function () { location.reload(); });

@@ -32,3 +32,13 @@ html, body { margin: 0; background: transparent; overflow: hidden; }
   from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
   to   { -webkit-mask-position: 0 0;    mask-position: 0 0; }
 }
+
+/* Crop guide: top layer, off by default (state key ledevents_guide). Flat outlines only. */
+#le-guide { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 100; pointer-events: none; display: none; }
+#le-guide.on { display: block; }
+#le-guide .gd { position: absolute; left: 0; width: 1920px; height: 349.0909px; box-sizing: border-box; border: 4px solid #ff2d55; background: rgba(255, 45, 85, 0.16); }
+#le-guide .gd-h { top: 0; }
+#le-guide .gd-a { top: 349.0909px; border-color: #3dd5f5; background: rgba(61, 213, 245, 0.16); }
+#le-guide .gd span { position: absolute; left: 12px; top: 8px; padding: 3px 10px; font: 700 20px/24px 'Radikal', sans-serif; color: #fff; background: rgba(0, 0, 0, 0.7); }
+#le-guide .gd-col { position: absolute; top: 0; width: 0; height: 698.18px; border-left: 2px dashed rgba(255, 255, 255, 0.75); }
+#le-guide .gd-mid { position: absolute; left: 959px; top: 0; width: 2px; height: 698.18px; background: rgba(255, 255, 255, 0.5); }
