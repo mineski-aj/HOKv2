@@ -43,7 +43,7 @@
     input:focus, select:focus { border-color: #4455aa; }
     /* Native dropdown lists: some Chrome builds ignore the select's colours and draw its light text on a white list.
        Tell the browser the page is dark and colour the options explicitly. */
-    html { color-scheme: dark; }
+    select { color-scheme: dark; }   /* NOT on html: a dark page gives every transparent overlay iframe an opaque white backdrop */
     select option, select optgroup { background-color: #16161e; color: #eeeeee; }
     input[readonly] { background: #0b0b10; color: #555; cursor: not-allowed; }
     .hint { font-size: 11px; color: #555; margin-top: 4px; line-height: 1.5; }
