@@ -45,10 +45,18 @@
         >3 s drift, pauses when the API time is stuck for 5 polls ── */
   var anchorApiTime = 0, anchorLocalTime = 0, lastApiTime = -1, stuckCount = 0, isPaused = true, currentDisplayedTime = -1;
 
+  /* Operator fine-tune (Dashboard → Control → In-Game Overlay → Timer Offset): seconds added to the
+     displayed timer to make up for API delay. Saved as ingame_timer_offset in server_state.json. */
+  var timerOffset = 0, lastBaseTime = -1;
+  function renderTimer() {
+    var t = lastBaseTime + timerOffset;
+    if (lastBaseTime < 0 || t < 0) return;
+    if (t !== currentDisplayedTime) { currentDisplayedTime = t; $('timer').innerText = formatTime(t); }
+  }
   setInterval(function () {
     if (!isPaused && anchorLocalTime > 0) {
-      var t = anchorApiTime + Math.floor((performance.now() - anchorLocalTime) / 1000);
-      if (t !== currentDisplayedTime && t >= 0) { currentDisplayedTime = t; $('timer').innerText = formatTime(t); }
+      lastBaseTime = anchorApiTime + Math.floor((performance.now() - anchorLocalTime) / 1000);
+      renderTimer();
     }
   }, 100);
 
@@ -66,7 +74,7 @@
         }
       }
     } else {
-      isPaused = true; anchorApiTime = 0; anchorLocalTime = 0; currentDisplayedTime = -1;
+      isPaused = true; anchorApiTime = 0; anchorLocalTime = 0; currentDisplayedTime = -1; lastBaseTime = -1;
       hokSetText($('timer'), '00:00');
     }
     lastApiTime = apiTime;
@@ -88,6 +96,9 @@
     var state = data.state || {};
     var ingame = data.ingame || {};
     var teamData = data.teams || {};
+
+    var off = parseInt(state.ingame_timer_offset, 10) || 0;
+    if (off !== timerOffset) { timerOffset = off; renderTimer(); }   // also refreshes a paused (stuck / ended) timer
 
     var leftAbbr = state.team_1_abbr, rightAbbr = state.team_2_abbr;
     var leftScore = state.team_1_score || 0, rightScore = state.team_2_score || 0;

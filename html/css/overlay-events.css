@@ -11,9 +11,12 @@
 #knc-container.knc-in #knc-square, #knc-container.knc-in #knc-name, #knc-container.knc-in #knc-tablogo { opacity: 1; }
 
 /* Yellow parallelogram (200x160 box at the measured square position) */
-#knc-square { width: 200px; height: 160px; overflow: hidden;
-  clip-path: polygon(29px 20px, 60px 4px, 196px 4px, 166px 157px, 0 158px); }
-#knc-photo { position: absolute; left: -20px; top: -6px; width: 240px; height: 240px; object-fit: contain; }
+/* Clip = the parallelogram on the left/right/bottom, but OPEN upward so the head can rise above it. */
+#knc-square { width: 200px; height: 160px;
+  clip-path: polygon(29px -300px, 196px -300px, 196px 4px, 166px 157px, 0 158px, 29px 20px); }
+/* Half-body photo (1080 sq, body x 218-876, head top y 55) scaled ~0.27: shoulders nearly touch the
+   parallelogram's edges, head pokes ~30px above it. */
+#knc-photo { position: absolute; left: -51px; top: -46px; width: 290px; height: 290px; object-fit: contain; }
 #knc-sqlogo { position: absolute; left: 40px; top: 22px; width: 116px; height: 116px; object-fit: contain; display: none; }
 #knc-container.knc-ace #knc-photo { display: none; }
 #knc-container.knc-ace #knc-sqlogo { display: block; }

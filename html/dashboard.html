@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>HOK Broadcast Dashboard</title>
+  <link rel="icon" type="image/png" href="/html/img/favicon.png">
+  <link rel="apple-touch-icon" href="/html/img/favicon.png">
   <script src="/html/js/overlay-sse-shim.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1083,6 +1085,7 @@
         { name: 'Objective Events (auto-trigger)', feature: 'objectives' },
         { name: 'Real-Time Team Fight (no overlay yet)', feature: 'rttf' },
       ],
+      timerOffset: true,
       eventTester: true,
       damageRankTester: true,
     },
@@ -1195,7 +1198,7 @@
     buildControlBody(ov);
     $('preview-title').textContent = ov.name + ' — preview (local only, not on air)';
     $('preview-label').textContent = ov.file;
-    previewIframe.src = '/html/' + ov.file + (ov.file.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now() + '&preview=1';
+    previewIframe.src = '/html/' + ov.file + (ov.file.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now() + '&preview=1' + (ov.file.indexOf('overlay.html') === 0 ? '&autokill=1' : '');
     layout.classList.add('split');
     requestAnimationFrame(scalePreview);
   }
@@ -1442,6 +1445,29 @@
         body.appendChild(fr);
         applyFeatureToggle(ft.feature);
       });
+    }
+
+    /* In-Game Top Bar timer: forward (+) / back (-) in seconds to make up for API delay. Saved as ingame_timer_offset. */
+    if (ov.timerOffset) {
+      body.appendChild(el('div', 'divider'));
+      body.appendChild(el('div', 'features-label', 'In-Game Timer Offset (API delay fine-tune)'));
+      var toRow = el('div', 'feature-row');
+      toRow.appendChild(el('div', 'feature-name', 'Timer'));
+      var toBtns = el('div', 'feature-btns');
+      var toVal = el('span', 'feature-name', '');
+      toVal.style.cssText = 'min-width:70px;text-align:center;font-weight:700;color:#eee';
+      var toPaint = function () { var v = parseInt(appState.ingame_timer_offset, 10) || 0; toVal.textContent = (v > 0 ? '+' : '') + v + ' s'; };
+      var toSet = function (v) {
+        v = Math.max(-60, Math.min(60, v));
+        appState.ingame_timer_offset = v; pushState({ ingame_timer_offset: v }); toPaint();
+      };
+      [['−5', -5], ['−1', -1]].forEach(function (d) { toBtns.appendChild(btn(d[0], 'btn-reset', function () { toSet((parseInt(appState.ingame_timer_offset, 10) || 0) + d[1]); })); });
+      toBtns.appendChild(toVal);
+      [['+1', 1], ['+5', 5]].forEach(function (d) { toBtns.appendChild(btn(d[0], 'btn-action', function () { toSet((parseInt(appState.ingame_timer_offset, 10) || 0) + d[1]); })); });
+      toBtns.appendChild(btn('Reset', 'btn-reset', function () { toSet(0); }));
+      toRow.appendChild(toBtns);
+      body.appendChild(toRow);
+      toPaint();
     }
 
     /* Kill / objective tester: ▶ fires on every live overlay (GET), ◈ plays only in the preview */

@@ -80,6 +80,8 @@
 
   <script>
     // Armed auto-trigger features. Preview iframes never auto-fire (baseline only).
+    // Control-tab preview (?autokill=1) also auto-detects kills, following the real arm toggle (read-only).
+    var PREVIEW_AUTOKILL = HOK_PREVIEW && /[?&]autokill=1(?:&|$)/.test(location.search);
     var HokFeatures = { killevents: !HOK_PREVIEW, objectives: !HOK_PREVIEW };
   </script>
   <script src="/html/js/overlay-quadrants.js"></script>
@@ -145,6 +147,15 @@
       // Test events fire regardless of the arm toggles (same as v1).
       sse.addEventListener('debugevent', function (e) {
         try { HokEvents.push(JSON.parse(e.data)); } catch (err) {}
+      });
+    }
+
+    if (PREVIEW_AUTOKILL) {
+      fetch('/overlay/features', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+        HokFeatures.killevents = d.killevents !== false;
+      }).catch(function () { HokFeatures.killevents = true; });
+      sse.addEventListener('featuretoggle', function (e) {
+        try { var d = JSON.parse(e.data); if (d.feature === 'killevents') HokFeatures.killevents = !!d.enabled; } catch (err) {}
       });
     }
 

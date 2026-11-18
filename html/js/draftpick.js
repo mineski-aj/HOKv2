@@ -69,15 +69,27 @@
 
   function parseEventTime(s) {
     if (!s) return NaN;
-    var t = Date.parse(String(s).replace(' ', 'T'));
-    if (isNaN(t) && /^\d{10,13}$/.test(s)) t = Number(s) * (String(s).length === 10 ? 1000 : 1);
-    return t;
+    s = String(s);
+    if (/^\d{10,13}$/.test(s)) return Number(s) * (s.length === 10 ? 1000 : 1);
+    return Date.parse(s.replace(' ', 'T')); // no zone = browser-local
+  }
+  // The API's 'YYYY-MM-DD HH:MM:SS' has no zone (observed: UTC). Try UTC first, then browser-local,
+  // and take whichever lands inside the turn window; else null (caller counts from now).
+  function turnStartFromEvent(s, now, dur) {
+    var cands = [];
+    if (/^\d{4}-\d\d-\d\d[ T]\d\d:\d\d:\d\d$/.test(String(s || ''))) cands.push(Date.parse(String(s).replace(' ', 'T') + 'Z'));
+    cands.push(parseEventTime(s));
+    for (var i = 0; i < cands.length; i++) {
+      var t = cands[i];
+      if (!isNaN(t) && t <= now + 3000 && now - t <= dur) return Math.min(t, now);
+    }
+    return null;
   }
   function startTurn(act, eventTime) {
     var dur = TURN_SECONDS[act.type] * 1000;
-    var start = parseEventTime(eventTime);
     var now = Date.now();
-    if (isNaN(start) || start > now || now - start > dur) start = now;
+    var start = turnStartFromEvent(eventTime, now, dur);
+    if (start === null) start = now;
     turn = { type: act.type, camp: act.camp, endsAt: start + dur };
     playBar(act, now - start);
     $('front-overlay').classList.remove('draft-done');
@@ -280,7 +292,9 @@
     var apiList = null;
     if (mode === 'API') {
       apiList = (draft.response && draft.response.BanPickList) || [];
-      currentLength = apiList.filter(function (x) { return x.HeroID > 0; }).length;
+      // A step is done once it has a hero OR an event time (a skipped/timed-out ban has HeroID 0 but still advances the draft).
+      var done = function (x) { return x && (x.HeroID > 0 || (x.Dteventtime && !/^0000/.test(x.Dteventtime))); };
+      while (currentLength < apiList.length && done(apiList[currentLength])) currentLength++;
       for (i = 0; i < 18; i++) bpList.push((apiList[i] && apiList[i].HeroID > 0) ? apiList[i].HeroID : 0);
     } else {
       var src = { hb: state.home_ban_override || [], ab: state.away_ban_override || [], hp: hSwap, ap: aSwap };
@@ -289,6 +303,26 @@
         bpList.push(heroId);
         if (heroId > 0 && currentLength === i) currentLength = i + 1;
       }
+    }
+
+    // API mode: the API only knows pick ORDER, not which player took which hero. The dashboard's role
+    // swap (hero per player slot) applies LIVE, as soon as the swapped hero has actually been picked by
+    // that team (a stale swap from an earlier game never matches, so it's ignored). Slots without a
+    // valid swap take the remaining picks in pick order.
+    var slotHero = { 1: null, 2: null };
+    if (mode === 'API') {
+      [1, 2].forEach(function (camp) {
+        var picks = [];
+        for (var k = 0; k < 18; k++) if (SEQ[k].type === 'P' && SEQ[k].camp === camp) picks.push(bpList[k]);
+        var swap = camp === 1 ? hSwap : aSwap, used = {}, out = [0, 0, 0, 0, 0];
+        for (var j = 0; j < 5; j++) {
+          var w = parseInt(swap[j], 10) || 0;
+          if (w && picks.indexOf(w) !== -1 && !used[w]) { out[j] = w; used[w] = true; }
+        }
+        var rest = picks.filter(function (h) { return h > 0 && !used[h]; });
+        for (j = 0; j < 5; j++) if (!out[j]) out[j] = rest.shift() || 0;
+        slotHero[camp] = out;
+      });
     }
 
     var hBan = 0, aBan = 0, hPick = 0, aPick = 0;
@@ -315,7 +349,8 @@
       var pIdx = act.camp === 1 ? hPick++ : aPick++;
       var side = act.camp === 1 ? 'home' : 'away';
       var show = hid;
-      if ((mode === 'API' && currentLength >= 18) || mode === 'MANUAL') {
+      if (mode === 'API') show = slotHero[act.camp][pIdx];
+      else if (mode === 'MANUAL') {
         if (act.camp === 1 && hSwap[pIdx]) show = hSwap[pIdx];
         if (act.camp === 2 && aSwap[pIdx]) show = aSwap[pIdx];
       }
@@ -362,8 +397,9 @@
       if (currentLength < 18) {
         var secondOfDouble = currentLength === 6 || currentLength === 8 || currentLength === 16;
         if (!secondOfDouble || prevStep === -1) {
-          var cur = SEQ[secondOfDouble ? currentLength - 1 : currentLength];
-          var lastEvent = mode === 'API' && apiList && apiList[currentLength - 1];
+          var stepIdx = secondOfDouble ? currentLength - 1 : currentLength;
+          var cur = SEQ[stepIdx];
+          var lastEvent = mode === 'API' && apiList && apiList[stepIdx - 1];
           startTurn(cur, lastEvent && lastEvent.Dteventtime);
         }
       } else {
