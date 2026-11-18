@@ -9,11 +9,53 @@
     "ob_open_id": "14721625020824982866",
     "csv_url": "",
     "season_ids": "",
-    "team_1_abbr": "",
+    "team_1_abbr": "KAGE",
     "team_1_score": 0,
-    "team_1_players": [],
-    "team_2_abbr": "",
+    "team_1_players": [
+        "KAGE.Wiraww",
+        "KAGE.Fei",
+        "KAGE.Senkoo",
+        "KAGE.Zaan",
+        "KAGE.Lu"
+    ],
+    "team_2_abbr": "DMT",
     "team_2_score": 0,
-    "team_2_players": [],
-    "last_updated": 0
+    "team_2_players": [
+        "DMT.Tufz",
+        "DMT.Cy",
+        "DMT.Jerl",
+        "DMT.Clean",
+        "DMT.eL"
+    ],
+    "last_updated": 1794979741978,
+    "team_1_uids": [
+        "15127817982839932518",
+        "571451020912618902",
+        "17145562027324768716",
+        "13473981453798442148",
+        "10028229355941122752"
+    ],
+    "team_2_uids": [
+        "17350073008320665752",
+        "12650574915437443102",
+        "6889871781961395133",
+        "17952029454513194406",
+        "5919703914464565561"
+    ],
+    "match_best_of": 3,
+    "match_stage": "GROUP STAGE",
+    "match_day": 1,
+    "match_number": 1,
+    "michcheck_home_photo_off": true,
+    "michcheck_away_photo_off": true,
+    "team_countries": {
+        "AURA": "MY",
+        "BOOM": "PH",
+        "DMT": "ID",
+        "JGE": "PH",
+        "HERO": "CN",
+        "GKE": "MY",
+        "RW": "CN",
+        "KAGE": "ID"
+    }
 }
