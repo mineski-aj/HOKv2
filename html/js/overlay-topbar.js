@@ -123,7 +123,7 @@
     if (leftAbbr)  hokSetSrc($('home-logo'), hokLogo(leftAbbr));
     if (rightAbbr) hokSetSrc($('away-logo'), hokLogo(rightAbbr));
     // Flags: assets/images/flags/<COUNTRY>.png (team → country from /api/state team_countries) — hidden while missing
-    var flagOf = function (abbr) { var c = (state.team_countries || {})[abbr]; return c ? hokAsset('images/flags/' + c + '.png') : ''; };
+    var flagOf = function (abbr) { var tc = state.team_countries || {}, c = tc[abbr] || tc[String(abbr).toUpperCase()]; return c ? hokAsset('images/flags/' + c + '.png') : ''; };
     [['home-flag', leftAbbr], ['away-flag', rightAbbr]].forEach(function (t) {
       var img = $(t[0]);
       if (!img.dataset.wired) { img.dataset.wired = '1'; img.addEventListener('error', function () { img.style.visibility = 'hidden'; }); img.addEventListener('load', function () { img.style.visibility = ''; }); }

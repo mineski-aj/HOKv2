@@ -160,7 +160,11 @@ Two players of one role, Match Board Team 1 (left) vs Team 2 (right) — players
 
 ## Flags (every overlay)
 
-One flag per COUNTRY: `assets/images/flags/<COUNTRY>.png` — `CN` (KPL), `ID` (IKL), `MY` (MKL), `PH` (PKL), drawn at official ratios (CN/ID 3:2 = 300x200, MY/PH 2:1 = 400x200); every flag box uses `object-fit: contain` (never cropped/stretched). Team → country = `dataStore.teamCountryMap()`: most common CSV NATIONALITY (col 4) among players whose nickname prefix is the team code (`KAGE.Fei` → KAGE); `server_state.json` `team_countries: { ABBR: 'MY' }` overrides per team (no UI). Delivered as `/api/state` `team_countries` (Top Bar) and `country` on home/away in the post-hexagon / versus-slide / head-to-head payloads. Missing art or no country → flag hidden. Other nationalities map to SG/TH/VN/… codes — add a PNG to show them.
+One flag per COUNTRY: `assets/images/flags/<COUNTRY>.png` — `CN` (KPL), `ID` (IKL), `MY` (MKL), `PH` (PKL), drawn at official ratios (CN/ID 3:2 = 300x200, MY/PH 2:1 = 400x200); every flag box uses `object-fit: contain` (never cropped/stretched). Team → country = `dataStore.teamCountryMap()`: most common CSV NATIONALITY (col 4) among players whose nickname prefix is the team code (`KAGE.Fei` → KAGE); overridden by **`team_countries.json`** (repo root, committed, hand-edited: IKL = ID DMT/KAGE, MKL = MY GKE/AURA, PKL = PH BOOM/JGE, KPL Invite = CN HERO/RW — the CSV NATIONALITY column is empty), then `server_state.json` `team_countries` (no UI; live state, can be wiped — that's why the file exists). Keys are case-insensitive: the map also answers under every spelling in use (Match Board `Hero`, CSV `HERO`). Delivered as `/api/state` `team_countries` (Top Bar) and `country` on home/away in the post-hexagon / versus-slide / head-to-head payloads. Missing art or no country → flag hidden. Other nationalities map to SG/TH/VN/… codes — add a PNG to show them.
+
+## Team logos on yellow (Mic Check)
+
+Mic Check's logo `#mc-logo` sits on the frame's yellow (`#fec113`). Teams in `WHITE_LOGO_ON_YELLOW` (michcheck.js, currently only `HERO`) use the WHITE logo `<ABBR>_2.png` (operator's choice — a black silhouette was tried and rejected); everyone else uses the colour `<ABBR>.png`. Measured against the yellow (2026-11-19): only HERO vanished (its colour logo is 100% yellow); GKE is ~⅓ yellow but its black lettering reads; the rest have strong contrast.
 
 ## Fonts (`html/css/fonts.css`, files in `assets/fonts`)
 

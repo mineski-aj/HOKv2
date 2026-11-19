@@ -1,0 +1,11 @@
+{
+    "_comment": "Team code -> country flag (assets/images/flags/<COUNTRY>.png). IKL = ID, MKL = MY, PKL = PH, KPL Invite = CN. Read by lib/dataStore.js teamCountryMap(); case-insensitive. Edit freely - not touched by the dashboard.",
+    "DMT": "ID",
+    "KAGE": "ID",
+    "GKE": "MY",
+    "AURA": "MY",
+    "BOOM": "PH",
+    "JGE": "PH",
+    "HERO": "CN",
+    "RW": "CN"
+}

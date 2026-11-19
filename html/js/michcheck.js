@@ -22,6 +22,9 @@
     $('mc-rows').innerHTML = html;
   })();
 
+  // HERO's colour logo is all yellow (invisible on the frame) → white version. Add a team code here to do the same.
+  var WHITE_LOGO_ON_YELLOW = { HERO: true };
+
   function setChain(img, urls) {
     var key = urls.join('|');
     if (img.dataset.chain === key) return;
@@ -65,7 +68,12 @@
     hokSetText($('mc-team'), t.fullName || t.abbr || '');
     hokSetText($('mc-stage'), d.stageText || '');
     hokSetText($('mc-match'), d.matchLine || '');
-    setChain($('mc-logo'), t.abbr ? [hokAsset('images/logo/' + t.abbr + '.png')] : []);
+    // The logo sits on the frame's yellow. Teams whose colour logo vanishes there use their WHITE logo (<ABBR>_2.png,
+    // operator's choice); everyone else keeps the colour <ABBR>.png. Missing white file → colour logo.
+    var abbr = t.abbr || '';
+    var logos = abbr ? [hokAsset('images/logo/' + abbr + '.png')] : [];
+    if (WHITE_LOGO_ON_YELLOW[abbr.toUpperCase()]) logos.unshift(hokAsset('images/logo/' + abbr + '_2.png'));
+    setChain($('mc-logo'), logos);
     setChain($('mc-flag'), t.country ? [hokAsset('images/flags/' + t.country + '.png')] : []);
     var players = t.players || [];
     for (var i = 0; i < 5; i++) {
