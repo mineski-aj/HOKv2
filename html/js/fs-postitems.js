@@ -56,7 +56,7 @@ var PostItems = (function () {
     $(id + '-gold').textContent = p ? fmtNum(p.gold) : '';
     if (p && p.heroId) setChain($(id + '-hero'), [hokAsset('hero/full/' + p.heroId + '_FHD.png'), hokAsset('hero/draftpick/' + p.heroId + '_TINGGI.png')]);
     if (p) {
-      var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
+      var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
       setChain($(id + '-photo'), [hb(p.name + '_FRONT'), hb(p.name), hokPhoto(p.name), HOK_DEFAULT_PHOTO]);
     }
     var spell = $(id + '-spell');

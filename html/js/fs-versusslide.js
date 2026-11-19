@@ -60,8 +60,8 @@ var VersusSlide = (function () {
     $(id + '-name').textContent = name ? displayName(name) : '';
     $(id).classList.toggle('vsl-empty', !(p && p.heroId));   // no hero (yet) → frame-orange card
     setChain($(id + '-hero'), p && p.heroId ? [hokAsset('hero/full/' + p.heroId + '_FHD.png'), hokAsset('hero/draftpick/' + p.heroId + '_TINGGI.png')] : []);
-    var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
-    setChain($(id + '-photo'), name ? [hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO] : [HOK_DEFAULT_PHOTO]);
+    var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
+    setChain($(id + '-photo'), name ? [hb(name + (id.charAt(4) === 'h' ? '_RIGHT' : '_LEFT')), hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO] : [HOK_DEFAULT_PHOTO]);
   }
 
   function apply(data) {

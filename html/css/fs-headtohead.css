@@ -9,7 +9,7 @@
 #h2h-page.h2h-visible { opacity: 1; }
 #h2h-page > * { position: absolute; }
 
-/* Player half-body photos (photo/HALF BODY/<name>_LEFT|_RIGHT.png, 1080²) */
+/* Player half-body photos (photo/<name>_FRONT.png, 1080²) */
 .h2h-photo { object-fit: contain; }
 /* head-and-shoulders close-up like the reference: faces centred ~x 310 / 1630, head top ~y 90 */
 #h2h-photo-h { left: -426px; top: -6px; width: 1500px; height: 1500px; }

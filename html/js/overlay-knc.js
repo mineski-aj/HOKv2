@@ -36,7 +36,7 @@ var HokKnc = (function () {
 
   function videoUrl(type) { return hokAsset('webm/knckill/' + (FILE[type] || type) + '.webm'); }
   function photoUrls(name) {
-    var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
+    var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
     return [hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO];
   }
   function setChain(img, urls) {

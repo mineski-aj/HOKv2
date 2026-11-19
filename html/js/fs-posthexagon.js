@@ -57,7 +57,7 @@ var PostHexagon = (function () {
     img.src = urls[0];
   }
   function photoUrls(name, pose) {
-    var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
+    var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
     return [hb(name + '_' + pose), hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO];
   }
   function heroUrls(id) { return [hokAsset('hero/full/' + id + '_FHD.png'), hokAsset('hero/draftpick/' + id + '_TINGGI.png')]; }
@@ -77,7 +77,7 @@ var PostHexagon = (function () {
     $('phx-heroname-' + side).textContent = p ? (p.heroName || '') : '';
     $('phx-herolbl-' + side).textContent = 'HERO USED';
     if (p && p.heroId) setChain($('phx-hero-' + side + '-img'), heroUrls(p.heroId));
-    if (p) setChain($('phx-photo-' + side), photoUrls(p.name, side === 'l' ? 'LEFT' : 'RIGHT'));
+    if (p) setChain($('phx-photo-' + side), photoUrls(p.name, 'FRONT'));
 
     var items = $('phx-items-' + side).children;
     for (var i = 0; i < items.length; i++) {
@@ -167,7 +167,7 @@ var PostHexagon = (function () {
     [['l', pair.home], ['r', pair.away]].forEach(function (t) {
       var p = t[1];
       if (!p) return;
-      urls.push(heroUrls(p.heroId)[0], photoUrls(p.name, t[0] === 'l' ? 'LEFT' : 'RIGHT')[0]);
+      urls.push(heroUrls(p.heroId)[0], photoUrls(p.name, 'FRONT')[0]);
       p.equips.forEach(function (c) { if (c) urls.push(hokAsset('items/' + c + '.png')); });
     });
     return urls;

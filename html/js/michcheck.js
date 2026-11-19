@@ -75,7 +75,7 @@
       setChain($('mc-heroimg-' + i), p.heroId ? [hokAsset('hero/full/' + p.heroId + '_FHD.png'), hokAsset('hero/square/' + p.heroId + '_KOTAK.png'), hokAsset('hero/draftpick/' + p.heroId + '_TINGGI.png')] : []);
       hokSetText($('mc-hname-' + i), (p.heroName || '').replace(/\s*\(([^)]*)\)\s*/, '\n$1'));   // "Flowborn (Assassin)" → two lines
       hokSetText($('mc-pname-' + i), name);
-      var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
+      var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
       setChain($('mc-photo-' + i), name ? [hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO] : [HOK_DEFAULT_PHOTO]);
     }
     setSwitch(d.photo !== false, d.photoForce);

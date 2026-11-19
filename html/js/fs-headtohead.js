@@ -40,8 +40,8 @@ var HeadToHead = (function () {
   }
   function photoUrls(name, side) {
     if (!name) return [];
-    var hb = function (f) { return hokAsset('images/photo/HALF BODY/' + f + '.png'); };
-    return [hb(name + (side === 'h' ? '_LEFT' : '_RIGHT')), hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO];
+    var hb = function (f) { return hokAsset('images/photo/' + f + '.png'); };
+    return [hb(name + '_FRONT'), hb(name), hokPhoto(name), HOK_DEFAULT_PHOTO];
   }
   // Values shrink (font-size) to fit the column, like the reference's "25645".
   function fitVal(el) {
