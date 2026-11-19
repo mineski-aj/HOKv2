@@ -27,7 +27,7 @@
         "RW.Pain",
         "RW.Brook"
     ],
-    "last_updated": 1795073716671,
+    "last_updated": 1795074122544,
     "team_1_uids": [
         "14076338097007283836",
         "1087230833988449866",
@@ -74,5 +74,14 @@
         0,
         0
     ],
-    "michcheck_home_photo_off": false
+    "michcheck_home_photo_off": false,
+    "ledevents_swap": false,
+    "michcheck_away_photo_force": [
+        false,
+        false,
+        false,
+        false,
+        false
+    ],
+    "michcheck_away_photo_off": false
 }

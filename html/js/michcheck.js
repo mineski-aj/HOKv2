@@ -23,7 +23,21 @@
   })();
 
   // HERO's colour logo is all yellow (invisible on the frame) → white version. Add a team code here to do the same.
-  var WHITE_LOGO_ON_YELLOW = { HERO: true };
+  var WHITE_LOGO_ON_YELLOW = {};   // the frame banner is blue now: HERO uses its original logo
+  // Centre every logo by its visual weight: measure the opaque pixels' centre of mass and shift the logo so that sits on
+  // the box centre (a logo with a tail / uneven art otherwise looks off-centre). Fails silently (no shift) if unreadable.
+  function centreLogo(img) {
+    try {
+      var n = 64, c = document.createElement('canvas'); c.width = c.height = n;
+      var g = c.getContext('2d'); g.drawImage(img, 0, 0, n, n);
+      var d = g.getImageData(0, 0, n, n).data, sx = 0, sy = 0, sa = 0;
+      for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) { var a = d[(y * n + x) * 4 + 3]; sx += a * x; sy += a * y; sa += a; }
+      if (!sa) return;
+      var box = Math.min(img.clientWidth, img.clientHeight) || 72, k = box / n;
+      var dx = Math.max(-6, Math.min(6, -(sx / sa - (n - 1) / 2) * k)), dy = Math.max(-6, Math.min(6, -(sy / sa - (n - 1) / 2) * k));
+      img.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)';
+    } catch (e) { img.style.transform = ''; }
+  }
 
   function setChain(img, urls) {
     var key = urls.join('|');
@@ -73,6 +87,7 @@
     var abbr = t.abbr || '';
     var logos = abbr ? [hokAsset('images/logo/' + abbr + '.png')] : [];
     if (WHITE_LOGO_ON_YELLOW[abbr.toUpperCase()]) logos.unshift(hokAsset('images/logo/' + abbr + '_2.png'));
+    $('mc-logo').onload = function () { centreLogo(this); };
     setChain($('mc-logo'), logos);
     setChain($('mc-flag'), t.country ? [hokAsset('images/flags/' + t.country + '.png')] : []);
     var players = t.players || [];
