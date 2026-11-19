@@ -5,48 +5,48 @@
     "dc_app_id": "",
     "dc_app_secret": "",
     "datacenter_url": "https://hok-esports.playerinfinite.com",
-    "battle_id": "1793546455_252_169279768",
-    "ob_open_id": "14721625020824982866",
-    "csv_url": "",
+    "battle_id": "1795056843_14_169279768",
+    "ob_open_id": "14728140945218491208",
+    "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpr1b8fm3AT5v-cE9fTIt99-u48u3u7RgJuhsOxItvYl83TXLzTf6aMVRBgWiz2VvWlQsawlTYv5ol/pub?output=csv",
     "season_ids": "",
-    "team_1_abbr": "KAGE",
+    "team_1_abbr": "DMT",
     "team_1_score": 0,
     "team_1_players": [
-        "KAGE.Wiraww",
-        "KAGE.Fei",
-        "KAGE.Senkoo",
-        "KAGE.Zaan",
-        "KAGE.Lu"
-    ],
-    "team_2_abbr": "DMT",
-    "team_2_score": 0,
-    "team_2_players": [
         "DMT.Tufz",
         "DMT.Cy",
         "DMT.Jerl",
         "DMT.Clean",
         "DMT.eL"
     ],
-    "last_updated": 1794979741978,
-    "team_1_uids": [
-        "15127817982839932518",
-        "571451020912618902",
-        "17145562027324768716",
-        "13473981453798442148",
-        "10028229355941122752"
+    "team_2_abbr": "AURA",
+    "team_2_score": 0,
+    "team_2_players": [
+        "AURA.Zhihong",
+        "AURA.Siang",
+        "AURA.Yulong",
+        "AURA.JR",
+        "AURA.Saber"
     ],
-    "team_2_uids": [
+    "last_updated": 1795057953318,
+    "team_1_uids": [
         "17350073008320665752",
         "12650574915437443102",
         "6889871781961395133",
         "17952029454513194406",
         "5919703914464565561"
     ],
+    "team_2_uids": [
+        "14998166475188484557",
+        "3619810578627570848",
+        "15039408517097589709",
+        "6011818928594230244",
+        "6175966467583506455"
+    ],
     "match_best_of": 3,
     "match_stage": "GROUP STAGE",
     "match_day": 1,
     "match_number": 1,
-    "michcheck_home_photo_off": true,
+    "michcheck_home_photo_off": false,
     "michcheck_away_photo_off": true,
     "team_countries": {
         "AURA": "MY",
@@ -57,5 +57,34 @@
         "GKE": "MY",
         "RW": "CN",
         "KAGE": "ID"
-    }
+    },
+    "ingame_timer_offset": 1,
+    "draft_mode": "MANUAL",
+    "home_ban_override": [
+        503,
+        108,
+        132,
+        133
+    ],
+    "away_ban_override": [
+        196,
+        519,
+        109,
+        142
+    ],
+    "home_role_swap": [
+        116,
+        509,
+        174,
+        127,
+        159
+    ],
+    "away_role_swap": [
+        531,
+        510,
+        190,
+        111,
+        171
+    ],
+    "ledevents_guide": false
 }
