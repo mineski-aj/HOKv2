@@ -9,38 +9,38 @@
     "ob_open_id": "14728140945218491208",
     "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpr1b8fm3AT5v-cE9fTIt99-u48u3u7RgJuhsOxItvYl83TXLzTf6aMVRBgWiz2VvWlQsawlTYv5ol/pub?output=csv",
     "season_ids": "",
-    "team_1_abbr": "DMT",
+    "team_1_abbr": "Hero",
     "team_1_score": 0,
     "team_1_players": [
+        "Hero.TanRan",
+        "Hero.Loden",
+        "Hero.Jiuxi",
+        "Hero.Yaodao",
+        "Hero.Baychin"
+    ],
+    "team_2_abbr": "DMT",
+    "team_2_score": 0,
+    "team_2_players": [
         "DMT.Tufz",
         "DMT.Cy",
         "DMT.Jerl",
         "DMT.Clean",
         "DMT.eL"
     ],
-    "team_2_abbr": "AURA",
-    "team_2_score": 0,
-    "team_2_players": [
-        "AURA.Zhihong",
-        "AURA.Siang",
-        "AURA.Yulong",
-        "AURA.JR",
-        "AURA.Saber"
-    ],
-    "last_updated": 1795057953318,
+    "last_updated": 1795069367556,
     "team_1_uids": [
+        "14076338097007283836",
+        "1087230833988449866",
+        "13500637580520246292",
+        "3686130780987704556",
+        "3489131809088059549"
+    ],
+    "team_2_uids": [
         "17350073008320665752",
         "12650574915437443102",
         "6889871781961395133",
         "17952029454513194406",
         "5919703914464565561"
-    ],
-    "team_2_uids": [
-        "14998166475188484557",
-        "3619810578627570848",
-        "15039408517097589709",
-        "6011818928594230244",
-        "6175966467583506455"
     ],
     "match_best_of": 3,
     "match_stage": "GROUP STAGE",
@@ -61,30 +61,31 @@
     "ingame_timer_offset": 1,
     "draft_mode": "MANUAL",
     "home_ban_override": [
-        503,
-        108,
-        132,
-        133
+        0,
+        0,
+        0,
+        0
     ],
     "away_ban_override": [
-        196,
-        519,
-        109,
-        142
+        0,
+        0,
+        0,
+        0
     ],
     "home_role_swap": [
-        116,
-        509,
-        174,
-        127,
-        159
+        0,
+        0,
+        0,
+        0,
+        0
     ],
     "away_role_swap": [
-        531,
-        510,
-        190,
-        111,
-        171
+        0,
+        0,
+        0,
+        0,
+        0
     ],
-    "ledevents_guide": false
+    "ledevents_guide": false,
+    "michcheck_manual": false
 }
