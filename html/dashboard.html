@@ -1320,6 +1320,7 @@
   /* ── Mic Check Home / Away ──
      Always live. Saved in server_state.json (POST /api/state → pages pick it up within 0.5 s):
        michcheck_swap                  one switch for both pages (Home page shows Team 2, Away page Team 1)
+       michcheck_manual                MANUAL = players from the Match Board rosters (e.g. AURA vs DMT), API = live game players (both pages)
        michcheck_<side>_photo_off      hide the player photo AND its background (empty cell: put a player cam underneath)
      The preview iframe follows the same saved state. */
   function micToggle(label, key, onText, offText, invert, after) {
@@ -1349,6 +1350,7 @@
     var side = ov.micCheck;
     body.appendChild(el('div', 'features-label', 'Always live — no show / hide'));
     body.appendChild(micToggle('Teams', 'michcheck_swap', '⇄ SWAPPED (Home page = Team 2)', 'Normal (Home = Team 1 on the Match Board)', false, function () { buildControlBody(ov); }));
+    body.appendChild(micToggle('Player List', 'michcheck_manual', 'MANUAL (Match Board teams)', 'API (live game players)', false));
     body.appendChild(el('div', 'divider'));
     body.appendChild(el('div', 'features-label', ov.name + ' — Player Cells'));
     body.appendChild(micToggle('Player Photo + Background', 'michcheck_' + side + '_photo_off', '● Photo ON', '○ Photo OFF (cam mode)', true));
