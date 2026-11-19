@@ -1,15 +1,15 @@
 {
-  "fetched_at": "2026-11-19T03:16:08.038Z",
-  "timestamp": 1795058168,
+  "fetched_at": "2026-11-19T03:29:08.674Z",
+  "timestamp": 1795058948,
   "data": {
     "ret": 0,
     "msg": "",
     "BattleDetail": {
       "BattleID": "1795056843_14_169279768",
-      "WinTeamId": "",
-      "LastEventTime": 0,
+      "WinTeamId": "hok_team2",
+      "LastEventTime": 1795058947,
       "StartTime": 1795056843,
-      "EndTime": 0,
+      "EndTime": 1795058947,
       "BanPickList": [
         {
           "IsBan": true,
@@ -121,32 +121,32 @@
         }
       ],
       "PlayerOpenid": [
-        "13695787710442909268",
-        "3878011476585090515",
-        "17145562027324768716",
-        "4191853978952190311",
+        "10028229355941122752",
         "7567735765784506146",
         "4711836779651504031",
-        "15386513400443639771",
         "571451020912618902",
         "13473981453798442148",
-        "10028229355941122752"
+        "17145562027324768716",
+        "4191853978952190311",
+        "13695787710442909268",
+        "3878011476585090515",
+        "15386513400443639771"
       ],
-      "Status": 3,
+      "Status": 4,
       "BlueTId": "hok_team1",
-      "GameDuration": 0,
+      "GameDuration": 1043,
       "RedTId": "hok_team2",
       "Nicknames": [
-        "GKE.MusangKing",
-        "GKE.Shisan",
-        "KAGE.Senkooo",
-        "GKE.Guiyu",
+        "KAGE.Lu",
         "GKE.Jem",
         "GKE.Zhe",
-        "KAGE.Saule",
         "KAGE.Fei",
         "KAGE.Zaan",
-        "KAGE.Lu"
+        "KAGE.Senkooo",
+        "GKE.Guiyu",
+        "GKE.MusangKing",
+        "GKE.Shisan",
+        "KAGE.Saule"
       ],
       "_id": "1795056843_14_169279768",
       "SeasonID": "TEST",
@@ -157,7 +157,7 @@
         "2341659662561158661"
       ],
       "ScheduleID": "TEST20261119",
-      "GameStatus": 2
+      "GameStatus": 3
     }
   }
 }

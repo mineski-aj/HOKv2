@@ -1,129 +1,11 @@
 {
-  "fetched_at": "2026-11-19T03:16:08.118Z",
-  "timestamp": 1795058168,
+  "fetched_at": "2026-11-19T03:29:08.721Z",
+  "timestamp": 1795058948,
   "data": {
-    "result": 0,
     "data": [
       {
-        "Assist10M": 1,
-        "CoinNumFromAssistEnemyHero": 188,
-        "CoinNumFromEnemyHero": 20,
-        "JfBeHurtByHero": 16899,
-        "HurtToOrgan": 740,
-        "HealCnt": 764,
-        "CoinNumFromJungle": 245,
-        "CoinNumFromJungleEnemyCamp": 21,
-        "CoinNumFromSoldierlineMid": 211,
-        "BeHurtByOrgan": 4365,
-        "KillLocation": [
-          {
-            "x": -4509,
-            "z": 3613
-          },
-          {
-            "x": 2085,
-            "z": -1568
-          },
-          {
-            "x": -3484,
-            "z": -4735
-          }
-        ],
-        "FirstBloodTime": 0,
-        "KillBaronCnt": 0,
-        "KillDarkBigDragonCnt": 0,
-        "KillXiaoZhuzaiCnt": 0,
-        "PlayerUID": "571451020912618902",
-        "StealBlueBuff": 0,
-        "StealMonster": 0,
-        "StealRedBuff": 0,
-        "VSTDominateBattleCnt": 0,
-        "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 1296,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 0,
-        "VTTripleKill": 0,
-        "CoinNumFromKillEnemyHero": 20,
-        "K": 0,
-        "PlayerName": "KAGE.Fei",
-        "CoinNumFromJungleSelfCamp": 224,
-        "HurtR10M": 0.090108918451831,
-        "Equips": [
-          "1425",
-          "1111"
-        ],
-        "openid": "571451020912618902",
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 211,
-        "Camp": 2,
-        "NickName": "KAGE.Fei",
-        "HurtHero10M": 2242,
-        "TeamId": "hok_team2",
-        "KillSoidierCnt": 1,
-        "KillBigDragonCnt": 0,
-        "D": 2,
-        "VSTAllDeadCnt": 0,
-        "VSTLegendaryCnt": 0,
-        "VSTMonsterKillCnt": 0,
-        "SkillID": 80110,
-        "KillYuanGuBaoJunCnt": 0,
-        "VTQuataryKill": 0,
-        "VSTStopMultiKillCnt": 0,
-        "TotalBeHurtByHero": 5625,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "A": 0,
-        "Kill10M": 3,
-        "DeadLocation": [
-          {
-            "x": -7697,
-            "z": -7391
-          },
-          {
-            "x": -7814,
-            "z": -27274
-          },
-          {
-            "x": -1262,
-            "z": 983
-          },
-          {
-            "x": -7697,
-            "z": -7391
-          },
-          {
-            "x": -7814,
-            "z": -27274
-          }
-        ],
-        "CampVisible": false,
-        "HasBlue": false,
-        "HasRed": false,
-        "Hp": 4473,
-        "Level": 4,
-        "Location": {
-          "x": 53395,
-          "z": 56435
-        },
-        "_id": "1795056843_14_169279768_571451020912618902",
-        "MaxHp": 4473,
-        "ReviveTime": 0,
-        "SkinID": 53700,
-        "CtrlTime": 3.366,
-        "GoldPerMin": 294.54545454545,
-        "GoldToDmg": 0.53383971903793,
-        "JfBeHurtR": 0.21571630988397,
-        "KillJoinR10M": 0.57142857142857,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.034638554216867,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
-        "BattleID": "1795056843_14_169279768",
-        "Pos": 3,
-        "PlayerID": "571451020912618902",
+        "KillSoidierCnt": 3,
+        "LastHit": 9,
         "Rune": {
           "1512": {
             "name": "1512",
@@ -138,140 +20,160 @@
             "totalnumber": 10
           }
         },
-        "RiverTime": 6.9000002741814,
-        "HorizonValue": 6,
-        "TotalHurt": 6261,
-        "Exp": 242,
-        "StartTeamFight": 2,
-        "LastHit": 9,
-        "HeroID": "537",
-        "HeroHurtInfo": {
-          "7567735765784506146": 1205,
-          "13695787710442909268": 497,
-          "3878011476585090515": 540
-        },
-        "TotalHurtToHero": 2242,
-        "HardCtrlTime": 3366
-      },
-      {
-        "Assist10M": 1,
-        "CoinNumFromAssistEnemyHero": 125,
-        "CoinNumFromEnemyHero": 170,
-        "JfBeHurtByHero": 12904,
-        "HealCnt": 1328,
-        "CoinNumFromJungle": 67,
-        "CoinNumFromJungleEnemyCamp": 21,
-        "CoinNumFromSoldierlineMid": 815,
+        "HorizonValue": 2,
+        "Pos": 3,
         "KillLocation": [
           {
-            "x": -2828,
-            "z": -10798
+            "z": 3613,
+            "x": -4509
           },
           {
-            "x": 153022,
-            "z": 148496
+            "z": -1568,
+            "x": 2085
           },
           {
-            "x": -2828,
-            "z": -10798
+            "z": -4735,
+            "x": -3484
+          },
+          {
+            "z": -5396,
+            "x": -11912
           }
         ],
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
-        "StealBlueBuff": 0,
-        "StealMonster": 0,
+        "StealBlueBuff": 1,
+        "StealMonster": 1,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 2057,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 1,
-        "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 1,
-        "PlayerName": "KAGE.Senkooo",
-        "CoinNumFromJungleSelfCamp": 46,
-        "HurtR10M": 0.44033599935694,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "17145562027324768716",
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 815,
-        "Camp": 2,
-        "NickName": "KAGE.Senkooo",
-        "DeadLocation": [
-          {
-            "x": 154163,
-            "z": 151290
-          },
-          {
-            "x": -2365,
-            "z": -4936
-          },
-          {
-            "x": 8156,
-            "z": 5466
-          },
-          {
-            "x": -916,
-            "z": -6749
-          },
-          {
-            "x": 154163,
-            "z": 151290
-          },
-          {
-            "x": -2365,
-            "z": -4936
-          },
-          {
-            "x": 8156,
-            "z": 5466
-          }
-        ],
-        "TeamId": "hok_team2",
-        "KillSoidierCnt": 12,
-        "KillBigDragonCnt": 0,
-        "D": 3,
-        "VSTAllDeadCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
+        "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
-        "CoinNumFromKillEnemyHero": 170,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
+        "BattleID": "1795056843_14_169279768",
         "VTQuataryKill": 0,
+        "VTSingleKill": 1,
+        "VTTripleKill": 0,
+        "K": 1,
         "Kill10M": 1,
-        "TotalBeHurtByHero": 16586,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "HurtHero10M": 10956,
-        "A": 0,
-        "_id": "1795056843_14_169279768_17145562027324768716",
-        "CampVisible": false,
+        "CoinNumFromJungle": 479,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 288,
+        "Assist10M": 1,
+        "CoinNumFromAssistEnemyHero": 50,
+        "StartTeamFight": 2,
+        "CoinNumFromSoldierlineDuiKang": 364,
+        "CoinNumFromSoldierlineFayu": 89,
+        "Camp": 2,
+        "NickName": "KAGE.Fei",
+        "TeamId": "hok_team2",
+        "SkillID": 80110,
+        "PlayerName": "KAGE.Fei",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1425",
+          "1135",
+          "1159",
+          "1158",
+          "1311"
+        ],
+        "PlayerID": "571451020912618902",
+        "_id": "1795056843_14_169279768_571451020912618902",
+        "VTPentaKill": 0,
+        "HardCtrlTime": 6864,
+        "openid": "571451020912618902",
+        "D": 4,
+        "CampVisible": true,
+        "Gold": 5933,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 4492,
-        "Level": 5,
+        "Hp": 7909,
+        "IsDead": false,
+        "Level": 14,
         "Location": {
-          "x": 53133,
-          "z": 54324
+          "z": -42886,
+          "x": -42651
         },
-        "SeasonID": "TEST",
-        "MaxHp": 4492,
+        "TotalBlueBuff": 1,
+        "MaxHp": 7909,
+        "PlayerUID": "571451020912618902",
         "ReviveTime": 0,
-        "SkinID": 52100,
-        "CtrlTime": 1.716,
-        "GoldPerMin": 467.5,
-        "GoldToDmg": 1.643607099204,
-        "JfBeHurtR": 0.1647199989788,
-        "KillJoinR10M": 0.28571428571429,
+        "HeroID": "537",
+        "CtrlTime": 6.864,
+        "GoldPerMin": 341.30393096836,
+        "GoldToDmg": 0.6278845936587,
+        "HurtR10M": 0.11372310324406,
+        "JfBeHurtR": 0.18385864893976,
+        "KillJoinR10M": 0.22222222222222,
         "NeutralCtrlR": 0,
-        "RiverTimeR": 0.066265060240964,
+        "RiverTimeR": 0.083720930232558,
         "TfBeHurtR": 0,
+        "KillMonsterCnt": 5,
+        "RiverTime": 48.60000193119,
+        "A": 1,
+        "SkinID": 53700,
+        "Exp": 447,
+        "CoinNumFromSoldierline": 825,
+        "CoinNumFromSoldierlineMid": 372,
+        "TotalHurt": 80170,
+        "TotalBeHurtByHero": 25902,
+        "HeroHurtInfo": {
+          "7567735765784506146": 1205,
+          "13695787710442909268": 5638,
+          "3878011476585090515": 5211
+        },
+        "HurtHero10M": 6913,
+        "TotalHurtToHero": 12054,
+        "HealCnt": 5191,
+        "HurtToOrgan": 2724,
+        "BeHurtByOrgan": 6309,
+        "DeadLocation": [
+          {
+            "z": -7391,
+            "x": -7697
+          },
+          {
+            "z": -27274,
+            "x": -7814
+          },
+          {
+            "z": 983,
+            "x": -1262
+          },
+          {
+            "z": -7391,
+            "x": -7697
+          },
+          {
+            "z": -27274,
+            "x": -7814
+          },
+          {
+            "z": 2015,
+            "x": -26863
+          },
+          {
+            "z": 7715,
+            "x": -14299
+          }
+        ],
+        "CoinNumFromJungleSelfCamp": 191,
+        "JfBeHurtByHero": 16899,
+        "CoinNumFromEnemyHero": 455,
+        "CoinNumFromKillEnemyHero": 405
+      },
+      {
+        "KillSoidierCnt": 33,
+        "LastHit": 20,
         "Rune": {
           "1514": {
             "name": "1514",
@@ -290,120 +192,194 @@
             "totalnumber": 10
           }
         },
-        "PlayerUID": "17145562027324768716",
-        "Pos": 1,
-        "PlayerID": "17145562027324768716",
-        "Equips": [
-          "1423",
-          "1243",
-          "1211"
-        ],
-        "RiverTime": 13.200000524521,
-        "HorizonValue": 1,
-        "TotalHurt": 40257,
-        "Exp": 351,
-        "StartTeamFight": 1,
-        "LastHit": 20,
-        "HeroID": "521",
-        "HeroHurtInfo": {
-          "13695787710442909268": 5406,
-          "3878011476585090515": 5550
-        },
-        "TotalHurtToHero": 10956,
-        "HardCtrlTime": 1716
-      },
-      {
-        "Assist10M": 1,
-        "CoinNumFromAssistEnemyHero": 95,
-        "CoinNumFromEnemyHero": 95,
-        "JfBeHurtByHero": 16562,
-        "HealCnt": 644,
-        "CoinNumFromSoldierlineMid": 82,
-        "BeHurtByOrgan": 1559,
+        "HorizonValue": 5,
+        "RiverTime": 70.500002801418,
         "KillLocation": [
           {
-            "x": -6679,
-            "z": 646
+            "z": -10798,
+            "x": -2828
+          },
+          {
+            "z": 148496,
+            "x": 153022
+          },
+          {
+            "z": -10798,
+            "x": -2828
+          },
+          {
+            "z": 150436,
+            "x": 149670
+          },
+          {
+            "z": -1219,
+            "x": -3098
+          },
+          {
+            "z": -21046,
+            "x": 23796
+          },
+          {
+            "z": -20268,
+            "x": 24359
+          },
+          {
+            "z": 145050,
+            "x": 148231
           }
         ],
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 1,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
-        "StealMonster": 0,
+        "StealMonster": 4,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 1297,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 0,
-        "VTTripleKill": 0,
-        "CoinNumFromKillEnemyHero": 432,
-        "K": 0,
-        "PlayerName": "KAGE.Saule",
-        "HurtR10M": 0.10292994654556,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "15386513400443639771",
-        "SoftCtrlTime": 4092,
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 82,
-        "Camp": 2,
-        "NickName": "KAGE.Saule",
-        "HurtHero10M": 2561,
-        "TeamId": "hok_team2",
-        "KillSoidierCnt": 1,
-        "KillBigDragonCnt": 0,
-        "D": 1,
-        "VSTAllDeadCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
+        "VSTOdySseyCnt": 0,
+        "VSTStopMultiKillCnt": 2,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 2,
+        "BattleID": "1795056843_14_169279768",
         "VTQuataryKill": 0,
-        "PlayerUID": "15386513400443639771",
-        "VSTStopMultiKillCnt": 0,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "Kill10M": 1,
-        "TotalBeHurtByHero": 6196,
-        "A": 1,
-        "CampVisible": false,
+        "VTSingleKill": 4,
+        "VTTripleKill": 0,
+        "K": 6,
+        "Kill10M": 5,
+        "CoinNumFromJungle": 625,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 474,
+        "Assist10M": 1,
+        "CoinNumFromAssistEnemyHero": 125,
+        "StartTeamFight": 1,
+        "CoinNumFromSoldierlineDuiKang": 999,
+        "CoinNumFromSoldierlineFayu": 953,
+        "Camp": 2,
+        "NickName": "KAGE.Senkooo",
+        "TeamId": "hok_team2",
+        "DestroyTowerCnt": 1,
+        "TfBeHurtByHero": 6176,
+        "TfHurtToCC": 3918,
+        "TfHurtToHero": 14696,
+        "SkillID": 80115,
+        "PlayerName": "KAGE.Senkooo",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1423",
+          "1727",
+          "12211",
+          "1240",
+          "1232",
+          "1221"
+        ],
+        "Pos": 1,
+        "CoinNumFromJungleSelfCamp": 151,
+        "VTPentaKill": 0,
+        "HardCtrlTime": 4884,
+        "HeroID": "521",
+        "CampVisible": true,
+        "Gold": 9842,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 5693,
-        "Level": 4,
+        "Hp": 7369,
+        "IsDead": false,
+        "Level": 15,
         "Location": {
-          "x": 55757,
-          "z": 57652
+          "z": -43506,
+          "x": -38612
         },
+        "D": 6,
+        "MaxHp": 7369,
+        "PlayerUID": "17145562027324768716",
+        "ReviveTime": 0,
+        "SkinID": 52100,
+        "CtrlTime": 4.884,
+        "GoldPerMin": 566.1744966443,
+        "GoldToDmg": 1.9027267210735,
+        "HurtR10M": 0.51320984404817,
+        "JfBeHurtR": 0.20758761002252,
+        "KillJoinR10M": 0.66666666666667,
+        "NeutralCtrlR": 0.25,
+        "RiverTimeR": 0.12144702842377,
+        "TfBeHurtR": 1,
+        "PlayerID": "17145562027324768716",
+        "_id": "1795056843_14_169279768_17145562027324768716",
+        "A": 0,
+        "openid": "17145562027324768716",
+        "Exp": 1109,
+        "CoinNumFromSoldierline": 3715,
+        "CoinNumFromSoldierlineMid": 1763,
+        "TotalHurt": 291023,
+        "TotalBeHurtByHero": 41862,
+        "HeroHurtInfo": {
+          "7567735765784506146": 11862,
+          "4711836779651504031": 1206,
+          "4191853978952190311": 7210,
+          "13695787710442909268": 30229,
+          "3878011476585090515": 10088
+        },
+        "HurtHero10M": 31197,
+        "TotalHurtToHero": 60595,
+        "HealCnt": 2794,
+        "HurtToOrgan": 12382,
+        "BeHurtByOrgan": 5834,
         "DeadLocation": [
           {
-            "x": -562,
-            "z": -4034
+            "z": 151290,
+            "x": 154163
           },
           {
-            "x": 9737,
-            "z": -13577
+            "z": -4936,
+            "x": -2365
           },
           {
-            "x": -562,
-            "z": -4034
+            "z": 5466,
+            "x": 8156
+          },
+          {
+            "z": -6749,
+            "x": -916
+          },
+          {
+            "z": 151290,
+            "x": 154163
+          },
+          {
+            "z": -4936,
+            "x": -2365
+          },
+          {
+            "z": 5466,
+            "x": 8156
+          },
+          {
+            "z": -14987,
+            "x": -12461
+          },
+          {
+            "z": 147984,
+            "x": 156718
+          },
+          {
+            "z": -44253,
+            "x": -37550
           }
         ],
-        "MaxHp": 5693,
-        "ReviveTime": 0,
-        "SkinID": 12603,
-        "CtrlTime": 6.27,
-        "GoldPerMin": 294.77272727273,
-        "GoldToDmg": 0.60932623714478,
-        "JfBeHurtR": 0.21141449341962,
-        "KillJoinR10M": 0.28571428571429,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.039156626506024,
-        "TfBeHurtR": 0,
+        "KillMonsterCnt": 10,
+        "JfBeHurtByHero": 19080,
+        "CoinNumFromEnemyHero": 1470,
+        "CoinNumFromKillEnemyHero": 1470
+      },
+      {
+        "KillSoidierCnt": 3,
+        "LastHit": 2,
         "Rune": {
           "1512": {
             "name": "1512",
@@ -418,139 +394,130 @@
             "totalnumber": 10
           }
         },
-        "SkillID": 80104,
-        "SeasonID": "TEST",
-        "PlayerID": "15386513400443639771",
-        "Equips": [
-          "1522"
-        ],
-        "RiverTime": 7.8000003099442,
         "HorizonValue": 1,
-        "TotalHurt": 6737,
-        "Exp": 225,
-        "_id": "1795056843_14_169279768_15386513400443639771",
-        "LastHit": 2,
-        "HeroID": "126",
-        "HeroHurtInfo": {
-          "13695787710442909268": 2293,
-          "3878011476585090515": 268
-        },
-        "TotalHurtToHero": 2561,
-        "HardCtrlTime": 4224
-      },
-      {
-        "Assist10M": 2,
-        "CoinNumFromAssistEnemyHero": 437,
-        "CoinNumFromEnemyHero": 20,
-        "JfBeHurtByHero": 12057,
-        "HurtToOrgan": 922,
-        "HealCnt": 1307,
-        "CoinNumFromJungle": 67,
-        "CoinNumFromJungleEnemyCamp": 67,
-        "CoinNumFromSoldierlineMid": 200,
-        "BeHurtByOrgan": 1375,
+        "RiverTime": 25.200001001358,
         "KillLocation": [
           {
-            "x": -4637,
-            "z": -5047
+            "z": 646,
+            "x": -6679
           }
         ],
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
-        "KillDarkBigDragonCnt": 0,
+        "KillBigDragonCnt": 0,
+        "KillDarkBigDragonCnt": 1,
         "KillXiaoZhuzaiCnt": 0,
-        "PlayerUID": "13473981453798442148",
+        "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
         "StealMonster": 2,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
+        "VSTLegendaryCnt": 0,
+        "VSTMonsterKillCnt": 0,
         "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
         "VSTTotalAnnihilatCnt": 0,
         "VTDoubleKill": 0,
-        "VTPentaKill": 0,
+        "BattleID": "1795056843_14_169279768",
+        "VTQuataryKill": 0,
         "VTSingleKill": 0,
         "VTTripleKill": 0,
-        "SkillID": 80115,
         "K": 0,
-        "PlayerName": "KAGE.Zaan",
-        "HurtR10M": 0.039829588842892,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "13473981453798442148",
+        "Kill10M": 1,
+        "CoinNumFromJungle": 330,
         "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 200,
+        "CoinNumFromJungleEnemyCamp": 330,
+        "Assist10M": 1,
+        "CoinNumFromAssistEnemyHero": 95,
+        "CoinNumFromSoldierlineFayu": 180,
         "Camp": 2,
-        "NickName": "KAGE.Zaan",
+        "NickName": "KAGE.Saule",
+        "TeamId": "hok_team2",
+        "SkillID": 80104,
+        "PlayerName": "KAGE.Saule",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1532",
+          "1422",
+          "1331",
+          "1321"
+        ],
+        "HardCtrlTime": 5016,
+        "PlayerID": "15386513400443639771",
+        "VTPentaKill": 0,
+        "_id": "1795056843_14_169279768_15386513400443639771",
+        "CampVisible": false,
+        "Gold": 5830,
+        "HasBlue": false,
+        "HasRed": false,
+        "Hp": 11301,
+        "IsDead": false,
+        "Level": 13,
+        "Location": {
+          "z": -53861,
+          "x": 7728
+        },
+        "SelfKillDarkCnt": 1,
+        "MaxHp": 11301,
+        "PlayerUID": "15386513400443639771",
+        "ReviveTime": 0,
+        "HeroID": "126",
+        "CtrlTime": 7.062,
+        "GoldPerMin": 335.37871524449,
+        "GoldToDmg": 0.26462386608079,
+        "HurtR10M": 0.04213002566296,
+        "JfBeHurtR": 0.26068129644338,
+        "KillJoinR10M": 0.22222222222222,
+        "NeutralCtrlR": 0.25,
+        "RiverTimeR": 0.043410852713178,
+        "SoftCtrlTime": 4092,
+        "D": 2,
+        "TfBeHurtR": 0,
+        "A": 1,
+        "openid": "15386513400443639771",
+        "Exp": 1595,
+        "CoinNumFromSoldierline": 492,
+        "CoinNumFromSoldierlineMid": 312,
+        "TotalHurt": 62457,
+        "TotalBeHurtByHero": 16835,
+        "HeroHurtInfo": {
+          "13695787710442909268": 4724,
+          "3878011476585090515": 268
+        },
+        "HurtHero10M": 2561,
+        "TotalHurtToHero": 4992,
+        "HealCnt": 2054,
+        "SkinID": 12603,
+        "BeHurtByOrgan": 2099,
         "DeadLocation": [
           {
-            "x": -6909,
-            "z": -7169
+            "z": -4034,
+            "x": -562
           },
           {
-            "x": -3662,
-            "z": 1659
+            "z": -13577,
+            "x": 9737
           },
           {
-            "x": -3693,
-            "z": 2168
+            "z": -4034,
+            "x": -562
           },
           {
-            "x": -12959,
-            "z": -6109
-          },
-          {
-            "x": -6909,
-            "z": -7169
-          },
-          {
-            "x": -3662,
-            "z": 1659
+            "z": -40061,
+            "x": -8887
           }
         ],
-        "TeamId": "hok_team2",
-        "KillSoidierCnt": 4,
-        "KillBigDragonCnt": 0,
-        "D": 2,
-        "VSTAllDeadCnt": 0,
-        "VSTLegendaryCnt": 0,
-        "_id": "1795056843_14_169279768_13473981453798442148",
-        "CoinNumFromKillEnemyHero": 20,
-        "HasRed": false,
-        "KillYuanGuBaoJunCnt": 0,
-        "VTQuataryKill": 0,
-        "HeroID": "172",
-        "Equips": [
-          "1425",
-          "1112"
-        ],
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "Kill10M": 1,
-        "A": 0,
-        "HurtHero10M": 991,
-        "CampVisible": false,
-        "HasBlue": false,
-        "StartTeamFight": 1,
-        "Hp": 4979,
-        "Level": 4,
-        "Location": {
-          "x": 56368,
-          "z": 53358
-        },
-        "VSTMonsterKillCnt": 0,
-        "MaxHp": 4979,
-        "ReviveTime": 0,
-        "SkinID": 17201,
-        "CtrlTime": 0.528,
-        "GoldPerMin": 294.77272727273,
-        "GoldToDmg": 0.23578379578699,
-        "JfBeHurtR": 0.15390801516486,
-        "KillJoinR10M": 0.42857142857143,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.0045180722891566,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
+        "KillMonsterCnt": 3,
+        "JfBeHurtByHero": 23960,
+        "CoinNumFromEnemyHero": 280,
+        "CoinNumFromKillEnemyHero": 185
+      },
+      {
+        "KillSoidierCnt": 11,
+        "LastHit": 6,
         "Rune": {
           "1512": {
             "name": "1512",
@@ -573,107 +540,146 @@
             "totalnumber": 10
           }
         },
+        "HorizonValue": 6,
         "Pos": 2,
         "PlayerID": "13473981453798442148",
-        "Gold": 1297,
-        "RiverTime": 0.90000003576279,
-        "HorizonValue": 4,
-        "TotalHurt": 5746,
-        "Exp": 300,
-        "CoinNumFromSoldierlineFayu": 153,
-        "LastHit": 6,
-        "TotalBeHurtByHero": 12607,
-        "HeroHurtInfo": {
-          "13695787710442909268": 991
-        },
-        "TotalHurtToHero": 991,
-        "HardCtrlTime": 528
-      },
-      {
-        "CoinNumFromEnemyHero": 195,
-        "JfBeHurtByHero": 19917,
-        "HealCnt": 2370,
-        "CoinNumFromJungle": 70,
-        "CoinNumFromJungleEnemyCamp": 70,
-        "CoinNumFromSoldierlineMid": 361,
-        "BeHurtByOrgan": 1900,
-        "KillLocation": [
-          {
-            "x": 14407,
-            "z": 13397
-          },
-          {
-            "x": 4835,
-            "z": 1744
-          }
-        ],
         "FirstBloodTime": 0,
-        "KillBaronCnt": 0,
+        "_id": "1795056843_14_169279768_13473981453798442148",
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
-        "StealMonster": 1,
+        "StealMonster": 2,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
+        "VSTLegendaryCnt": 0,
+        "VSTMonsterKillCnt": 0,
         "VSTOdySseyCnt": 0,
-        "Gold": 1731,
+        "VSTStopMultiKillCnt": 0,
         "VSTTotalAnnihilatCnt": 0,
         "VTDoubleKill": 0,
         "VTPentaKill": 0,
-        "VTSingleKill": 1,
+        "VTQuataryKill": 0,
+        "VTSingleKill": 0,
         "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 1,
-        "PlayerName": "KAGE.Lu",
-        "HurtR10M": 0.32679554680278,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "10028229355941122752",
+        "K": 0,
+        "Kill10M": 1,
+        "CoinNumFromJungle": 224,
         "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 361,
+        "CoinNumFromJungleEnemyCamp": 224,
+        "Assist10M": 2,
+        "CoinNumFromAssistEnemyHero": 110,
+        "StartTeamFight": 1,
+        "CoinNumFromSoldierlineDuiKang": 578,
+        "CoinNumFromSoldierlineFayu": 133,
         "Camp": 2,
-        "NickName": "KAGE.Lu",
-        "DeadLocation": [
+        "NickName": "KAGE.Zaan",
+        "TeamId": "hok_team2",
+        "SkillID": 80115,
+        "PlayerName": "KAGE.Zaan",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1422",
+          "1135",
+          "1126",
+          "1154",
+          "1112",
+          "1111"
+        ],
+        "SkinID": 17201,
+        "KillLocation": [
           {
-            "x": -11451,
-            "z": -16018
-          },
-          {
-            "x": 14407,
-            "z": 13397
-          },
-          {
-            "x": -11451,
-            "z": -16018
+            "z": -5047,
+            "x": -4637
           }
         ],
-        "TeamId": "hok_team2",
-        "KillSoidierCnt": 6,
-        "KillBigDragonCnt": 0,
-        "D": 1,
-        "VSTAllDeadCnt": 0,
-        "VSTLegendaryCnt": 0,
-        "VSTMonsterKillCnt": 0,
-        "PlayerUID": "10028229355941122752",
-        "VSTStopMultiKillCnt": 0,
-        "VTQuataryKill": 0,
-        "Kill10M": 1,
-        "TotalBeHurtByHero": 8623,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "A": 0,
-        "HurtHero10M": 8131,
-        "_id": "1795056843_14_169279768_10028229355941122752",
+        "KillBaronCnt": 0,
+        "openid": "13473981453798442148",
         "CampVisible": true,
+        "Gold": 6243,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 4876,
-        "Level": 6,
+        "Hp": 8379,
+        "IsDead": false,
+        "Level": 14,
         "Location": {
-          "x": 4835,
-          "z": 1744
+          "z": -43763,
+          "x": -42288
         },
+        "KillMonsterCnt": 2,
+        "MaxHp": 8379,
+        "PlayerUID": "13473981453798442148",
+        "ReviveTime": 0,
+        "HeroID": "172",
+        "CtrlTime": 1.056,
+        "GoldPerMin": 359.13710450623,
+        "GoldToDmg": 0.12222238191424,
+        "HurtR10M": 0.016302559715733,
+        "JfBeHurtR": 0.13117839696234,
+        "KillJoinR10M": 0.33333333333333,
+        "NeutralCtrlR": 0,
+        "RiverTimeR": 0.02015503875969,
+        "TfBeHurtR": 0,
+        "BeHurtByOrgan": 1375,
+        "RiverTime": 11.700000464916,
+        "A": 1,
+        "HardCtrlTime": 1056,
+        "Exp": 33,
+        "CoinNumFromSoldierline": 1268,
+        "CoinNumFromSoldierlineMid": 557,
+        "TotalHurt": 41517,
+        "TotalBeHurtByHero": 21382,
+        "HeroHurtInfo": {
+          "13695787710442909268": 1541,
+          "4191853978952190311": 928
+        },
+        "HurtHero10M": 991,
+        "TotalHurtToHero": 2469,
+        "HealCnt": 2898,
+        "HurtToOrgan": 5831,
+        "D": 3,
+        "DeadLocation": [
+          {
+            "z": -7169,
+            "x": -6909
+          },
+          {
+            "z": 1659,
+            "x": -3662
+          },
+          {
+            "z": 2168,
+            "x": -3693
+          },
+          {
+            "z": -6109,
+            "x": -12959
+          },
+          {
+            "z": -7169,
+            "x": -6909
+          },
+          {
+            "z": 1659,
+            "x": -3662
+          },
+          {
+            "z": -621,
+            "x": -28863
+          }
+        ],
+        "BattleID": "1795056843_14_169279768",
+        "JfBeHurtByHero": 12057,
+        "CoinNumFromEnemyHero": 315,
+        "CoinNumFromKillEnemyHero": 205
+      },
+      {
+        "KillSoidierCnt": 27,
+        "LastHit": 6,
         "Rune": {
           "1512": {
             "name": "1512",
@@ -688,133 +694,159 @@
             "totalnumber": 10
           }
         },
-        "MaxHp": 7583,
-        "ReviveTime": 0,
-        "SkinID": 16800,
-        "CtrlTime": 6.666,
-        "GoldPerMin": 393.40909090909,
-        "GoldToDmg": 1.4495298719536,
-        "JfBeHurtR": 0.25424118255275,
-        "KillJoinR10M": 0.14285714285714,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.025602409638554,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
-        "CoinNumFromKillEnemyHero": 195,
+        "HorizonValue": 23,
         "Pos": 4,
         "PlayerID": "10028229355941122752",
-        "Equips": [
-          "1714",
-          "1426"
-        ],
-        "RiverTime": 5.1000002026558,
-        "HorizonValue": 6,
-        "TotalHurt": 19452,
-        "Exp": 153,
-        "CoinNumFromSoldierlineFayu": 61,
-        "LastHit": 6,
-        "HeroID": "168",
-        "HeroHurtInfo": {
-          "7567735765784506146": 2507,
-          "4711836779651504031": 3560,
-          "13695787710442909268": 1020,
-          "3878011476585090515": 1044
-        },
-        "TotalHurtToHero": 8131,
-        "HardCtrlTime": 6666
-      },
-      {
-        "Assist10M": 1,
-        "CoinNumFromAssistEnemyHero": 67,
-        "CoinNumFromEnemyHero": 242,
-        "JfBeHurtByHero": 8530,
-        "HurtToOrgan": 1134,
-        "HealCnt": 744,
-        "CoinNumFromJungle": 56,
-        "CoinNumFromJungleEnemyCamp": 56,
-        "CoinNumFromSoldierlineMid": 35,
-        "BeHurtByOrgan": 3814,
-        "KillLocation": [
-          {
-            "x": -10463,
-            "z": -16003
-          },
-          {
-            "x": -10463,
-            "z": -16003
-          }
-        ],
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
-        "StealMonster": 0,
-        "StealRedBuff": 0,
+        "StealMonster": 5,
+        "StealRedBuff": 1,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 2138,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 1,
-        "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 1,
-        "PlayerName": "GKE.Jem",
-        "HurtR10M": 0.051369863013699,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "7567735765784506146",
-        "SoftCtrlTime": 1452,
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 891,
-        "Camp": 1,
-        "NickName": "GKE.Jem",
-        "HurtHero10M": 3210,
-        "TeamId": "hok_team1",
-        "KillSoidierCnt": 7,
-        "KillBigDragonCnt": 0,
-        "D": 1,
-        "VSTAllDeadCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
-        "PlayerUID": "7567735765784506146",
+        "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
-        "A": 1,
-        "CoinNumFromKillEnemyHero": 175,
-        "TotalBeHurtByHero": 3712,
-        "IsDead": false,
-        "CurrentGameTime": 264,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
+        "BattleID": "1795056843_14_169279768",
         "VTQuataryKill": 0,
-        "Equips": [
-          "1129",
-          "11110",
-          "1112"
-        ],
-        "_id": "1795056843_14_169279768_7567735765784506146",
-        "CampVisible": false,
-        "HasBlue": false,
+        "VTSingleKill": 3,
+        "VTTripleKill": 0,
+        "K": 3,
+        "Kill10M": 1,
+        "CoinNumFromJungle": 531,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 425,
+        "Assist10M": 3,
+        "CoinNumFromAssistEnemyHero": 379,
         "StartTeamFight": 1,
-        "Hp": 4200,
-        "Level": 5,
-        "Location": {
-          "x": 33884,
-          "z": -44872
-        },
+        "CoinNumFromSoldierlineDuiKang": 190,
+        "CoinNumFromSoldierlineFayu": 269,
+        "Camp": 2,
+        "NickName": "KAGE.Lu",
+        "TeamId": "hok_team2",
+        "DestroyTowerCnt": 1,
+        "TfHurtToCC": 1855,
+        "TfHurtToHero": 4924,
+        "SkillID": 80115,
+        "PlayerName": "KAGE.Lu",
         "SeasonID": "TEST",
-        "MaxHp": 4405,
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1133",
+          "1135",
+          "1425",
+          "1124",
+          "1312",
+          "1311"
+        ],
+        "KillLocation": [
+          {
+            "z": 13397,
+            "x": 14407
+          },
+          {
+            "z": 1744,
+            "x": 4835
+          },
+          {
+            "z": -42754,
+            "x": 4512
+          },
+          {
+            "z": -36645,
+            "x": -39165
+          }
+        ],
+        "VTPentaKill": 0,
+        "CoinNumFromJungleSelfCamp": 106,
+        "_id": "1795056843_14_169279768_10028229355941122752",
+        "TotalBlueBuff": 1,
+        "BeHurtByOrgan": 14504,
+        "openid": "10028229355941122752",
+        "CampVisible": true,
+        "Gold": 10105,
+        "HasBlue": false,
+        "HasRed": true,
+        "Hp": 9805,
+        "IsDead": false,
+        "Level": 15,
+        "Location": {
+          "z": -50704,
+          "x": -47445
+        },
+        "HeroID": "168",
+        "MaxHp": 9978,
+        "PlayerUID": "10028229355941122752",
         "ReviveTime": 0,
-        "SkinID": 54702,
-        "CtrlTime": 0.726,
-        "GoldPerMin": 485.90909090909,
-        "GoldToDmg": 0.23282225098351,
-        "JfBeHurtR": 0.25616384876423,
-        "KillJoinR10M": 0.22222222222222,
+        "SkinID": 16800,
+        "CtrlTime": 20.988,
+        "GoldPerMin": 581.30393096836,
+        "GoldToDmg": 1.30582215215,
+        "HurtR10M": 0.31463446732908,
+        "JfBeHurtR": 0.216694047632,
+        "KillJoinR10M": 0.44444444444444,
         "NeutralCtrlR": 0,
-        "RiverTimeR": 0.012048192771084,
+        "RiverTimeR": 0.2,
         "TfBeHurtR": 0,
+        "TotalRedBuff": 1,
+        "RiverTime": 116.1000046134,
+        "A": 3,
+        "HardCtrlTime": 20988,
+        "Exp": 1906,
+        "CoinNumFromSoldierline": 3784,
+        "CoinNumFromSoldierlineMid": 3325,
+        "TotalHurt": 210584,
+        "TotalBeHurtByHero": 57751,
+        "HeroHurtInfo": {
+          "7567735765784506146": 10439,
+          "4711836779651504031": 3560,
+          "4191853978952190311": 3769,
+          "13695787710442909268": 17108,
+          "3878011476585090515": 7821
+        },
+        "HurtHero10M": 19126,
+        "TotalHurtToHero": 42697,
+        "HealCnt": 21551,
+        "HurtToOrgan": 5800,
+        "D": 3,
+        "DeadLocation": [
+          {
+            "z": -16018,
+            "x": -11451
+          },
+          {
+            "z": 13397,
+            "x": 14407
+          },
+          {
+            "z": -16018,
+            "x": -11451
+          },
+          {
+            "z": -4872,
+            "x": -2295
+          },
+          {
+            "z": -50824,
+            "x": -52587
+          }
+        ],
+        "KillMonsterCnt": 6,
+        "JfBeHurtByHero": 19917,
+        "CoinNumFromEnemyHero": 1119,
+        "CoinNumFromKillEnemyHero": 740
+      },
+      {
+        "KillSoidierCnt": 14,
+        "LastHit": 16,
         "Rune": {
           "1512": {
             "name": "1512",
@@ -833,108 +865,146 @@
             "totalnumber": 10
           }
         },
-        "DeadLocation": [
+        "HorizonValue": 6,
+        "Pos": 2,
+        "KillLocation": [
           {
-            "x": 48740,
-            "z": -33178
+            "z": -16003,
+            "x": -10463
           },
           {
-            "x": -7563,
-            "z": -6916
+            "z": -16003,
+            "x": -10463
           },
           {
-            "x": 48740,
-            "z": -33178
+            "z": -19004,
+            "x": -16789
           }
         ],
-        "Pos": 2,
-        "PlayerID": "7567735765784506146",
-        "Kill10M": 1,
-        "RiverTime": 2.4000000953674,
-        "HorizonValue": 1,
-        "TotalHurt": 24881,
-        "Exp": 238,
-        "CoinNumFromSoldierlineFayu": 856,
-        "LastHit": 16,
-        "HeroID": "547",
-        "HeroHurtInfo": {
-          "10028229355941122752": 2238,
-          "571451020912618902": 972
-        },
-        "TotalHurtToHero": 3210,
-        "HasRed": false
-      },
-      {
-        "JfBeHurtByHero": 601,
-        "HealCnt": 716,
-        "CoinNumFromJungle": 56,
-        "CoinNumFromJungleEnemyCamp": 56,
-        "CoinNumFromSoldierlineMid": 72,
-        "BeHurtByOrgan": 498,
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
         "StealMonster": 0,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 1077,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 0,
-        "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 0,
-        "PlayerName": "GKE.Zhe",
-        "HurtR10M": 0.11629432851107,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "4711836779651504031",
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 72,
-        "Camp": 1,
-        "NickName": "GKE.Zhe",
-        "DeadLocation": [
-          {
-            "x": -4332,
-            "z": 1277
-          },
-          {
-            "x": -6579,
-            "z": 427
-          },
-          {
-            "x": 2528,
-            "z": 1427
-          }
-        ],
-        "TeamId": "hok_team1",
-        "KillSoidierCnt": 3,
-        "KillBigDragonCnt": 0,
-        "D": 1,
-        "VSTAllDeadCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
-        "VTQuataryKill": 0,
-        "PlayerUID": "4711836779651504031",
-        "IsDead": true,
-        "CurrentGameTime": 264,
+        "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
-        "A": 0,
-        "TotalBeHurtByHero": 3560,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
+        "BattleID": "1795056843_14_169279768",
+        "VTQuataryKill": 0,
+        "VTSingleKill": 2,
+        "VTTripleKill": 0,
+        "K": 2,
+        "Kill10M": 2,
+        "CoinNumFromJungle": 50,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 50,
+        "Assist10M": 1,
+        "CoinNumFromAssistEnemyHero": 312,
+        "StartTeamFight": 1,
+        "CoinNumFromSoldierlineDuiKang": 92,
+        "CoinNumFromSoldierlineFayu": 1334,
+        "Camp": 1,
+        "NickName": "GKE.Jem",
+        "TeamId": "hok_team1",
+        "TfBeHurtByHero": 1780,
+        "SkillID": 80115,
+        "PlayerName": "GKE.Jem",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1135",
+          "1425",
+          "1126",
+          "1136"
+        ],
+        "SkinID": 54702,
+        "openid": "7567735765784506146",
+        "RiverTime": 36.000001430511,
         "CampVisible": true,
+        "Gold": 7008,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 0,
-        "Level": 4,
+        "Hp": 5187,
+        "IsDead": false,
+        "Level": 13,
         "Location": {
-          "x": 2528,
-          "z": 1427
+          "z": -56414,
+          "x": -53416
         },
+        "BeHurtByOrgan": 3814,
+        "MaxHp": 6435,
+        "PlayerUID": "7567735765784506146",
+        "ReviveTime": 0,
+        "HeroID": "547",
+        "CtrlTime": 0.726,
+        "GoldPerMin": 403.1447746884,
+        "GoldToDmg": 0.47644144278021,
+        "HurtR10M": 0.12294947674538,
+        "JfBeHurtR": 0.20428520625889,
+        "KillJoinR10M": 0.27272727272727,
+        "NeutralCtrlR": 0,
+        "RiverTimeR": 0.062015503875969,
+        "SoftCtrlTime": 1452,
+        "_id": "1795056843_14_169279768_7567735765784506146",
+        "PlayerID": "7567735765784506146",
+        "A": 3,
+        "VTPentaKill": 0,
+        "Exp": 1702,
+        "CoinNumFromSoldierline": 2305,
+        "CoinNumFromSoldierlineMid": 879,
+        "TotalHurt": 76521,
+        "TotalBeHurtByHero": 23506,
+        "HeroHurtInfo": {
+          "571451020912618902": 972,
+          "15386513400443639771": 4648,
+          "10028229355941122752": 7615,
+          "17145562027324768716": 3793
+        },
+        "HurtHero10M": 12007,
+        "TotalHurtToHero": 17028,
+        "HealCnt": 5978,
+        "HurtToOrgan": 3090,
+        "D": 3,
+        "DeadLocation": [
+          {
+            "z": -33178,
+            "x": 48740
+          },
+          {
+            "z": -6916,
+            "x": -7563
+          },
+          {
+            "z": -33178,
+            "x": 48740
+          },
+          {
+            "z": -18898,
+            "x": 26281
+          },
+          {
+            "z": -45663,
+            "x": 4057
+          }
+        ],
+        "TfBeHurtR": 0.09072375127421,
+        "JfBeHurtByHero": 11489,
+        "CoinNumFromEnemyHero": 722,
+        "CoinNumFromKillEnemyHero": 410
+      },
+      {
+        "KillSoidierCnt": 3,
+        "LastHit": 3,
         "Rune": {
           "1504": {
             "name": "1504",
@@ -953,118 +1023,116 @@
             "totalnumber": 10
           }
         },
-        "MaxHp": 4570,
-        "ReviveTime": 20,
-        "SkinID": 63100,
-        "CtrlTime": 0.726,
-        "GoldPerMin": 244.77272727273,
-        "GoldToDmg": 1.0463250169659,
-        "JfBeHurtR": 0.018048590047749,
-        "KillJoinR10M": 0,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.051204819277108,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
-        "_id": "1795056843_14_169279768_4711836779651504031",
+        "HorizonValue": 1,
         "Pos": 4,
         "PlayerID": "4711836779651504031",
-        "HurtHero10M": 7267,
-        "RiverTime": 10.200000405312,
-        "HorizonValue": 1,
-        "TotalHurt": 11119,
-        "Exp": 8,
-        "Equips": [
-          "1421"
-        ],
-        "LastHit": 3,
-        "HeroID": "631",
-        "HeroHurtInfo": {
-          "571451020912618902": 1972,
-          "10028229355941122752": 489,
-          "15386513400443639771": 1317,
-          "17145562027324768716": 3489
-        },
-        "TotalHurtToHero": 7267,
-        "HardCtrlTime": 726
-      },
-      {
-        "Assist10M": 2,
-        "CoinNumFromAssistEnemyHero": 238,
-        "CoinNumFromEnemyHero": 238,
-        "JfBeHurtByHero": 1091,
-        "HurtToOrgan": 1911,
-        "HealCnt": 1529,
-        "CoinNumFromJungle": 56,
-        "CoinNumFromJungleEnemyCamp": 56,
-        "CoinNumFromSoldierlineMid": 391,
         "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
-        "PlayerUID": "4191853978952190311",
+        "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
         "StealMonster": 0,
         "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
         "VSTFirstKillCnt": 0,
-        "VSTOdySseyCnt": 0,
-        "Gold": 1005,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 0,
-        "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 0,
-        "PlayerName": "GKE.Guiyu",
-        "HurtR10M": 0.08936115734221,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "4191853978952190311",
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 391,
-        "Camp": 1,
-        "NickName": "GKE.Guiyu",
-        "HurtHero10M": 5584,
-        "TeamId": "hok_team1",
-        "KillSoidierCnt": 4,
-        "KillBigDragonCnt": 0,
-        "D": 0,
-        "VSTAllDeadCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
-        "VTQuataryKill": 0,
-        "KillYuanGuBaoJunCnt": 0,
-        "IsDead": false,
-        "CurrentGameTime": 264,
+        "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
+        "BattleID": "1795056843_14_169279768",
+        "VTQuataryKill": 0,
+        "VTSingleKill": 0,
+        "VTTripleKill": 0,
+        "K": 0,
+        "CoinNumFromJungle": 50,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 50,
+        "CoinNumFromSoldierlineDuiKang": 92,
+        "Camp": 1,
+        "NickName": "GKE.Zhe",
+        "TeamId": "hok_team1",
+        "TfBeHurtByHero": 1206,
+        "SkillID": 80115,
+        "PlayerName": "GKE.Zhe",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1421",
+          "1345"
+        ],
+        "HardCtrlTime": 726,
+        "CampVisible": true,
+        "Gold": 4459,
+        "HasBlue": false,
+        "HasRed": false,
+        "Hp": 7180,
+        "IsDead": false,
+        "Level": 13,
+        "Location": {
+          "z": -57574,
+          "x": -55764
+        },
+        "_id": "1795056843_14_169279768_4711836779651504031",
+        "MaxHp": 7180,
+        "PlayerUID": "4711836779651504031",
+        "ReviveTime": 0,
+        "HeroID": "631",
+        "CtrlTime": 0.726,
+        "GoldPerMin": 256.51006711409,
+        "GoldToDmg": 0.31956386903325,
+        "HurtR10M": 0.074412746523582,
+        "JfBeHurtR": 0.032130156472262,
+        "KillJoinR10M": 0,
+        "NeutralCtrlR": 0,
+        "RiverTimeR": 0.017571059431525,
+        "TfBeHurtR": 0.061467889908257,
+        "VTPentaKill": 0,
+        "RiverTime": 10.200000405312,
+        "A": 0,
+        "SkinID": 63100,
+        "Exp": 654,
+        "CoinNumFromSoldierline": 420,
+        "CoinNumFromSoldierlineMid": 328,
+        "TotalHurt": 11119,
+        "TotalBeHurtByHero": 4766,
+        "HeroHurtInfo": {
+          "571451020912618902": 1972,
+          "15386513400443639771": 1317,
+          "10028229355941122752": 489,
+          "17145562027324768716": 3489
+        },
+        "HurtHero10M": 7267,
+        "TotalHurtToHero": 7267,
+        "HealCnt": 716,
+        "D": 1,
+        "BeHurtByOrgan": 498,
         "DeadLocation": [
           {
-            "x": 151285,
-            "z": 148746
+            "z": 1277,
+            "x": -4332
+          },
+          {
+            "z": 427,
+            "x": -6579
+          },
+          {
+            "z": 1427,
+            "x": 2528
           }
         ],
-        "TotalBeHurtByHero": 8342,
-        "CampVisible": false,
-        "HasBlue": false,
-        "StartTeamFight": 1,
-        "Hp": 4578,
-        "Level": 3,
-        "Location": {
-          "x": -56379,
-          "z": -53367
-        },
-        "_id": "1795056843_14_169279768_4191853978952190311",
-        "MaxHp": 4578,
-        "ReviveTime": 0,
-        "SkinID": 12311,
-        "CtrlTime": 0.858,
-        "GoldPerMin": 228.40909090909,
-        "GoldToDmg": 0.86160160661295,
-        "JfBeHurtR": 0.032763746659059,
-        "KillJoinR10M": 0.22222222222222,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.051204819277108,
-        "TfBeHurtR": 0,
+        "openid": "4711836779651504031",
+        "JfBeHurtByHero": 1807,
+        "CoinNumFromEnemyHero": 70,
+        "CoinNumFromKillEnemyHero": 70
+      },
+      {
+        "KillSoidierCnt": 1,
+        "LastHit": 4,
         "Rune": {
           "1503": {
             "name": "1503",
@@ -1087,129 +1155,113 @@
             "totalnumber": 10
           }
         },
-        "Equips": [
-          "1345",
-          "1422",
-          "1124"
-        ],
-        "SeasonID": "TEST",
-        "PlayerID": "4191853978952190311",
-        "A": 0,
+        "HorizonValue": 3,
         "RiverTime": 10.200000405312,
-        "HorizonValue": 2,
-        "TotalHurt": 12435,
-        "Exp": 366,
-        "HasRed": false,
-        "LastHit": 4,
-        "HeroID": "123",
-        "HeroHurtInfo": {
-          "571451020912618902": 1608,
-          "17145562027324768716": 992,
-          "10028229355941122752": 2984
-        },
-        "TotalHurtToHero": 5584,
-        "HardCtrlTime": 858
-      },
-      {
-        "Assist10M": 2,
-        "CoinNumFromAssistEnemyHero": 165,
-        "CoinNumFromEnemyHero": 547,
-        "JfBeHurtByHero": 5195,
-        "HealCnt": 2223,
-        "CoinNumFromJungle": 112,
-        "CoinNumFromJungleEnemyCamp": 56,
-        "CoinNumFromSoldierlineMid": 535,
-        "BeHurtByOrgan": 533,
-        "KillLocation": [
-          {
-            "x": -8085,
-            "z": -5635
-          },
-          {
-            "x": -2460,
-            "z": 196
-          },
-          {
-            "x": -8085,
-            "z": -5635
-          },
-          {
-            "x": -2460,
-            "z": 196
-          }
-        ],
-        "FirstBloodTime": 89,
+        "PlayerID": "4191853978952190311",
+        "FirstBloodTime": 0,
         "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
         "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
         "StealMonster": 0,
         "StealRedBuff": 0,
-        "VSTDominateBattleCnt": 0,
-        "VSTFirstKillCnt": 1,
-        "VSTOdySseyCnt": 0,
-        "Gold": 2087,
-        "VSTTotalAnnihilatCnt": 0,
-        "VTDoubleKill": 0,
-        "VTPentaKill": 0,
-        "VTSingleKill": 2,
-        "VTTripleKill": 0,
-        "SkillID": 80115,
-        "K": 2,
-        "PlayerName": "GKE.Shisan",
-        "CoinNumFromJungleSelfCamp": 56,
-        "HurtR10M": 0.24182242990654,
-        "BattleID": "1795056843_14_169279768",
-        "openid": "3878011476585090515",
-        "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 535,
-        "Camp": 1,
-        "NickName": "GKE.Shisan",
-        "DeadLocation": [
-          {
-            "x": -9189,
-            "z": -14845
-          },
-          {
-            "x": -2403,
-            "z": 2855
-          },
-          {
-            "x": -9189,
-            "z": -14845
-          }
-        ],
-        "TeamId": "hok_team1",
-        "KillSoidierCnt": 7,
-        "KillBigDragonCnt": 0,
-        "D": 1,
         "VSTAllDeadCnt": 0,
+        "VSTDominateBattleCnt": 0,
+        "VSTFirstKillCnt": 0,
         "VSTLegendaryCnt": 0,
         "VSTMonsterKillCnt": 0,
-        "CoinNumFromKillEnemyHero": 382,
-        "Kill10M": 2,
-        "A": 2,
+        "VSTOdySseyCnt": 0,
+        "VSTStopMultiKillCnt": 0,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
+        "BattleID": "1795056843_14_169279768",
+        "VTQuataryKill": 0,
+        "VTSingleKill": 0,
+        "VTTripleKill": 0,
+        "K": 0,
+        "CoinNumFromJungle": 50,
+        "ScheduleID": "TEST20261119",
+        "CoinNumFromJungleEnemyCamp": 50,
+        "Assist10M": 2,
+        "CoinNumFromAssistEnemyHero": 145,
+        "StartTeamFight": 1,
+        "CoinNumFromSoldierlineDuiKang": 247,
+        "Camp": 1,
+        "NickName": "GKE.Guiyu",
+        "TeamId": "hok_team1",
+        "TfBeHurtByHero": 7800,
+        "TfHurtToCC": 84,
+        "SkillID": 80115,
+        "PlayerName": "GKE.Guiyu",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
         "Equips": [
-          "1423",
-          "1211",
+          "11311",
+          "1422",
           "1311"
         ],
-        "TotalBeHurtByHero": 7402,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "VTQuataryKill": 0,
-        "StartTeamFight": 1,
-        "HurtHero10M": 15111,
         "CampVisible": true,
+        "Gold": 4876,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 2163,
-        "Level": 5,
+        "Hp": 0,
+        "IsDead": false,
+        "Level": 13,
         "Location": {
-          "x": -160,
-          "z": -2302
+          "z": -35774,
+          "x": -41624
         },
+        "_id": "1795056843_14_169279768_4191853978952190311",
+        "MaxHp": 7584,
+        "PlayerUID": "4191853978952190311",
+        "ReviveTime": 36,
+        "SkinID": 12311,
+        "CtrlTime": 0.858,
+        "GoldPerMin": 280.49856184084,
+        "GoldToDmg": 0.043270165586459,
+        "HurtR10M": 0.057179135349895,
+        "JfBeHurtR": 0.15809032716927,
+        "KillJoinR10M": 0.18181818181818,
+        "NeutralCtrlR": 0,
+        "RiverTimeR": 0.017571059431525,
+        "TfBeHurtR": 0.39755351681957,
+        "VTPentaKill": 0,
+        "openid": "4191853978952190311",
+        "A": 1,
+        "HardCtrlTime": 858,
+        "Exp": 1362,
+        "CoinNumFromSoldierline": 727,
+        "CoinNumFromSoldierlineMid": 480,
+        "TotalHurt": 3192,
+        "TotalBeHurtByHero": 11907,
+        "HeroHurtInfo": {
+          "17145562027324768716": 1076
+        },
+        "HurtHero10M": 5584,
+        "TotalHurtToHero": 1076,
+        "HealCnt": 818,
+        "HurtToOrgan": 1911,
+        "D": 1,
+        "DeadLocation": [
+          {
+            "z": 148746,
+            "x": 151285
+          },
+          {
+            "z": -35774,
+            "x": -41624
+          }
+        ],
+        "HeroID": "123",
+        "JfBeHurtByHero": 8891,
+        "CoinNumFromEnemyHero": 180,
+        "CoinNumFromKillEnemyHero": 35
+      },
+      {
+        "KillSoidierCnt": 11,
+        "LastHit": 7,
         "Rune": {
           "1514": {
             "name": "1514",
@@ -1224,207 +1276,155 @@
             "totalnumber": 10
           }
         },
-        "MaxHp": 4406,
-        "ReviveTime": 0,
-        "SkinID": 63500,
-        "CtrlTime": 1.188,
-        "GoldPerMin": 474.31818181818,
-        "GoldToDmg": 1.1227883784353,
-        "JfBeHurtR": 0.15601069101174,
-        "KillJoinR10M": 0.44444444444444,
-        "NeutralCtrlR": 0,
-        "RiverTimeR": 0.25451807228916,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
-        "VSTStopMultiKillCnt": 0,
+        "HorizonValue": 6,
         "Pos": 1,
         "PlayerID": "3878011476585090515",
+        "FirstBloodTime": 89,
         "_id": "1795056843_14_169279768_3878011476585090515",
-        "RiverTime": 50.700002014637,
-        "HorizonValue": 4,
-        "TotalHurt": 26735,
-        "Exp": 163,
-        "PlayerUID": "3878011476585090515",
-        "LastHit": 7,
-        "HeroID": "635",
-        "HeroHurtInfo": {
-          "17145562027324768716": 3784,
-          "571451020912618902": 2022,
-          "13473981453798442148": 5197,
-          "10028229355941122752": 3724,
-          "15386513400443639771": 384
-        },
-        "TotalHurtToHero": 15111,
-        "HardCtrlTime": 1188
-      },
-      {
-        "Assist10M": 2,
-        "CoinNumFromAssistEnemyHero": 212,
-        "CoinNumFromEnemyHero": 1154,
-        "JfBeHurtByHero": 17882,
-        "HealCnt": 3983,
-        "CoinNumFromJungle": 774,
-        "CoinNumFromJungleEnemyCamp": 263,
-        "CoinNumFromSoldierlineMid": 450,
-        "BeHurtByOrgan": 533,
-        "KillLocation": [
-          {
-            "x": 152355,
-            "z": 151728
-          },
-          {
-            "x": -643,
-            "z": -4093
-          },
-          {
-            "x": -7608,
-            "z": -6979
-          },
-          {
-            "x": -1653,
-            "z": -4936
-          },
-          {
-            "x": -9737,
-            "z": -23236
-          },
-          {
-            "x": 2408,
-            "z": 403
-          },
-          {
-            "x": -3655,
-            "z": 2332
-          },
-          {
-            "x": -1122,
-            "z": -8273
-          },
-          {
-            "x": 9333,
-            "z": -13805
-          },
-          {
-            "x": -11380,
-            "z": -7376
-          },
-          {
-            "x": -144,
-            "z": 2421
-          },
-          {
-            "x": 13593,
-            "z": 11930
-          },
-          {
-            "x": 152355,
-            "z": 151728
-          },
-          {
-            "x": -643,
-            "z": -4093
-          },
-          {
-            "x": -7608,
-            "z": -6979
-          },
-          {
-            "x": -1653,
-            "z": -4936
-          },
-          {
-            "x": -9737,
-            "z": -23236
-          },
-          {
-            "x": 2408,
-            "z": 403
-          }
-        ],
-        "FirstBloodTime": 0,
-        "KillBaronCnt": 0,
+        "KillBigDragonCnt": 0,
         "KillDarkBigDragonCnt": 0,
         "KillXiaoZhuzaiCnt": 0,
-        "PlayerUID": "13695787710442909268",
+        "KillYuanGuBaoJunCnt": 0,
         "StealBlueBuff": 0,
-        "StealMonster": 2,
-        "StealRedBuff": 1,
+        "StealMonster": 0,
+        "StealRedBuff": 0,
+        "VSTAllDeadCnt": 0,
         "VSTDominateBattleCnt": 0,
-        "VSTFirstKillCnt": 0,
+        "VSTFirstKillCnt": 1,
+        "VSTLegendaryCnt": 0,
+        "VSTMonsterKillCnt": 0,
         "VSTOdySseyCnt": 0,
         "VSTStopMultiKillCnt": 0,
-        "VSTTotalAnnihilatCnt": 1,
-        "VTDoubleKill": 1,
-        "VTPentaKill": 0,
-        "VTSingleKill": 4,
-        "VTTripleKill": 1,
-        "SkillID": 80104,
-        "K": 6,
-        "PlayerName": "GKE.MusangKing",
-        "CoinNumFromJungleSelfCamp": 511,
-        "HurtR10M": 0.50115222122648,
+        "VSTTotalAnnihilatCnt": 0,
+        "VTDoubleKill": 0,
         "BattleID": "1795056843_14_169279768",
-        "openid": "13695787710442909268",
+        "VTQuataryKill": 0,
+        "VTSingleKill": 3,
+        "VTTripleKill": 0,
+        "K": 3,
+        "Kill10M": 3,
+        "CoinNumFromJungle": 50,
         "ScheduleID": "TEST20261119",
-        "CoinNumFromSoldierline": 450,
+        "CoinNumFromJungleEnemyCamp": 50,
+        "Assist10M": 2,
+        "CoinNumFromAssistEnemyHero": 165,
+        "StartTeamFight": 1,
+        "CoinNumFromSoldierlineDuiKang": 92,
         "Camp": 1,
-        "NickName": "GKE.MusangKing",
-        "DeadLocation": [
-          {
-            "x": -3588,
-            "z": -4994
-          },
-          {
-            "x": 9779,
-            "z": 20066
-          }
-        ],
+        "NickName": "GKE.Shisan",
         "TeamId": "hok_team1",
-        "KillSoidierCnt": 4,
-        "KillBigDragonCnt": 0,
-        "D": 0,
-        "VSTAllDeadCnt": 0,
-        "VSTLegendaryCnt": 0,
-        "VSTMonsterKillCnt": 1,
-        "_id": "1795056843_14_169279768_13695787710442909268",
-        "A": 2,
-        "CoinNumFromKillEnemyHero": 942,
-        "Kill10M": 6,
-        "IsDead": false,
-        "CurrentGameTime": 264,
-        "HeroID": "646",
-        "StartTeamFight": 3,
+        "TfBeHurtByHero": 3993,
+        "SkillID": 80115,
+        "PlayerName": "GKE.Shisan",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
         "Equips": [
-          "1523",
-          "1422",
-          "1124",
-          "1122"
+          "1423",
+          "1235",
+          "1231",
+          "13212",
+          "1311"
         ],
-        "CampVisible": false,
+        "RiverTime": 51.000002026558,
+        "HardCtrlTime": 2376,
+        "CoinNumFromJungleSelfCamp": 56,
+        "CampVisible": true,
+        "Gold": 6148,
         "HasBlue": false,
         "HasRed": false,
-        "Hp": 2140,
-        "Level": 7,
+        "Hp": 6479,
+        "IsDead": false,
+        "Level": 13,
         "Location": {
-          "x": -28304,
-          "z": 2479
+          "z": -53939,
+          "x": -53911
         },
-        "HurtHero10M": 31316,
-        "MaxHp": 4982,
+        "openid": "3878011476585090515",
+        "MaxHp": 7438,
+        "PlayerUID": "3878011476585090515",
         "ReviveTime": 0,
-        "SkinID": 64600,
-        "CtrlTime": 0,
-        "GoldPerMin": 768.86363636364,
-        "GoldToDmg": 1.4354611361763,
-        "JfBeHurtR": 0.53701312351722,
-        "KillJoinR10M": 0.88888888888889,
-        "NeutralCtrlR": 1,
-        "RiverTimeR": 0.46084337349398,
-        "TfBeHurtR": 0,
-        "SeasonID": "TEST",
-        "KillYuanGuBaoJunCnt": 0,
-        "Pos": 3,
-        "PlayerID": "13695787710442909268",
+        "HeroID": "635",
+        "CtrlTime": 2.376,
+        "GoldPerMin": 353.67209971237,
+        "GoldToDmg": 0.83300199493989,
+        "HurtR10M": 0.26744352741199,
+        "JfBeHurtR": 0.16337126600284,
+        "KillJoinR10M": 0.45454545454545,
+        "NeutralCtrlR": 0,
+        "RiverTimeR": 0.087855297157623,
+        "TfBeHurtR": 0.20351681957187,
+        "KillLocation": [
+          {
+            "z": -5635,
+            "x": -8085
+          },
+          {
+            "z": 196,
+            "x": -2460
+          },
+          {
+            "z": -5635,
+            "x": -8085
+          },
+          {
+            "z": 196,
+            "x": -2460
+          },
+          {
+            "z": -7275,
+            "x": -7086
+          }
+        ],
+        "D": 3,
+        "A": 2,
+        "KillBaronCnt": 0,
+        "Exp": 1770,
+        "CoinNumFromSoldierline": 1387,
+        "CoinNumFromSoldierlineMid": 1295,
+        "TotalHurt": 48872,
+        "TotalBeHurtByHero": 23388,
+        "HeroHurtInfo": {
+          "571451020912618902": 7029,
+          "17145562027324768716": 4097,
+          "13473981453798442148": 5197,
+          "15386513400443639771": 384,
+          "10028229355941122752": 9411
+        },
+        "HurtHero10M": 26118,
+        "TotalHurtToHero": 26118,
+        "HealCnt": 4731,
+        "SkinID": 63500,
+        "BeHurtByOrgan": 533,
+        "DeadLocation": [
+          {
+            "z": -14845,
+            "x": -9189
+          },
+          {
+            "z": 2855,
+            "x": -2403
+          },
+          {
+            "z": -14845,
+            "x": -9189
+          },
+          {
+            "z": -2284,
+            "x": -6449
+          },
+          {
+            "z": -6390,
+            "x": -13150
+          }
+        ],
+        "VTPentaKill": 0,
+        "JfBeHurtByHero": 9188,
+        "CoinNumFromEnemyHero": 792,
+        "CoinNumFromKillEnemyHero": 627
+      },
+      {
+        "KillSoidierCnt": 18,
+        "LastHit": 23,
         "Rune": {
           "1510": {
             "name": "1510",
@@ -1443,24 +1443,239 @@
             "totalnumber": 10
           }
         },
-        "RiverTime": 91.800003647804,
-        "HorizonValue": 4,
-        "TotalHurt": 93279,
-        "Exp": 647,
+        "HorizonValue": 13,
+        "Pos": 3,
+        "PlayerID": "13695787710442909268",
+        "FirstBloodTime": 0,
+        "_id": "1795056843_14_169279768_13695787710442909268",
+        "KillBigDragonCnt": 0,
+        "KillDarkBigDragonCnt": 0,
+        "KillXiaoZhuzaiCnt": 1,
+        "KillYuanGuBaoJunCnt": 0,
+        "StealBlueBuff": 0,
+        "StealMonster": 3,
+        "StealRedBuff": 2,
+        "VSTAllDeadCnt": 0,
+        "VSTDominateBattleCnt": 0,
+        "VSTFirstKillCnt": 0,
+        "VSTLegendaryCnt": 0,
+        "VSTMonsterKillCnt": 3,
+        "VSTOdySseyCnt": 0,
+        "VSTStopMultiKillCnt": 0,
+        "VSTTotalAnnihilatCnt": 1,
+        "VTDoubleKill": 1,
+        "BattleID": "1795056843_14_169279768",
         "VTQuataryKill": 0,
-        "LastHit": 23,
-        "TotalBeHurtByHero": 10207,
-        "HeroHurtInfo": {
-          "17145562027324768716": 12802,
-          "571451020912618902": 2631,
-          "13473981453798442148": 7410,
-          "10028229355941122752": 2661,
-          "15386513400443639771": 5812
+        "VTSingleKill": 10,
+        "VTTripleKill": 1,
+        "K": 12,
+        "Kill10M": 6,
+        "CoinNumFromJungle": 1810,
+        "CoinNumFromJungleSelfCamp": 1237,
+        "CoinNumFromJungleEnemyCamp": 573,
+        "Assist10M": 2,
+        "CoinNumFromAssistEnemyHero": 212,
+        "StartTeamFight": 4,
+        "CoinNumFromSoldierlineDuiKang": 667,
+        "CoinNumFromSoldierlineFayu": 154,
+        "Camp": 1,
+        "NickName": "GKE.MusangKing",
+        "TeamId": "hok_team1",
+        "DestroyTowerCnt": 1,
+        "TfBeHurtByHero": 4841,
+        "TfHurtToCC": 5100,
+        "TfHurtToHero": 5100,
+        "SkillID": 80104,
+        "PlayerName": "GKE.MusangKing",
+        "SeasonID": "TEST",
+        "CurrentGameTime": 1043,
+        "Equips": [
+          "1533",
+          "1422",
+          "1137",
+          "1134",
+          "1133",
+          "1121"
+        ],
+        "openid": "13695787710442909268",
+        "KillMonsterCnt": 24,
+        "KillLocation": [
+          {
+            "z": 151728,
+            "x": 152355
+          },
+          {
+            "z": -4093,
+            "x": -643
+          },
+          {
+            "z": -6979,
+            "x": -7608
+          },
+          {
+            "z": -4936,
+            "x": -1653
+          },
+          {
+            "z": -23236,
+            "x": -9737
+          },
+          {
+            "z": 403,
+            "x": 2408
+          },
+          {
+            "z": 2332,
+            "x": -3655
+          },
+          {
+            "z": -8273,
+            "x": -1122
+          },
+          {
+            "z": -13805,
+            "x": 9333
+          },
+          {
+            "z": -7376,
+            "x": -11380
+          },
+          {
+            "z": 2421,
+            "x": -144
+          },
+          {
+            "z": 11930,
+            "x": 13593
+          },
+          {
+            "z": 151728,
+            "x": 152355
+          },
+          {
+            "z": -4093,
+            "x": -643
+          },
+          {
+            "z": -6979,
+            "x": -7608
+          },
+          {
+            "z": -4936,
+            "x": -1653
+          },
+          {
+            "z": -23236,
+            "x": -9737
+          },
+          {
+            "z": 403,
+            "x": 2408
+          },
+          {
+            "z": 148587,
+            "x": 152896
+          },
+          {
+            "z": -41143,
+            "x": -3313
+          },
+          {
+            "z": 3848,
+            "x": -26561
+          },
+          {
+            "z": -42281,
+            "x": -38607
+          },
+          {
+            "z": -6950,
+            "x": -26584
+          },
+          {
+            "z": 7452,
+            "x": -13680
+          }
+        ],
+        "SkinID": 64600,
+        "TotalBlueBuff": 5,
+        "BeHurtByOrgan": 533,
+        "TotalRedBuff": 3,
+        "CampVisible": true,
+        "Gold": 11039,
+        "HasBlue": false,
+        "HasRed": false,
+        "Hp": 7248,
+        "IsDead": false,
+        "Level": 15,
+        "Location": {
+          "z": -55764,
+          "x": -57673
         },
-        "TotalHurtToHero": 31316,
-        "Gold": 3383
+        "RiverTime": 201.00000798702,
+        "MaxHp": 7248,
+        "PlayerUID": "13695787710442909268",
+        "ReviveTime": 0,
+        "HeroID": "646",
+        "CtrlTime": 0,
+        "GoldPerMin": 635.03355704698,
+        "GoldToDmg": 2.1228264774606,
+        "HurtR10M": 0.47801511396916,
+        "JfBeHurtR": 0.44212304409673,
+        "KillJoinR10M": 0.72727272727273,
+        "NeutralCtrlR": 0.5,
+        "RiverTimeR": 0.34625322997416,
+        "TfBeHurtR": 0.2467380224261,
+        "VTPentaKill": 0,
+        "KillBaronCnt": 1,
+        "A": 2,
+        "ScheduleID": "TEST20261119",
+        "Exp": 2202,
+        "CoinNumFromSoldierline": 2834,
+        "CoinNumFromSoldierlineMid": 2013,
+        "TotalHurt": 452423,
+        "TotalBeHurtByHero": 59240,
+        "HeroHurtInfo": {
+          "571451020912618902": 17901,
+          "17145562027324768716": 32896,
+          "13473981453798442148": 16185,
+          "15386513400443639771": 11803,
+          "10028229355941122752": 40725
+        },
+        "HurtHero10M": 46682,
+        "TotalHurtToHero": 119510,
+        "HealCnt": 15998,
+        "HurtToOrgan": 2904,
+        "D": 3,
+        "DeadLocation": [
+          {
+            "z": -4994,
+            "x": -3588
+          },
+          {
+            "z": 20066,
+            "x": 9779
+          },
+          {
+            "z": 149462,
+            "x": 148945
+          },
+          {
+            "z": -19885,
+            "x": 21988
+          },
+          {
+            "z": 147439,
+            "x": 147153
+          }
+        ],
+        "TfKill": 1,
+        "JfBeHurtByHero": 24865,
+        "CoinNumFromEnemyHero": 2464,
+        "CoinNumFromKillEnemyHero": 2252
       }
     ],
-    "trace_id": "fd36a54de984dcf9b4337946781f80e2"
+    "result": 0,
+    "trace_id": "5cd4916542a8beca3f7a78357b9f7d30"
   }
 }
