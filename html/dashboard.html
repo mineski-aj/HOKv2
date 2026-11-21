@@ -284,6 +284,10 @@
             <select id="mi-bestof"><option value="3">Best of 3</option><option value="5">Best of 5</option><option value="7">Best of 7</option></select></div>
           <div class="mi-day"><label for="mi-day">Day</label><select id="mi-day"></select></div>
         </div>
+        <div class="mi-row">
+          <div><label for="mi-group">Group</label><select id="mi-group"></select></div>
+          <div><label for="mi-game">Game</label><select id="mi-game"></select></div>
+        </div>
         <div class="preview-dirty" id="pv-dirty">Unsaved changes — press Update Live Roster &amp; Score</div>
       </div>
 
@@ -670,7 +674,7 @@
     SETTINGS_IDS.concat(['battle_id', 'ob_open_id']).forEach(function (id) { if (appState[id] !== undefined) $(id).value = appState[id]; });
     if (appState.team_1_score !== undefined) $('team1_score').value = appState.team_1_score;
     if (appState.team_2_score !== undefined) $('team2_score').value = appState.team_2_score;
-    setMatchInfo(appState.match_best_of, appState.match_stage, appState.match_day, appState.match_number);
+    setMatchInfo(appState.match_best_of, appState.match_stage, appState.match_day, appState.match_number, appState.match_group, appState.match_game);
     COMPANION_KEYS.forEach(function (key) { if (appState[key] !== undefined && $(compInputId(key))) $(compInputId(key)).value = appState[key]; });
     if (withTeams) {
       if (appState.team_1_abbr) { $('team1_select').value = appState.team_1_abbr; renderTeamRoster(1, appState.team_1_uids || []); }
@@ -764,7 +768,7 @@
      (match_stage 'GROUP STAGE'|'KNOCKOUTS'|'GRAND FINALS'), day (match_day 1–15).
      Saved in server_state.json with Update Live Roster & Score; overlays read
      them from /api/state. ── */
-  var MI_DEFAULT = { bestOf: 3, stage: 'GROUP STAGE', day: 1, match: 1 };
+  var MI_DEFAULT = { bestOf: 3, stage: 'GROUP STAGE', day: 1, match: 1, group: 'A', game: 0 };
   var matchInfo = Object.assign({}, MI_DEFAULT);
   (function buildDays() {
     var html = '';
@@ -773,27 +777,37 @@
     html = '';
     for (var m = 1; m <= 10; m++) html += '<option value="' + m + '">Match ' + m + '</option>';
     $('mi-match').innerHTML = html;
+    html = '';
+    ['A', 'B', 'C', 'D'].forEach(function (g) { html += '<option value="' + g + '">Group ' + g + '</option>'; });
+    $('mi-group').innerHTML = html;
+    html = '<option value="0">Auto (series score + 1)</option>';
+    for (var gm = 1; gm <= 7; gm++) html += '<option value="' + gm + '">Game ' + gm + '</option>';
+    $('mi-game').innerHTML = html;
   })();
   function paintMatchInfo() {
     $('mi-bestof').value = String(matchInfo.bestOf);
     $('mi-stage').value = matchInfo.stage;
     $('mi-day').value = String(matchInfo.day);
     $('mi-match').value = String(matchInfo.match);
+    $('mi-group').value = matchInfo.group;
+    $('mi-game').value = String(matchInfo.game);
   }
-  function setMatchInfo(bestOf, stage, day, match) {
+  function setMatchInfo(bestOf, stage, day, match, group, game) {
+    matchInfo.group = ['A', 'B', 'C', 'D'].indexOf(group) !== -1 ? group : MI_DEFAULT.group;
+    matchInfo.game = (+game >= 1 && +game <= 7) ? +game : 0;
     matchInfo.match = (+match >= 1 && +match <= 10) ? +match : MI_DEFAULT.match;
     matchInfo.bestOf = [3, 5, 7].indexOf(+bestOf) !== -1 ? +bestOf : MI_DEFAULT.bestOf;
     matchInfo.stage = ['GROUP STAGE', 'KNOCKOUTS', 'GRAND FINALS'].indexOf(stage) !== -1 ? stage : MI_DEFAULT.stage;
     matchInfo.day = (+day >= 1 && +day <= 15) ? +day : MI_DEFAULT.day;
     paintMatchInfo();
   }
-  [['mi-bestof', 'bestOf', true], ['mi-stage', 'stage', false], ['mi-day', 'day', true], ['mi-match', 'match', true]].forEach(function (g) {
+  [['mi-bestof', 'bestOf', true], ['mi-stage', 'stage', false], ['mi-day', 'day', true], ['mi-match', 'match', true], ['mi-group', 'group', false], ['mi-game', 'game', true]].forEach(function (g) {
     $(g[0]).addEventListener('change', function () {
       matchInfo[g[1]] = g[2] ? +$(g[0]).value : $(g[0]).value;
       updateMatchPreview();
     });
   });
-  function matchInfoText(mi) { return mi.stage + ' · DAY ' + mi.day + ' · MATCH ' + mi.match + ' · BEST OF ' + mi.bestOf; }
+  function matchInfoText(mi) { return mi.stage + ' · DAY ' + mi.day + ' · MATCH ' + mi.match + ' · BEST OF ' + mi.bestOf + ' · GROUP ' + mi.group + ' · ' + (mi.game ? 'GAME ' + mi.game : 'GAME AUTO'); }
 
   /* ── Match Board: live preview of the form + unsaved/swapped flags ── */
   var swappedSinceSave = false;
@@ -815,6 +829,7 @@
       s1 !== (appState.team_1_score || 0) || s2 !== (appState.team_2_score || 0) ||
       matchInfo.bestOf !== (+appState.match_best_of || MI_DEFAULT.bestOf) || matchInfo.stage !== (appState.match_stage || MI_DEFAULT.stage) ||
       matchInfo.day !== (+appState.match_day || MI_DEFAULT.day) || matchInfo.match !== (+appState.match_number || MI_DEFAULT.match) ||
+      matchInfo.group !== (appState.match_group || MI_DEFAULT.group) || matchInfo.game !== (+appState.match_game || 0) ||
       JSON.stringify(rosterUids(1)) !== JSON.stringify(appState.team_1_uids || rosterUids(1)) ||
       JSON.stringify(rosterUids(2)) !== JSON.stringify(appState.team_2_uids || rosterUids(2));
     $('pv-dirty').classList.toggle('on', dirty);
@@ -870,7 +885,7 @@
     var payload = {
       team_1_abbr: $('team1_select').value, team_1_score: parseInt($('team1_score').value, 10) || 0, team_1_players: names(1), team_1_uids: uids(1),
       team_2_abbr: $('team2_select').value, team_2_score: parseInt($('team2_score').value, 10) || 0, team_2_players: names(2), team_2_uids: uids(2),
-      match_best_of: matchInfo.bestOf, match_stage: matchInfo.stage, match_day: matchInfo.day, match_number: matchInfo.match,
+      match_best_of: matchInfo.bestOf, match_stage: matchInfo.stage, match_day: matchInfo.day, match_number: matchInfo.match, match_group: matchInfo.group, match_game: matchInfo.game,
     };
     Object.assign(appState, payload);
     swappedSinceSave = false;

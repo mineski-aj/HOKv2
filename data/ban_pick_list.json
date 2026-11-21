@@ -1,9 +1,118 @@
 {
-  "fetched_at": "2026-11-19T07:48:05.779Z",
-  "timestamp": 1795074485,
+  "fetched_at": "2026-11-21T05:01:57.823Z",
+  "timestamp": 1795237317,
   "data": {
     "ret": 0,
     "msg": "",
-    "BanPickList": []
+    "BanPickList": [
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:55:53",
+        "HeroID": "519",
+        "Camp": "1"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:55:55",
+        "HeroID": "509",
+        "Camp": "2"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:56:02",
+        "HeroID": "635",
+        "Camp": "1"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:56:06",
+        "HeroID": "140",
+        "Camp": "2"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:56:12",
+        "HeroID": "577",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:56:32",
+        "HeroID": "521",
+        "Camp": "2"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:56:36",
+        "HeroID": "128",
+        "Camp": "2"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:56:49",
+        "HeroID": "138",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:56:53",
+        "HeroID": "584",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:57:21",
+        "HeroID": "172",
+        "Camp": "2"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:57:46",
+        "HeroID": "503",
+        "Camp": "2"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:57:49",
+        "HeroID": "171",
+        "Camp": "1"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:58:18",
+        "HeroID": "517",
+        "Camp": "2"
+      },
+      {
+        "IsBan": true,
+        "Dteventtime": "2026-11-21 04:58:39",
+        "HeroID": "168",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:59:10",
+        "HeroID": "178",
+        "Camp": "2"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:59:48",
+        "HeroID": "120",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:59:50",
+        "HeroID": "533",
+        "Camp": "1"
+      },
+      {
+        "IsBan": false,
+        "Dteventtime": "2026-11-21 04:59:55",
+        "HeroID": "159",
+        "Camp": "2"
+      }
+    ]
   }
 }

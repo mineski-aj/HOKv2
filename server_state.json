@@ -5,49 +5,49 @@
     "dc_app_id": "",
     "dc_app_secret": "",
     "datacenter_url": "https://hok-esports.playerinfinite.com",
-    "battle_id": "1793546455_252_169279768",
-    "ob_open_id": "14721625020824982866",
-    "csv_url": "",
+    "battle_id": "1795236940_72_169279768",
+    "ob_open_id": "14728140945218491208",
+    "csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpr1b8fm3AT5v-cE9fTIt99-u48u3u7RgJuhsOxItvYl83TXLzTf6aMVRBgWiz2VvWlQsawlTYv5ol/pub?output=csv",
     "season_ids": "",
-    "team_1_abbr": "Hero",
+    "team_1_abbr": "JGE",
     "team_1_score": 0,
     "team_1_players": [
-        "Hero.TanRan",
-        "Hero.Loden",
-        "Hero.Jiuxi",
-        "Hero.Yaodao",
-        "Hero.Baychin"
+        "JGE.Vane",
+        "JGE.Haru",
+        "JGE.Nitsua",
+        "JGE.Kirvsu",
+        "JGE.Migsss"
     ],
-    "team_2_abbr": "RW",
+    "team_2_abbr": "AURA",
     "team_2_score": 0,
     "team_2_players": [
-        "RW.GuiQi",
-        "RW.JinYu",
-        "RW.Breakfast",
-        "RW.Pain",
-        "RW.Brook"
+        "AURA.Siang",
+        "AURA.Yulong",
+        "AURA.Zhihong",
+        "AURA.JR",
+        "AURA.Saber"
     ],
-    "last_updated": 1795074122544,
+    "last_updated": 1795237293960,
     "team_1_uids": [
-        "14076338097007283836",
-        "1087230833988449866",
-        "13500637580520246292",
-        "3686130780987704556",
-        "3489131809088059549"
+        "12206932717944618728",
+        "8812656048881465539",
+        "8667439600633376237",
+        "14822950645330246313",
+        "16054983257617850637"
     ],
     "team_2_uids": [
-        "13611901715750702997",
-        "1693662065705560129",
-        "6085988014980610473",
-        "12048257748089980119",
-        "9830634088352483517"
+        "3619810578627570848",
+        "15039408517097589709",
+        "14998166475188484557",
+        "6011818928594230244",
+        "6175966467583506455"
     ],
     "match_best_of": 3,
     "match_stage": "GROUP STAGE",
     "match_day": 1,
-    "match_number": 1,
+    "match_number": 3,
     "michcheck_manual": true,
-    "draft_mode": "MANUAL",
+    "draft_mode": "API",
     "home_ban_override": [
         0,
         0,
@@ -61,8 +61,8 @@
         0
     ],
     "home_role_swap": [
-        111,
-        108,
+        0,
+        0,
         0,
         0,
         0
@@ -83,5 +83,8 @@
         false,
         false
     ],
-    "michcheck_away_photo_off": false
+    "michcheck_away_photo_off": false,
+    "ingame_timer_offset": 3,
+    "match_group": "D",
+    "match_game": 3
 }

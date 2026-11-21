@@ -1,57 +1,166 @@
 {
-  "fetched_at": "2026-11-19T07:42:03.451Z",
-  "timestamp": 1795074123,
+  "fetched_at": "2026-11-21T05:01:57.847Z",
+  "timestamp": 1795237317,
   "data": {
     "ret": 0,
     "msg": "",
     "BattleDetail": {
-      "BattleID": "1793546455_252_169279768",
-      "WinTeamId": "IKL2026S2_dmt",
-      "LastEventTime": 1793547425,
-      "StartTime": 1793546455,
-      "EndTime": 1793547425,
-      "BanPickList": [],
+      "BattleID": "1795236940_72_169279768",
+      "WinTeamId": "",
+      "LastEventTime": 0,
+      "StartTime": 1795236940,
+      "EndTime": 0,
+      "BanPickList": [
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:55:53",
+          "HeroID": "519",
+          "Camp": "1"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:55:55",
+          "HeroID": "509",
+          "Camp": "2"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:56:02",
+          "HeroID": "635",
+          "Camp": "1"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:56:06",
+          "HeroID": "140",
+          "Camp": "2"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:56:12",
+          "HeroID": "577",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:56:32",
+          "HeroID": "521",
+          "Camp": "2"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:56:36",
+          "HeroID": "128",
+          "Camp": "2"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:56:49",
+          "HeroID": "138",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:56:53",
+          "HeroID": "584",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:57:21",
+          "HeroID": "172",
+          "Camp": "2"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:57:46",
+          "HeroID": "503",
+          "Camp": "2"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:57:49",
+          "HeroID": "171",
+          "Camp": "1"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:58:18",
+          "HeroID": "517",
+          "Camp": "2"
+        },
+        {
+          "IsBan": true,
+          "Dteventtime": "2026-11-21 04:58:39",
+          "HeroID": "168",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:59:10",
+          "HeroID": "178",
+          "Camp": "2"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:59:48",
+          "HeroID": "120",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:59:50",
+          "HeroID": "533",
+          "Camp": "1"
+        },
+        {
+          "IsBan": false,
+          "Dteventtime": "2026-11-21 04:59:55",
+          "HeroID": "159",
+          "Camp": "2"
+        }
+      ],
       "PlayerOpenid": [
-        "17145562027324768716",
-        "15127817982839932518",
-        "17350073008320665752",
-        "12650574915437443102",
-        "6889871781961395133",
-        "13473981453798442148",
-        "10028229355941122752",
-        "571451020912618902",
-        "17952029454513194406",
-        "5919703914464565561"
+        "14822950645330246313",
+        "16054983257617850637",
+        "3619810578627570848",
+        "14998166475188484557",
+        "6011818928594230244",
+        "6175966467583506455",
+        "12206932717944618728",
+        "8667439600633376237",
+        "15039408517097589709",
+        "8812656048881465539"
       ],
-      "Status": 4,
-      "BlueTId": "IKL2026S2_kage",
-      "GameDuration": 648,
-      "RedTId": "IKL2026S2_dmt",
+      "Status": 3,
+      "BlueTId": "KNC2026_jge",
+      "GameDuration": 0,
+      "RedTId": "KNC2026_aur",
       "Nicknames": [
-        "KAGE.Senkooo",
-        "KAGE.Wiraww",
-        "DMT.Tufz",
-        "DMT.Cy",
-        "DMT.JerL",
-        "KAGE.Zaan",
-        "KAGE.Lu",
-        "KAGE.Fei",
-        "DMT.Clean",
-        "DMT.eL"
+        "JGE.Kirvsu",
+        "JGE.Migss",
+        "AURA.Siang",
+        "AURA.Zhihong",
+        "AURA.JR",
+        "AURA.Saber",
+        "JGE.Vane",
+        "JGE.Nitsua",
+        "AURA.Yulong",
+        "JGE.Haru"
       ],
-      "_id": "1793546455_252_169279768",
-      "SeasonID": "IKL2026S2",
+      "_id": "1795236940_72_169279768",
+      "SeasonID": "KNC2026",
       "Observers": [
-        "6279649817524268932",
-        "13731131893211709852",
-        "12717100378021302983",
-        "15147804485180174807",
-        "14721625020824982866",
-        "16406188398975660565",
-        "10371755402460839085"
+        "14728140945218491208",
+        "16515426421177596406",
+        "12562160665816109015",
+        "16140979243791915950",
+        "2341659662561158661",
+        "6255570469475721170",
+        "668058736745682242"
       ],
-      "ScheduleID": "IKL2026S2_1101_3",
-      "GameStatus": 3
+      "ScheduleID": "KNC2026_1121_1",
+      "GameStatus": 2
     }
   }
 }
